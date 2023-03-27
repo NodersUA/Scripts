@@ -1,5 +1,9 @@
 #!/bin/bash
 
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+echo "==================================================="
+sleep 2
+
 # Update the repositories
 apt update && apt upgrade -y
 

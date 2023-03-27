@@ -24,7 +24,7 @@ cargo build --release && \
 mv $HOME/sui/target/release/{sui,sui-node,sui-faucet} /usr/bin/ && cd
 
 # Download Genesis
-wget -qO $HOME/.sui/genesis.blob https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blobh
+wget -qO $HOME/.sui/genesis.blob https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob
 
 # Copy and edit config (One command)
 cp $HOME/sui/crates/sui-config/data/fullnode-template.yaml \

@@ -111,8 +111,6 @@ sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $
 
 #=================================================
 
-sudo systemctl stop nibid
-
 cp $HOME/.nibid/data/priv_validator_state.json $HOME/.nibid/priv_validator_state.json.backup
 nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
 
@@ -135,9 +133,6 @@ sed -i 's|^trust_hash *=.*|trust_hash = "'$TRUST_HASH'"|' $HOME/.nibid/config/co
 mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validator_state.json
 
 curl -s https://snapshots2-testnet.nodejumper.io/nibiru-testnet/wasm.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nibid/data
-
-sudo systemctl restart nibid
-sudo journalctl -u nibid -f --no-hostname -o cat
 
 #=================================================
 

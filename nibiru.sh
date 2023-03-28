@@ -1,4 +1,4 @@
 #!/bin/bash
 
 var=$1
-echo '$var'
+echo "my_var: $var"

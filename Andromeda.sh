@@ -180,7 +180,7 @@ andromedad tx staking create-validator \
 -y
 
 break
-;;
+*/;;
 "Synchronization via StateSync")
 SNAP_RPC=http://andromedad.rpc.t.stavr.tech:4137
 peers="247f3c2bed475978af238d97be68226c1f084180@andromedad.peer.stavr.tech:4376"
@@ -197,7 +197,7 @@ s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.andromedad/config/config.
 andromedad tendermint unsafe-reset-all --home $HOME/.andromedad
 systemctl restart andromedad && journalctl -u andromedad -f -o cat
 
-break
+break/*
 ;;
 "UPDATE")
 echo -e "      \e[1m\e[32m Update soon\e[0m"

@@ -242,6 +242,7 @@ break
 ;;
 "Exit")
 exit
+break
 esac
 done
 done

@@ -161,10 +161,9 @@ read WALLET_ANDROMEDA
 echo export WALLET_ANDROMEDA=${WALLET_ANDROMEDA} >> $HOME/.bash_profile
 source ~/.bash_profile
 
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m"
+echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m" && sleep 1
 
 break
-
 ;;
 "Create validator")
 andromedad tx staking create-validator \
@@ -179,6 +178,7 @@ andromedad tx staking create-validator \
 --chain-id=$CHAIN_ID_ANDROMEDA \
 --fees=1000uandr \
 -y
+
 break
 ;;
 "Synchronization via StateSync")
@@ -261,5 +261,6 @@ break
 "Exit")
 exit
 esac
+done
 done
 done

@@ -5,7 +5,7 @@ do
 
 # Logo
 
-curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo_1 | bash
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
 # Menu
 

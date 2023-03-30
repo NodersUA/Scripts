@@ -161,7 +161,7 @@ read WALLET_ANDROMEDA
 echo export WALLET_ANDROMEDA=${WALLET_ANDROMEDA} >> $HOME/.bash_profile
 source ~/.bash_profile
 
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m"
 
 break
 

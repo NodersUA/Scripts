@@ -64,14 +64,11 @@ make install
 sudo cp $HOME/go/bin/andromedad /usr/local/bin/andromedad
 andromedad version --long | grep -e version -e commit
 
-echo -e "                     \e[1m\e[32m4. Inicializing Node--> \e[0m" && sleep 1
 andromedad init $MONIKER_ANDROMEDA --chain-id $CHAIN_ID_ANDROMEDA
 
-echo -e "                     \e[1m\e[32m4. Download Genesis--> \e[0m" && sleep 1
-
 wget -O $HOME/.andromedad/config/genesis.json "https://raw.githubusercontent.com/obajay/nodes-Guides/main/AndromedaProtocol/genesis.json"
-
 sha256sum $HOME/.andromedad/config/genesis.json
+
 
 echo -e "                     \e[1m\e[32m4. Setup the Ports--> \e[0m" && sleep 1
 
@@ -99,6 +96,7 @@ sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \
 sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.andromedad/config/config.toml
 sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "601s"/g' ~/.andromedad/config/config.toml
 
+# pruning and indexer
 pruning="custom"
 pruning_keep_recent="100"
 pruning_keep_every="0"
@@ -107,6 +105,8 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.andromedad/config/app
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.andromedad/config/app.toml
 sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.andromedad/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.andromedad/config/app.toml
+indexer="null" && \
+sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.andromedad/config/config.toml
 
 echo -e "                     \e[1m\e[32m4. Cosmovisor--> \e[0m" && sleep 1
 

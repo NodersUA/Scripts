@@ -3,9 +3,7 @@
 while true
 do
 
-"        \e[1m\e[33m41. # Logo
-
-curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash  \e[0m"
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
 # Menu
 

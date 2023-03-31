@@ -149,6 +149,7 @@ break
 ;;
 "Create wallet")
 andromedad keys add wallet
+echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
 echo -e "      \e[1m\e[35m WALLET_ANDROMEDA:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"

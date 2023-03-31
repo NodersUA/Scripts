@@ -66,6 +66,7 @@ andromedad version --long | grep -e version -e commit
 andromedad init $MONIKER_ANDROMEDA --chain-id $CHAIN_ID_ANDROMEDA
 
 wget -O $HOME/.andromedad/config/genesis.json "https://raw.githubusercontent.com/obajay/nodes-Guides/main/AndromedaProtocol/genesis.json"
+wget -O $HOME/.andromedad/config/addrbook.json "https://raw.githubusercontent.com/obajay/nodes-Guides/main/AndromedaProtocol/addrbook.json"
 
 
 echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1

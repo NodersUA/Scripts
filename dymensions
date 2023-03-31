@@ -113,7 +113,7 @@ sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"10s\"/" $HOME/.dymension/co
 sed -i -e "s/^timeout_propose *=.*/timeout_propose = \"10s\"/" $HOME/.dymension/config/config.toml
 sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \"10s\"/" $HOME/.dymension/config/config.toml
 sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.dymension/config/config.toml
-sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "10s"/g' ~/.dymension/config/config.tom
+sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "10s"/g' ~/.dymension/config/config.toml
 
 # Set up pruning
 pruning="custom"

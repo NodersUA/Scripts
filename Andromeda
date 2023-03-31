@@ -5,7 +5,7 @@ do
 
 # Logo
 
-curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo_1 | bash
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
 # Menu
 
@@ -13,7 +13,6 @@ PS3='Select an action: '
 options=(
 "Install Node"
 "Create wallet"
-"Create validator"
 "Check node logs"
 "Synchronization via StateSync"
 "Synchronization via SnapShot"
@@ -32,19 +31,19 @@ echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"
 read MONIKER_ANDROMEDA
 echo "_|-_|-_|-_|-_|-_|-_|"
-echo export MONIKER_ANDROMEDA=${MONIKER_ANDROMEDA} >> $HOME/.bash_profile
-echo export CHAIN_ID_ANDROMEDA=galileo-3 >> $HOME/.bash_profile
-echo export PORT_ANDROMEDA=15" >> $HOME/.bash_profile
-source ~/.bash_profile
+echo 'export MONIKER_ANDROMEDA='$MONIKER_ANDROMEDA >> $HOME/.bash_profile
+echo "export CHAIN_ID_ANDROMEDA=galileo-3" >> $HOME/.bash_profile
+echo "export PORT_ANDROMEDA=15" >> $HOME/.bash_profile
+source $HOME/.bash_profile
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
-sudo apt update && sudo apt upgrade -y
+sudo apt update && apt upgrade -y
 apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
-ver="1.20" && \
+ver="1.20.1" && \
 wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
 sudo rm -rf /usr/local/go && \
 sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
@@ -64,16 +63,12 @@ make install
 sudo cp $HOME/go/bin/andromedad /usr/local/bin/andromedad
 andromedad version --long | grep -e version -e commit
 
-echo -e "                     \e[1m\e[32m4. Inicializing Node--> \e[0m" && sleep 1
 andromedad init $MONIKER_ANDROMEDA --chain-id $CHAIN_ID_ANDROMEDA
-
-echo -e "                     \e[1m\e[32m4. Download Genesis--> \e[0m" && sleep 1
 
 wget -O $HOME/.andromedad/config/genesis.json "https://raw.githubusercontent.com/obajay/nodes-Guides/main/AndromedaProtocol/genesis.json"
 
-sha256sum $HOME/.andromedad/config/genesis.json
 
-echo -e "                     \e[1m\e[32m4. Setup the Ports--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
 
 sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${PORT_ANDROMEDA}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${PORT_ANDROMEDA}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${PORT_ANDROMEDA}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${PORT_ANDROMEDA}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${PORT_ANDROMEDA}660\"%" $HOME/.andromedad/config/config.toml
 sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${PORT_ANDROMEDA}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${PORT_ANDROMEDA}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${PORT_ANDROMEDA}7\"%" $HOME/.andromedad/config/app.toml
@@ -82,7 +77,8 @@ external_address=$(wget -qO- eth0.me)
 sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${PORT_ANDROMEDA}656\"/" $HOME/.andromedad/config/config.toml
 
 
-echo -e "                     \e[1m\e[32m4. Setup Config--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
+
 
 andromedad config chain-id galileo-3
 andromedad config keyring-backend os
@@ -98,7 +94,6 @@ sed -i -e "s/^timeout_propose *=.*/timeout_propose = \"60s\"/" $HOME/.andromedad
 sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \"60s\"/" $HOME/.andromedad/config/config.toml
 sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.andromedad/config/config.toml
 sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "601s"/g' ~/.andromedad/config/config.toml
-
 pruning="custom"
 pruning_keep_recent="100"
 pruning_keep_every="0"
@@ -108,7 +103,10 @@ sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_rec
 sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.andromedad/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.andromedad/config/app.toml
 
-echo -e "                     \e[1m\e[32m4. Cosmovisor--> \e[0m" && sleep 1
+indexer="null" && \
+sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.andromedad/config/config.toml
+
+echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
 
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 mkdir -p ~/.andromedad/cosmovisor
@@ -117,38 +115,35 @@ mkdir -p ~/.andromedad/cosmovisor/genesis/bin
 mkdir -p ~/.andromedad/cosmovisor/upgrades
 cp `which andromedad` ~/.andromedad/cosmovisor/genesis/bin/andromedad
 
-echo -e "                     \e[1m\e[32m4. Service File--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
 
 sudo tee /etc/systemd/system/andromedad.service > /dev/null <<EOF
 [Unit]
 Description=andromeda daemon
 After=network-online.target
-
 [Service]
 User=$USER
 ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
 Restart=always
 RestartSec=3
 LimitNOFILE=infinity
-
 Environment="DAEMON_NAME=andromedad"
 Environment="DAEMON_HOME=${HOME}/.andromedad"
 Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
 Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
-
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# start the node
-sudo systemctl daemon-reload
-sudo systemctl enable nibid
-sudo systemctl restart nibid
+# start service
+systemctl daemon-reload
+systemctl enable andromedad
+systemctl restart andromedad
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u andromedad -f -o cat\e[0m'
-echo -e "To check sync status: \e[1m\e[35mandromedad status 2>&1 | jq "{catching_up: .SyncInfo.catching_up}"\e[0m"
+echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
 
 break
 ;;
@@ -158,83 +153,44 @@ echo "_|-_|-_|-_|-_|-_|-_|"
 echo -e "      \e[1m\e[35m WALLET_ANDROMEDA:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"
 read WALLET_ANDROMEDA
-echo export WALLET_ANDROMEDA=${WALLET_ANDROMEDA} >> $HOME/.bash_profile
-source ~/.bash_profile
-
+echo "export WALLET_ANDROMEDA="${WALLET_ANDROMEDA}"" >> $HOME/.bash_profile
+source $HOME/.bash_profile
 echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-break
-
-;;
-"Create validator")
-andromedad tx staking create-validator \
---amount 1000000uandr \
---from=wallet \
---commission-rate "0.15" \
---commission-max-rate "0.20" \
---commission-max-change-rate "0.1" \
---min-self-delegation "1" \
---pubkey=$(andromedad tendermint show-validator) \
---moniker=$MONIKER_ANDROMEDA \
---chain-id=$CHAIN_ID_ANDROMEDA \
---fees=1000uandr \
--y
 break
 ;;
 */"Synchronization via StateSync")
 SNAP_RPC=http://andromedad.rpc.t.stavr.tech:4137
-
 peers="247f3c2bed475978af238d97be68226c1f084180@andromedad.peer.stavr.tech:4376"
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.andromedad/config/config.toml
 LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
 BLOCK_HEIGHT=$((LATEST_HEIGHT - 100)); \
 TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
-
 echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
-
 sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
 s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$SNAP_RPC,$SNAP_RPC\"| ; \
 s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
 s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
 s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.andromedad/config/config.toml
-
 andromedad tendermint unsafe-reset-all --home $HOME/.andromedad
-
 systemctl restart andromedad && journalctl -u andromedad -f -o cat
 
 break/*
 ;;
 "UPDATE")
-echo -e "      \e[1m\e[32m Update soon\e[0m"
-
-cd $HOME/andromedad
-git pull
-git checkout 
-make build
-$HOME/andromedad/build/andromedad version --long | grep -e version -e commit
-systemctl stop andromedad
-mv $HOME/andromedad/build/andromedad $(which andromedad)
-andromedad version --long | grep -e version -e commit
-systemctl restart andromedad && journalctl -u andromedad -f -o cat
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+andromedad version
 
 break
 ;;
 "Check node logs")
-journalctl -u andromedad -f -o cat
+sudo journalctl -u andromedad -f -o cat
 
 break
 ;;
 "Synchronization via SnapShot")
-echo -e "      \e[1m\e[32m SnapShot\e[0m"
-
-snapshot_interval=1000
-sed -i.bak -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" ~/.andromedad/config/app.toml
-
-# install lz4
-apt update
-apt install snapd -y
-snap install lz4
-
+cd $HOME
+apt install lz4
 sudo systemctl stop andromedad
 cp $HOME/.andromedad/data/priv_validator_state.json $HOME/.andromedad/priv_validator_state.json.backup
 rm -rf $HOME/.andromedad/data

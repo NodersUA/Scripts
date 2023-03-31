@@ -12,8 +12,6 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 PS3='Select an action: '
 options=(
 "Install Node"
-"Create wallet"
-"Check node logs"
 "Synchronization via StateSync"
 "Synchronization via SnapShot"
 "UPDATE"
@@ -146,9 +144,8 @@ echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u andromedad -f -o cat\e[0m'
 echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
 
-break
-;;
-"Create wallet")
+echo -e "                     \e[1m\e[32m8. Service File--> \e[0m" && sleep 1
+
 andromedad keys add wallet
 echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
@@ -182,11 +179,6 @@ break
 "UPDATE")
 echo -e "      \e[1m\e[32m SOOOON\e[0m"
 andromedad version
-
-break
-;;
-"Check node logs")
-sudo journalctl -u andromedad -f -o cat
 
 break
 ;;

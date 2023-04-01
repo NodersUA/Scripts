@@ -133,38 +133,19 @@ lavad tendermint unsafe-reset-all --home $HOME/.lava --keep-addr-book
 SNAP_NAME=$(curl -s https://snapshots1-testnet.nodejumper.io/lava-testnet/info.json | jq -r .fileName)
 curl "https://snapshots1-testnet.nodejumper.io/lava-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.lava"
 
-echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
-
-# Install Cosmovisor
-go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
-# Create directories
-mkdir -p ~/.lava/cosmovisor
-mkdir -p ~/.lava/cosmovisor/genesis
-mkdir -p ~/.lava/cosmovisor/genesis/bin
-mkdir -p ~/.lava/cosmovisor/upgrades
-# Copy the binary file to the cosmovisor folder
-cp `which lavad` ~/.lava/cosmovisor/genesis/bin/lavad
-
-echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[32m6. Service File--> \e[0m" && sleep 1
 
 # Create service file (One command)
-sudo tee /etc/systemd/system/lavad.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/lavad.service > /dev/null << EOF
 [Unit]
-Description=lavad daemon
+Description=Lava Network Node
 After=network-online.target
-
 [Service]
 User=$USER
-ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
-Restart=always
-RestartSec=3
-LimitNOFILE=infinity
-
-Environment="DAEMON_NAME=lavad"
-Environment="DAEMON_HOME=${HOME}/.lava"
-Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
-Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
-
+ExecStart=$(which lavad) start
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=10000
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -194,7 +175,10 @@ echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE
 break
 ;;
 "Synchronization via StateSync")
-echo -e "      \e[1m\e[32m SOOOON\e[0m"
+lavad tendermint unsafe-reset-all --home $HOME/.lava --keep-addr-book
+
+SNAP_NAME=$(curl -s https://snapshots1-testnet.nodejumper.io/lava-testnet/info.json | jq -r .fileName)
+curl "https://snapshots1-testnet.nodejumper.io/lava-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.lava"
 
 break
 ;;

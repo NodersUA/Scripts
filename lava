@@ -64,7 +64,7 @@ lavad version --long | grep -e version -e commit
 lavad init $MONIKER_LAVA --chain-id $CHAIN_ID_LAVA
 
 curl -s https://raw.githubusercontent.com/K433QLtr6RA9ExEq/GHFkqmTzpdNLDd6T/main/testnet-1/genesis_json/genesis.json > $HOME/.lava/config/genesis.json
-wget -O $HOME/.lava/config/addrbook.json "https://share2.utsa.tech/lava/addrbook.json"
+curl -s https://snapshots1-testnet.nodejumper.io/lava-testnet/addrbook.json > $HOME/.lava/config/addrbook.json
 
 
 echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1

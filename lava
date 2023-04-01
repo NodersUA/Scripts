@@ -56,9 +56,9 @@ cd $HOME
 git clone https://github.com/lavanet/lava 
 cd lava 
 git fetch --all 
-git checkout v0.4.4
+git checkout v0.8.1
 make install
-sudo mv $HOME/go/bin/lavad /usr/local/bin/lavad
+sudo cp $HOME/go/bin/lavad /usr/local/bin/lavad
 lavad version --long | grep -e version -e commit
 
 lavad init $MONIKER_LAVA --chain-id $CHAIN_ID_LAVA
@@ -217,9 +217,9 @@ break
 echo -e "      \e[1m\e[32m SOOOON\e[0m"
 cd $HOME/lava
 git fetch --all 
-git checkout v0.6.0
+git checkout v...
 make install
-sudo mv $HOME/go/bin/lavad /usr/local/bin/lavad
+sudo cp $HOME/go/bin/lavad /usr/local/bin/lavad /.lava/cosmovisor/genesis/bin/lavad
 lavad version
 sudo systemctl restart lavad && sudo journalctl -fu lavad -o cat
 

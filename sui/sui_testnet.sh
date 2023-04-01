@@ -12,7 +12,7 @@ sudo curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env
 
 # Create a directory for database, genesis.blob, fullnode.yaml
-mkdir $HOME/.sui
+cd && mkdir $HOME/.sui
 
 # Clone GitHub SUI repository
 cd $HOME

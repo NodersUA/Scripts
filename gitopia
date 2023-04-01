@@ -126,37 +126,20 @@ sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $
 
 curl -s https://snapshots1-testnet.nodejumper.io/gitopia-testnet/addrbook.json > $HOME/.gitopia/config/addrbook.json
 
-echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
-
-# Install Cosmovisor
-go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
-# Create directories
-mkdir -p ~/.gitopia/cosmovisor
-mkdir -p ~/.gitopia/cosmovisor/genesis
-mkdir -p ~/.gitopia/cosmovisor/genesis/bin
-mkdir -p ~/.gitopia/cosmovisor/upgrades
-# Copy the binary file to the cosmovisor folder
-cp `which gitopiad` ~/.gitopia/cosmovisor/genesis/bin/gitopiad
-
-echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[32m6. Service File--> \e[0m" && sleep 1
 
 # Create service file (One command)
 sudo tee /etc/systemd/system/gitopiad.service > /dev/null <<EOF
 [Unit]
-Description=gitopiad daemon
+Description=gitopiad
 After=network-online.target
 
 [Service]
 User=$USER
-ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
-Restart=always
+ExecStart=$(which gitopiad) start
+Restart=on-failure
 RestartSec=3
-LimitNOFILE=infinity
-
-Environment="DAEMON_NAME=gitopiad"
-Environment="DAEMON_HOME=${HOME}/.gitopia"
-Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
-Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target

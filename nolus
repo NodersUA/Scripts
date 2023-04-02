@@ -1,0 +1,250 @@
+#!/bin/bash
+
+while true
+do
+
+# Logo
+
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+"Install Node")
+echo "*********************"
+echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+echo "*********************"
+echo -e "\e[1m\e[32m	Enter your MONIKER_NOLUS:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read MONIKER_NOLUS
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo 'export MONIKER_NOLUS='$MONIKER_NOLUS >> $HOME/.bash_profile
+echo "export CHAIN_ID_NOLUS=nolus-rila" >> $HOME/.bash_profile
+echo "export PORT_NOLUS=39" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+echo -e"            \e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
+#UPDATE APT
+sudo apt update && apt upgrade -y
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
+
+echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
+#INSTALL GO
+ver="1.20.1" && \
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
+sudo rm -rf /usr/local/go && \
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
+rm "go$ver.linux-amd64.tar.gz" && \
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
+source $HOME/.bash_profile && \
+go version
+
+echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
+#INSTALL
+cd $HOME 
+git clone https://github.com/Nolus-Protocol/nolus-core
+cd nolus-core
+git fetch --all 
+git checkout v0.2.1-testnet
+make install
+sudo cp $HOME/go/bin/nolusd /usr/local/bin/nolusd
+nolusd version --long | grep -e version -e commit -e build
+
+nolusd init $MONIKER_NOLUS --chain-id $CHAIN_ID_NOLUS
+
+wget -O $HOME/.nolus/config/genesis.json "https://raw.githubusercontent.com/Nolus-Protocol/nolus-networks/main/testnet/nolus-rila/genesis.json"
+wget -O $HOME/.nolus/config/addrbook.json "https://share2.utsa.tech/nolus/addrbook.json"
+
+
+echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
+
+# Set the ports
+
+# config.toml
+sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${PORT_NOLUS}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${PORT_NOLUS}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${PORT_NOLUS}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${PORT_NOLUS}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${PORT_NOLUS}660\"%" $HOME/.nolus/config/config.toml
+
+# app.toml
+sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${PORT_NOLUS}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${PORT_NOLUS}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:${PORT_NOLUS}27\"%" $HOME/.nolus/config/app.toml
+
+# client.toml
+sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${PORT_NOLUS}657\"%" $HOME/.nolus/config/client.toml
+
+external_address=$(wget -qO- eth0.me)
+sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${PORT_NOLUS}656\"/" $HOME/.nolus/config/config.toml
+
+
+echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
+
+
+# correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
+nolusd config chain-id nolus-rila
+
+# adjust if necessary keyring-backend в client.toml 
+nolusd config keyring-backend os
+
+nolusd config node tcp://localhost:${PORT_NOLUS}657
+
+# Set the minimum price for gas
+sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0025unls\"/;" ~/.nolus/config/app.toml
+
+# Add seeds/peers в config.toml
+peers="56cee116ac477689df3b4d86cea5e49cfb450dda@54.246.232.38:26656,56f14005119e17ffb4ef3091886e6f7efd375bfd@34.241.107.0:26656,7f26067679b4323496319fda007a279b52387d77@63.35.222.83:26656,7f4a1876560d807bb049b2e0d0aa4c60cc83aa0a@63.32.88.49:26656,3889ba7efc588b6ec6bdef55a7295f3dd559ebd7@3.249.209.26:26656,de7b54f988a5d086656dcb588f079eb7367f6033@34.244.137.169:26656"
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.nolus/config/config.toml
+
+seeds=""
+sed -i.bak -e "s/^seeds =.*/seeds = \"$seeds\"/" $HOME/.nolus/config/config.toml
+
+# Set up filter for "bad" peers
+sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $HOME/.nolus/config/config.toml
+
+# Consensus
+sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"10s\"/" $HOME/.nolus/config/config.toml
+sed -i -e "s/^timeout_propose *=.*/timeout_propose = \"10s\"/" $HOME/.nolus/config/config.toml
+sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \"10s\"/" $HOME/.nolus/config/config.toml
+sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.nolus/config/config.toml
+sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "10s"/g' ~/.nolus/config/config.tom
+
+# Set up pruning
+pruning="custom"
+pruning_keep_recent="1000"
+pruning_keep_every="0"
+pruning_interval="10"
+sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.nolus/config/app.toml
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.nolus/config/app.toml
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nolus/config/app.toml
+
+
+echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
+
+# Install Cosmovisor
+go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
+# Create directories
+mkdir -p ~/.nolus/cosmovisor
+mkdir -p ~/.nolus/cosmovisor/genesis
+mkdir -p ~/.nolus/cosmovisor/genesis/bin
+mkdir -p ~/.nolus/cosmovisor/upgrades
+# Copy the binary file to the cosmovisor folder
+cp `which nolusd` ~/.nolus/cosmovisor/genesis/bin/nolusd
+
+echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
+
+# Create service file (One command)
+sudo tee /etc/systemd/system/nolusd.service > /dev/null <<EOF
+[Unit]
+Description=nolusd daemon
+After=network-online.target
+
+[Service]
+User=$USER
+ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
+Restart=always
+RestartSec=3
+LimitNOFILE=infinity
+
+Environment="DAEMON_NAME=nolusd"
+Environment="DAEMON_HOME=${HOME}/.nolus"
+Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
+Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start the node
+systemctl daemon-reload
+systemctl enable nolusd
+systemctl restart nolusd
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u nolusd -f -o cat\e[0m'
+echo -e "To check sync status: \e[1m\e[35mnolusd status 2>&1 | jq "{catching_up: .SyncInfo.catching_up}\e[0m"
+
+echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
+
+nolusd keys add wallet
+echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo -e "      \e[1m\e[35m WALLET_NOLUS:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read WALLET_NOLUS
+echo "export WALLET_NOLUS="${WALLET_NOLUS}"" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+break
+;;
+"Synchronization via StateSync")
+sudo systemctl stop nolusd
+# In case of download wasm
+curl -L https://share2.utsa.tech/nolus/wasm-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
+SNAP_RPC=https://t-nolus.rpc.utsa.tech:443
+LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height); \
+BLOCK_HEIGHT=$((LATEST_HEIGHT - 1000)); \
+TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
+sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
+s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$SNAP_RPC,$SNAP_RPC\"| ; \
+s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
+s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"| ; \
+s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.nolus/config/config.toml
+
+systemctl restart nolusd && journalctl -u nolusd -f -o cat
+
+break
+;;
+"UPDATE")
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+nibid version
+
+break
+;;
+"Synchronization via SnapShot")
+snapshot_interval=1000
+sed -i.bak -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" ~/.sao/config/app.toml
+
+# Snapshot
+systemctl stop nolusd
+
+cp $HOME/.nolus/data/priv_validator_state.json $HOME/.nolus/priv_validator_state.json.backup
+nolusd tendermint unsafe-reset-all --home $HOME/.nolus --keep-addr-book
+
+# download wasm if necessary
+curl -L https://share2.utsa.tech/nolus/wasm-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
+# download snapshot (data)
+curl -L http://65.109.171.22:8000/nolus/snap-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
+
+mv $HOME/.nolus/priv_validator_state.json.backup $HOME/.nolus/data/priv_validator_state.json
+
+systemctl restart nolusd && journalctl -u nolusd -f -o cat
+
+break
+;;
+"Delete Node")
+sudo systemctl stop nolusd && \
+sudo systemctl disable nolusd && \
+rm /etc/systemd/system/nolusd.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf nolus && \
+rm -rf .nolus && \
+rm -rf $(which nolusd)
+
+break
+;;
+"Exit")
+exit
+esac
+done
+done

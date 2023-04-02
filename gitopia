@@ -1,0 +1,236 @@
+#!/bin/bash
+
+while true
+do
+
+# Logo
+
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+"Install Node")
+echo "*********************"
+echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+echo "*********************"
+echo -e "\e[1m\e[32m	Enter your GITOPIA_NODE_NAME:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read GITOPIA_NODE_NAME
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo 'export GITOPIA_NODE_NAME='$GITOPIA_NODE_NAME >> $HOME/.bash_profile
+echo "export GITOPIA_CHAIN_ID=gitopia-janus-testnet-2" >> $HOME/.bash_profile
+echo "export GITOPIA_PORT=10" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
+#UPDATE APT
+sudo apt update && apt upgrade -y
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
+
+echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
+#INSTALL GO
+ver="1.20.1" && \
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
+sudo rm -rf /usr/local/go && \
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
+rm "go$ver.linux-amd64.tar.gz" && \
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
+source $HOME/.bash_profile && \
+go version
+
+echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
+#INSTALL
+cd $HOME
+rm -rf gitopia
+git clone gitopia://Gitopia/gitopia
+cd gitopia
+git checkout v1.2.0
+make install
+sudo cp $HOME/go/bin/gitopiad /usr/local/bin/gitopiad
+gitopiad version --long | grep -e version -e commit
+
+gitopiad init $GITOPIA_NODE_NAME --chain-id $GITOPIA_CHAIN_ID
+
+curl -s https://server.gitopia.com/raw/gitopia/testnets/master/gitopia-janus-testnet-2/genesis.json.gz > ~/.gitopia/config/genesis.zip
+gunzip -c ~/.gitopia/config/genesis.zip > ~/.gitopia/config/genesis.json
+rm -rf ~/.gitopia/config/genesis.zip
+curl -s https://snapshots1-testnet.nodejumper.io/gitopia-testnet/addrbook.json > $HOME/.gitopia/config/addrbook.json
+
+echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
+
+# Set the ports
+
+# config.toml
+sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${GITOPIA_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${GITOPIA_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${GITOPIA_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${GITOPIA_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${GITOPIA_PORT}660\"%" $HOME/.gitopia/config/config.toml
+
+# app.toml
+sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${GITOPIA_PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${GITOPIA_PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${GITOPIA_PORT}7\"%" $HOME/.gitopia/config/app.toml
+
+# client.toml
+sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${GITOPIA_PORT}657\"%" $HOME/.gitopia/config/client.toml
+
+external_address=$(wget -qO- eth0.me)
+sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${GITOPIA_PORT}656\"/" $HOME/.gitopia/config/config.toml
+
+
+echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
+
+
+# correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
+gitopiad config chain-id $GITOPIA_CHAIN_ID
+
+# adjust if necessary keyring-backend в client.toml 
+gitopiad config keyring-backend os
+
+gitopiad config node tcp://localhost:${GITOPIA_PORT}657
+
+# Set the minimum price for gas
+sed -i -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.001utlore\"/" $HOME/.gitopia/config/app.toml
+
+# Add seeds/peers в config.toml
+peers=""
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.gitopia/config/config.toml
+
+seeds="399d4e19186577b04c23296c4f7ecc53e61080cb@seed.gitopia.com:26656"
+sed -i.bak -e "s/^seeds =.*/seeds = \"$seeds\"/" $HOME/.gitopia/config/config.toml
+
+# Set up filter for "bad" peers
+sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $HOME/.gitopia/config/config.toml
+
+#
+sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"60s\"/" $HOME/.gitopia/config/config.toml
+sed -i -e "s/^timeout_propose *=.*/timeout_propose = \"60s\"/" $HOME/.gitopia/config/config.toml
+sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \"60s\"/" $HOME/.gitopia/config/config.toml
+sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.gitopia/config/config.toml
+sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "601s"/g' ~/.gitopia/config/config.toml
+
+# Set up pruning
+pruning="custom"
+pruning_keep_recent="1000"
+pruning_interval="10"
+sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.gitopia/config/app.toml
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.gitopia/config/app.toml
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.gitopia/config/app.toml
+curl -s https://snapshots1-testnet.nodejumper.io/gitopia-testnet/addrbook.json > $HOME/.gitopia/config/addrbook.json
+
+gitopiad tendermint unsafe-reset-all --home $HOME/.gitopia --keep-addr-book
+
+SNAP_NAME=$(curl -s https://snapshots1-testnet.nodejumper.io/gitopia-testnet/info.json | jq -r .fileName)
+curl "https://snapshots1-testnet.nodejumper.io/gitopia-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.gitopia"
+
+echo -e "                     \e[1m\e[32m6. Service File--> \e[0m" && sleep 1
+
+# Create service file (One command)
+sudo tee /etc/systemd/system/gitopiad.service > /dev/null <<EOF
+[Unit]
+Description=gitopiad
+After=network-online.target
+
+[Service]
+User=$USER
+ExecStart=$(which gitopiad) start
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start the node
+systemctl daemon-reload
+systemctl enable gitopiad
+systemctl restart gitopiad
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u gitopiad -f -o cat\e[0m'
+echo -e "To check sync status: \e[1m\e[35mgitopiad status 2>&1 | jq .SyncInfo\e[0m"
+
+echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
+
+gitopiad keys add wallet
+echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo -e "      \e[1m\e[35m GITOPIA_ADDRESS:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read GITOPIA_ADDRESS
+echo "export GITOPIA_ADDRESS="${GITOPIA_ADDRESS}"" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+break
+;;
+"Synchronization via StateSync")
+sudo systemctl stop gitopiad
+cp $HOME/.gitopia/data/priv_validator_state.json $HOME/.gitopia/priv_validator_state.json.backup
+gitopiad tendermint unsafe-reset-all --home $HOME/.gitopia --keep-addr-book
+SNAP_RPC="https://gitopia-testnet.nodejumper.io:443"
+LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height)
+BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000))
+TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
+PEERS="6146658ffe2d148524a9fdcc3d701440053442bf@gitopia-testnet.nodejumper.io:30656"
+sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.gitopia/config/config.toml
+sed -i 's|^enable *=.*|enable = true|' $HOME/.gitopia/config/config.toml
+sed -i 's|^rpc_servers *=.*|rpc_servers = "'$SNAP_RPC,$SNAP_RPC'"|' $HOME/.gitopia/config/config.toml
+sed -i 's|^trust_height *=.*|trust_height = '$BLOCK_HEIGHT'|' $HOME/.gitopia/config/config.toml
+sed -i 's|^trust_hash *=.*|trust_hash = "'$TRUST_HASH'"|' $HOME/.gitopia/config/config.toml
+mv $HOME/.gitopia/priv_validator_state.json.backup $HOME/.gitopia/data/priv_validator_state.json
+sudo systemctl restart gitopiad
+sudo journalctl -u gitopiad -f --no-hostname -o cat
+
+break
+;;
+"UPDATE")
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+curl https://get.gitopia.com/ | bash
+systemctl restart gitopiad && journalctl -u gitopiad -f -o cat
+
+break
+;;
+"Synchronization via SnapShot")
+cd $HOME
+snapshot_interval=1000
+sed -i.bak -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" ~/.gitopia/config/app.toml
+sudo apt update
+sudo apt install lz4 -y
+sudo systemctl stop gitopiad
+cp $HOME/.gitopia/data/priv_validator_state.json $HOME/.gitopia/priv_validator_state.json.backup 
+gitopiad tendermint unsafe-reset-all --home $HOME/.gitopia --keep-addr-book 
+curl https://snapshots1-testnet.nodejumper.io/gitopia-testnet/gitopia-janus-testnet-2_2023-04-01.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.gitopia
+mv $HOME/.gitopia/priv_validator_state.json.backup $HOME/.gitopia/data/priv_validator_state.json 
+sudo systemctl start gitopiad
+sudo journalctl -u gitopiad -f --no-hostname -o cat
+
+break
+;;
+"Delete Node")
+sudo systemctl stop gitopiad && \
+sudo systemctl disable gitopiad && \
+rm /etc/systemd/system/gitopiad.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf gitopia && \
+rm -rf .gitopia && \
+rm -rf $(which gitopiad)
+
+break
+;;
+"Exit")
+exit
+esac
+done
+done

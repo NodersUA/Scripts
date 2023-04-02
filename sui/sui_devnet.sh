@@ -51,6 +51,9 @@ WantedBy=multi-user.target" > $HOME/suid.service
 
 mv $HOME/suid.service /etc/systemd/system/
 
+ufw allow 9000
+ufw allow 9184
+
 # Start the node
 sudo systemctl restart systemd-journald
 sudo systemctl daemon-reload

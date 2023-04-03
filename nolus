@@ -116,7 +116,7 @@ sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.nolus/config
 sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "10s"/g' ~/.nolus/config/config.toml
 
 # Set up pruning
-pruning="custom"
+pruning="nothing"
 pruning_keep_recent="1000"
 pruning_keep_every="0"
 pruning_interval="10"
@@ -198,6 +198,19 @@ break
 ;;
 "Synchronization via SnapShot")
 echo -e "      \e[1m\e[32m SOOOON\e[0m"
+systemctl stop nolusd
+
+cp $HOME/.nolus/data/priv_validator_state.json $HOME/.nolus/priv_validator_state.json.backup
+nolusd tendermint unsafe-reset-all --home $HOME/.nolus --keep-addr-book
+
+# download wasm if necessary
+curl -L https://share2.utsa.tech/nolus/wasm-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
+# download snapshot (data)
+curl -L http://65.109.171.22:8000/nolus/snap-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
+
+mv $HOME/.nolus/priv_validator_state.json.backup $HOME/.nolus/data/priv_validator_state.json
+
+systemctl restart nolusd && journalctl -u nolusd -f -o cat
 
 break
 ;;

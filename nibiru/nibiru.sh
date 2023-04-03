@@ -17,34 +17,24 @@ source $HOME/.bash_profile
 fi
 
 # Set the variables
-
-# Come up with the name of your node and replace it instead <your_moniker>
 echo "export NIBIRU_CHAIN_ID=nibiru-itn-1" >> $HOME/.bash_profile
 echo "export NIBIRU_PORT=11" >> $HOME/.bash_profile
 source $HOME/.bash_profile
-# check whether the last command was executed
 
-# Download binary files
+#INSTALL
 cd $HOME
 git clone https://github.com/NibiruChain/nibiru
 cd nibiru
+git fetch --all
 git checkout v0.19.2
 make install
 sudo cp ./build/nibid /usr/local/bin/ && cd $HOME
-
 nibid version --long | grep -e version -e commit
-# v0.19.2
 
-# Initialize the node
-nibid init $MONIKER --chain-id $NIBIRU_CHAIN_ID
+nibid init $NIBIRU_MONIKER --chain-id $NIBIRU_CHAIN_ID
 
-# Download Genesis
 curl -s https://networks.itn.nibiru.fi/$NIBIRU_CHAIN_ID/genesis > $HOME/.nibid/config/genesis.json
-
-# Check Genesis
-shasum -a 256 $HOME/.nibid/config/genesis.json
-
-# e162ace87f5cbc624aa2a4882006312ef8762a8a549cf4a22ae35bba12482c72
+curl -s https://snapshots2-testnet.nodejumper.io/nibiru-testnet/addrbook.json > $HOME/.nibid/config/addrbook.json
 
 #=================================================
 
@@ -101,6 +91,44 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.nibid/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.nibid/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nibid/config/app.toml
 
+# Install Cosmovisor
+go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
+# Create directories
+mkdir -p ~/.nibid/cosmovisor
+mkdir -p ~/.nibid/cosmovisor/genesis
+mkdir -p ~/.nibid/cosmovisor/genesis/bin
+mkdir -p ~/.nibid/cosmovisor/upgrades
+# Copy the binary file to the cosmovisor folder
+cp `which nibid` ~/.nibid/cosmovisor/genesis/bin/nibid
+
+#=================================================
+
+sudo tee /etc/systemd/system/nibid.service > /dev/null <<EOF
+[Unit]
+Description=nibid daemon
+After=network-online.target
+[Service]
+User=$USER
+ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
+Restart=always
+RestartSec=3
+LimitNOFILE=infinity
+Environment="DAEMON_NAME=nibid"
+Environment="DAEMON_HOME=${HOME}/.nibid"
+Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
+Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#=================================================
+
+systemctl daemon-reload
+systemctl enable nibid
+systemctl restart nibid
+
+sleep 120
+
 #=================================================
 
 snapshot_interval=1000
@@ -113,27 +141,5 @@ cp $HOME/.nibid/data/priv_validator_state.json $HOME/.nibid/priv_validator_state
 nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book 
 curl https://snapshots2-testnet.nodejumper.io/nibiru-testnet/nibiru-itn-1_2023-04-02.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nibid
 mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validator_state.json 
-
-#=================================================
-
-tee /etc/systemd/system/nibid.service > /dev/null <<EOF
-[Unit]
-Description=nibid
-After=network-online.target
-
-[Service]
-User=$USER
-ExecStart=$(which nibid) start
-Restart=on-failure
-RestartSec=3
-LimitNOFILE=65535
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-#=================================================
-
-systemctl daemon-reload
-systemctl enable nibid
-systemctl restart nibid && journalctl -u nibid -f -o cat
+sudo systemctl start nibid
+sudo journalctl -u nibid -f --no-hostname -o cat

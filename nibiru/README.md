@@ -11,8 +11,7 @@ source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/
 # Create wallet
 nibid keys add wallet
 
-NIBIRU_ADDRESS=
-
+NIBIRU_ADDRESS=$(nibid keys show wallet --bech val -a)
 echo "export NIBIRU_ADDRESS="${NIBIRU_ADDRESS}"" >> $HOME/.bash_profile
 source $HOME/.bash_profile
 ```

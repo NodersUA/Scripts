@@ -64,7 +64,7 @@ nolusd version --long | grep -e version -e commit -e build
 nolusd init $MONIKER_NOLUS --chain-id $CHAIN_ID_NOLUS
 
 wget -O $HOME/.nolus/config/genesis.json "https://raw.githubusercontent.com/Nolus-Protocol/nolus-networks/main/testnet/nolus-rila/genesis.json"
-wget -O $HOME/.nolus/config/addrbook.json "https://share2.utsa.tech/nolus/addrbook.json"
+wget -O $HOME/.nolus/config/addrbook.json "https://raw.githubusercontent.com/obajay/nodes-Guides/main/Nolus/addrbook.json"
 
 
 echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1

@@ -56,7 +56,7 @@ cd $HOME
 git clone https://github.com/Nolus-Protocol/nolus-core
 cd nolus-core
 git fetch --all 
-git checkout v0.2.2-testnet
+git checkout v0.2.1-testnet
 make install
 sudo cp $HOME/go/bin/nolusd /usr/local/bin/nolusd
 nolusd version --long | grep -e version -e commit -e build
@@ -124,6 +124,10 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.nolus/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.nolus/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nolus/config/app.toml
 
+nolusd tendermint unsafe-reset-all --home $HOME/.nolus --keep-addr-book
+
+curl -L https://share2.utsa.tech/nolus/wasm-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus
+curl -L http://65.109.171.22:8000/nolus/snap-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus
 
 echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
 

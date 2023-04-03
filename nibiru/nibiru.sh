@@ -1,12 +1,5 @@
 #!/bin/bash
 
-if [ ! $NIBIRU_MONIKER ]; then
-    echo 'export NIBIRU_MONIKER='\"${1}\" >> $HOME/.bash_profile
-    echo 'source $HOME/.bashrc' >> $HOME/.bash_profile
-    source $HOME/.bash_profile
-    sleep 1
-fi
-
 # Update the repositories
 apt update && apt upgrade -y
 
@@ -26,7 +19,6 @@ fi
 # Set the variables
 
 # Come up with the name of your node and replace it instead <your_moniker>
-echo 'export NIBIRU_MONIKER='$NIBIRU_MONIKER >> $HOME/.bash_profile
 echo "export NIBIRU_CHAIN_ID=nibiru-itn-1" >> $HOME/.bash_profile
 echo "export NIBIRU_PORT=11" >> $HOME/.bash_profile
 source $HOME/.bash_profile
@@ -44,7 +36,7 @@ nibid version --long | grep -e version -e commit
 # v0.19.2
 
 # Initialize the node
-nibid init $NIBIRU_MONIKER --chain-id $NIBIRU_CHAIN_ID
+nibid init $MONIKER --chain-id $NIBIRU_CHAIN_ID
 
 # Download Genesis
 curl -s https://networks.itn.nibiru.fi/$NIBIRU_CHAIN_ID/genesis > $HOME/.nibid/config/genesis.json

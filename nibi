@@ -174,7 +174,7 @@ echo -e "To check sync status: \e[1m\e[35mnibid status 2>&1 | jq .SyncInfo\e[0m"
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
 nibid keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to NIBIRU_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
 echo -e "      \e[1m\e[35m NIBIRU_ADDRESS:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"

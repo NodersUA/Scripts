@@ -5,22 +5,14 @@ echo "==================================================="
 sleep 2
 
 # Update the repositories and developer packages
-sudo apt-get update \
-&& sudo apt-get install -y --no-install-recommends \
-tzdata \
-ca-certificates \
-build-essential \
-libssl-dev \
-libclang-dev \
-pkg-config \
-cmake
+sudo apt-get update && sudo apt-get install -y --no-install-recommends tzdata libprotobuf-dev ca-certificates build-essential libssl-dev libclang-dev pkg-config openssl protobuf-compiler git clang cmake -y
 
 # Install Rust
 sudo curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env
 
-# Create directory for SUI db and genesis state file
-mkdir -p /var/sui/db
+# Create a directory for database, genesis.blob, fullnode.yaml
+cd && mkdir $HOME/.sui
 
 # Clone GitHub SUI repository
 cd $HOME
@@ -31,14 +23,14 @@ git fetch upstream
 git checkout --track upstream/devnet
 
 # Make a copy of fullnode.yaml and update path to db and genesis state file.
-cp crates/sui-config/data/fullnode-template.yaml /var/sui/fullnode.yaml
-sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
+cp crates/sui-config/data/fullnode-template.yaml $HOME/.sui/fullnode.yaml
+sed -i.bak "s|db-path:.*|db-path: \"$HOME\/.sui\/db\"| ; s|genesis-file-location:.*|genesis-file-location: \"$HOME\/.sui\/genesis.blob\"| ; s|127.0.0.1|0.0.0.0|" $HOME/.sui/fullnode.yaml
 
 # Download Genesis
-wget -P /var/sui https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob
+wget -P $HOME/.sui https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob
 
 # Build SUI binaries
-cargo build --release
+cargo build --release -p sui-node -p sui
 mv ~/sui/target/release/sui-node /usr/local/bin/
 mv ~/sui/target/release/sui /usr/local/bin/
 
@@ -50,7 +42,7 @@ After=network.target
 [Service]
 User=$USER
 Type=simple
-ExecStart=/usr/local/bin/sui-node --config-path /var/sui/fullnode.yaml
+ExecStart=/usr/local/bin/sui-node --config-path $HOME/.sui/fullnode.yaml
 Restart=on-failure
 LimitNOFILE=65535
 
@@ -59,9 +51,8 @@ WantedBy=multi-user.target" > $HOME/suid.service
 
 mv $HOME/suid.service /etc/systemd/system/
 
-sudo tee <<EOF >/dev/null /etc/systemd/journald.conf
-Storage=persistent
-EOF
+ufw allow 9000
+ufw allow 9184
 
 # Start the node
 sudo systemctl restart systemd-journald

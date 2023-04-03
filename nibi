@@ -1,26 +1,56 @@
 #!/bin/bash
 
-# Update the repositories
-apt update && apt upgrade -y
+while true
+do
 
-# Install developer packages
-apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
+# Logo
 
-cd $HOME
-if ! [ -x "$(command -v go)" ]; then
-VER="1.20.2"
-wget "https://golang.org/dl/go$VER.linux-amd64.tar.gz"
-sudo tar -C /usr/local -xzf "go$VER.linux-amd64.tar.gz"
-rm -rf  "go$VER.linux-amd64.tar.gz"
-echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile
-source $HOME/.bash_profile
-fi
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
-# Set the variables
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+"Install Node")
+echo "*********************"
+echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+echo "*********************"
+echo -e "\e[1m\e[32m	Enter your NIBIRU_MONIKER:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read NIBIRU_MONIKER
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo 'export NIBIRU_MONIKER='$NIBIRU_MONIKER >> $HOME/.bash_profile
 echo "export NIBIRU_CHAIN_ID=nibiru-itn-1" >> $HOME/.bash_profile
 echo "export NIBIRU_PORT=11" >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
+echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
+#UPDATE APT
+sudo apt update && apt upgrade -y
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
+
+echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
+#INSTALL GO
+ver="1.20.1" && \
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
+sudo rm -rf /usr/local/go && \
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
+rm "go$ver.linux-amd64.tar.gz" && \
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
+source $HOME/.bash_profile && \
+go version
+
+echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
 #INSTALL
 cd $HOME
 git clone https://github.com/NibiruChain/nibiru
@@ -31,12 +61,13 @@ make install
 sudo cp ./build/nibid /usr/local/bin/ && cd $HOME
 nibid version --long | grep -e version -e commit
 
-nibid init $MONIKER --chain-id $NIBIRU_CHAIN_ID
+nibid init $NIBIRU_MONIKER --chain-id $NIBIRU_CHAIN_ID
 
 curl -s https://networks.itn.nibiru.fi/$NIBIRU_CHAIN_ID/genesis > $HOME/.nibid/config/genesis.json
 curl -s https://snapshots2-testnet.nodejumper.io/nibiru-testnet/addrbook.json > $HOME/.nibid/config/addrbook.json
 
-#=================================================
+
+echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
 
 # Set the ports
 
@@ -52,7 +83,9 @@ sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${NI
 external_address=$(wget -qO- eth0.me)
 sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${NIBIRU_PORT}656\"/" $HOME/.nibid/config/config.toml
 
-#=================================================
+
+echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
+
 
 # correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
 nibid config chain-id $NIBIRU_CHAIN_ID
@@ -91,6 +124,9 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.nibid/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.nibid/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nibid/config/app.toml
 
+
+echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
+
 # Install Cosmovisor
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 # Create directories
@@ -101,36 +137,92 @@ mkdir -p ~/.nibid/cosmovisor/upgrades
 # Copy the binary file to the cosmovisor folder
 cp `which nibid` ~/.nibid/cosmovisor/genesis/bin/nibid
 
-#=================================================
+echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
 
+# Create service file (One command)
 sudo tee /etc/systemd/system/nibid.service > /dev/null <<EOF
 [Unit]
 Description=nibid daemon
 After=network-online.target
+
 [Service]
 User=$USER
 ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
 Restart=always
 RestartSec=3
 LimitNOFILE=infinity
+
 Environment="DAEMON_NAME=nibid"
 Environment="DAEMON_HOME=${HOME}/.nibid"
 Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
 Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+
 [Install]
 WantedBy=multi-user.target
 EOF
 
-#=================================================
-
+# Start the node
 systemctl daemon-reload
 systemctl enable nibid
 systemctl restart nibid
 
-sleep 120
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u nibid -f -o cat\e[0m'
+echo -e "To check sync status: \e[1m\e[35mnibid status 2>&1 | jq .SyncInfo\e[0m"
 
-#=================================================
+echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
+nibid keys add wallet
+echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to NIBIRU_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo -e "      \e[1m\e[35m NIBIRU_ADDRESS:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read NIBIRU_ADDRESS
+echo "export NIBIRU_ADDRESS="${NIBIRU_ADDRESS}"" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+break
+;;
+"Synchronization via StateSync")
+sudo systemctl stop nibid
+
+cp $HOME/.nibid/data/priv_validator_state.json $HOME/.nibid/priv_validator_state.json.backup
+nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
+
+SNAP_RPC="https://nibiru-testnet.nodejumper.io:443"
+
+LATEST_HEIGHT=$(curl -s $SNAP_RPC/block | jq -r .result.block.header.height)
+BLOCK_HEIGHT=$((LATEST_HEIGHT - 2000))
+TRUST_HASH=$(curl -s "$SNAP_RPC/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
+
+echo $LATEST_HEIGHT $BLOCK_HEIGHT $TRUST_HASH
+
+PEERS="a1b96d1437fb82d3d77823ecbd565c6268f06e34@nibiru-testnet.nodejumper.io:27656"
+sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.nibid/config/config.toml
+
+sed -i 's|^enable *=.*|enable = true|' $HOME/.nibid/config/config.toml
+sed -i 's|^rpc_servers *=.*|rpc_servers = "'$SNAP_RPC,$SNAP_RPC'"|' $HOME/.nibid/config/config.toml
+sed -i 's|^trust_height *=.*|trust_height = '$BLOCK_HEIGHT'|' $HOME/.nibid/config/config.toml
+sed -i 's|^trust_hash *=.*|trust_hash = "'$TRUST_HASH'"|' $HOME/.nibid/config/config.toml
+
+mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validator_state.json
+
+curl -s https://snapshots2-testnet.nodejumper.io/nibiru-testnet/wasm.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nibid/data
+
+sudo systemctl restart nibid
+sudo journalctl -u nibid -f --no-hostname -o cat
+
+break
+;;
+"UPDATE")
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+nibid version
+
+break
+;;
+"Synchronization via SnapShot")
 snapshot_interval=1000
 sed -i.bak -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" ~/.nibid/config/app.toml
 # install dependencies, if needed
@@ -143,3 +235,23 @@ curl https://snapshots2-testnet.nodejumper.io/nibiru-testnet/nibiru-itn-1_2023-0
 mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validator_state.json 
 sudo systemctl start nibid
 sudo journalctl -u nibid -f --no-hostname -o cat
+
+break
+;;
+"Delete Node")
+sudo systemctl stop nibid && \
+sudo systemctl disable nibid && \
+rm /etc/systemd/system/nibid.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf nibid && \
+rm -rf .nibid && \
+rm -rf $(which nibid)
+
+break
+;;
+"Exit")
+exit
+esac
+done
+done

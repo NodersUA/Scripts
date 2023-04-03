@@ -124,42 +124,21 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.nolus/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.nolus/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nolus/config/app.toml
 
-nolusd tendermint unsafe-reset-all --home $HOME/.nolus --keep-addr-book
 
-curl -L https://share2.utsa.tech/nolus/wasm-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus
-curl -L http://65.109.171.22:8000/nolus/snap-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus
-
-echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
-
-# Install Cosmovisor
-go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
-# Create directories
-mkdir -p ~/.nolus/cosmovisor
-mkdir -p ~/.nolus/cosmovisor/genesis
-mkdir -p ~/.nolus/cosmovisor/genesis/bin
-mkdir -p ~/.nolus/cosmovisor/upgrades
-# Copy the binary file to the cosmovisor folder
-cp `which nolusd` ~/.nolus/cosmovisor/genesis/bin/nolusd
-
-echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[32m6. Service File--> \e[0m" && sleep 1
 
 # Create service file (One command)
 sudo tee /etc/systemd/system/nolusd.service > /dev/null <<EOF
 [Unit]
-Description=nolusd daemon
+Description=nolusd
 After=network-online.target
 
 [Service]
 User=$USER
-ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
-Restart=always
+ExecStart=$(which nolusd) start
+Restart=on-failure
 RestartSec=3
-LimitNOFILE=infinity
-
-Environment="DAEMON_NAME=nolusd"
-Environment="DAEMON_HOME=${HOME}/.nolus"
-Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
-Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target
@@ -202,19 +181,6 @@ break
 ;;
 "Synchronization via SnapShot")
 echo -e "      \e[1m\e[32m SOOOON\e[0m"
-systemctl stop nolusd
-
-cp $HOME/.nolus/data/priv_validator_state.json $HOME/.nolus/priv_validator_state.json.backup
-nolusd tendermint unsafe-reset-all --home $HOME/.nolus --keep-addr-book
-
-# download wasm if necessary
-curl -L https://share2.utsa.tech/nolus/wasm-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
-# download snapshot (data)
-curl -L http://65.109.171.22:8000/nolus/snap-nolus.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nolus --strip-components 2
-
-mv $HOME/.nolus/priv_validator_state.json.backup $HOME/.nolus/data/priv_validator_state.json
-
-systemctl restart nolusd && journalctl -u nolusd -f -o cat
 
 break
 ;;

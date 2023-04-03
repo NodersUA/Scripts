@@ -31,7 +31,7 @@ make install
 sudo cp ./build/nibid /usr/local/bin/ && cd $HOME
 nibid version --long | grep -e version -e commit
 
-nibid init $NIBIRU_MONIKER --chain-id $NIBIRU_CHAIN_ID
+nibid init $MONIKER --chain-id $NIBIRU_CHAIN_ID
 
 curl -s https://networks.itn.nibiru.fi/$NIBIRU_CHAIN_ID/genesis > $HOME/.nibid/config/genesis.json
 curl -s https://snapshots2-testnet.nodejumper.io/nibiru-testnet/addrbook.json > $HOME/.nibid/config/addrbook.json

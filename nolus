@@ -220,7 +220,7 @@ sudo systemctl disable nolusd && \
 rm /etc/systemd/system/nolusd.service && \
 sudo systemctl daemon-reload && \
 cd $HOME && \
-rm -rf nolus && \
+rm -rf nolus-core && \
 rm -rf .nolus && \
 rm -rf $(which nolusd)
 

@@ -26,9 +26,6 @@ if [ -z "$MONIKER" ]; then
   echo -e "\e[1m\e[34m		Lets's begin\e[0m"
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your DEFUND_MONIKER:\e[0m"
-  echo "_|-_|-_|-_|-_|-_|-_|"
-  read DEFUND_MONIKER
-  echo "_|-_|-_|-_|-_|-_|-_|"
 else
   DEFUND_MONIKER=$MONIKER
 fi
@@ -43,12 +40,12 @@ CHAIN_DENOM="ufetf"
 BINARY_NAME="defundd"
 BINARY_VERSION_TAG="v0.2.6"
 
-echo "$$$$$$$$$$$$$$$$$$$$$$"
+echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $DEFUND_MONIKER \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
 echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
-echo "$$$$$$$$$$$$$$$$$$$$$$"
+echo "*****************************"
 sleep 1
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1

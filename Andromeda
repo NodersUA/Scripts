@@ -158,7 +158,7 @@ echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE
 
 break
 ;;
-"Synchronization via StateSync")
+*/"Synchronization via StateSync")
 SNAP_RPC=http://andromedad.rpc.t.stavr.tech:4137
 peers="247f3c2bed475978af238d97be68226c1f084180@andromedad.peer.stavr.tech:4376"
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.andromedad/config/config.toml
@@ -174,7 +174,7 @@ s|^(seeds[[:space:]]+=[[:space:]]+).*$|\1\"\"|" $HOME/.andromedad/config/config.
 andromedad tendermint unsafe-reset-all --home $HOME/.andromedad
 systemctl restart andromedad && journalctl -u andromedad -f -o cat
 
-break
+break/*
 ;;
 "UPDATE")
 echo -e "      \e[1m\e[32m SOOOON\e[0m"

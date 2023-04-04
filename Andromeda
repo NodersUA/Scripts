@@ -23,9 +23,9 @@ case $opt in
 
 "Install Node")
 echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+echo -e "\e[1m\e[44m		Lets's begin\e[0m"
 echo "*********************"
-echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
+echo -e "\e[1m\e[42m	Enter your MONIKER_ANDROMEDA:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"
 read MONIKER_ANDROMEDA
 echo "_|-_|-_|-_|-_|-_|-_|"
@@ -34,12 +34,25 @@ echo "export CHAIN_ID_ANDROMEDA=galileo-3" >> $HOME/.bash_profile
 echo "export PORT_ANDROMEDA=15" >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
+CHAIN_ID="galileo-3"
+CHAIN_DENOM="uandr"
+BINARY_NAME="andromedad"
+BINARY_VERSION_TAG="galileo-3-v1.1.0-beta1"
+
+printLine
+echo -e "Node moniker:       ${CYAN}$MONIKER_ANDROMEDA${NC}"
+echo -e "Chain id:           ${CYAN}$CHAIN_ID${NC}"
+echo -e "Chain demon:        ${CYAN}$CHAIN_DENOM${NC}"
+echo -e "Binary version tag: ${CYAN}$BINARY_VERSION_TAG${NC}"
+printLine
+sleep 1
+
+echo -e "\e[1m\e[42m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
 sudo apt update && apt upgrade -y
 apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
-echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
+echo -e "        \e[1m\e[42m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
 ver="1.20.1" && \
 wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
@@ -50,7 +63,7 @@ echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile &
 source $HOME/.bash_profile && \
 go version
 
-echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
+echo -e "              \e[1m\e[42m3. Downloading and building binaries--> \e[0m" && sleep 1
 #INSTALL
 cd $HOME 
 git clone https://github.com/andromedaprotocol/andromedad.git
@@ -67,7 +80,7 @@ wget -O $HOME/.andromedad/config/genesis.json "https://raw.githubusercontent.com
 wget -O $HOME/.andromedad/config/addrbook.json "https://raw.githubusercontent.com/obajay/nodes-Guides/main/AndromedaProtocol/addrbook.json"
 
 
-echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[42m4. Set the ports--> \e[0m" && sleep 1
 
 sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${PORT_ANDROMEDA}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${PORT_ANDROMEDA}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${PORT_ANDROMEDA}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${PORT_ANDROMEDA}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${PORT_ANDROMEDA}660\"%" $HOME/.andromedad/config/config.toml
 sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${PORT_ANDROMEDA}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${PORT_ANDROMEDA}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${PORT_ANDROMEDA}7\"%" $HOME/.andromedad/config/app.toml
@@ -76,7 +89,7 @@ external_address=$(wget -qO- eth0.me)
 sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${PORT_ANDROMEDA}656\"/" $HOME/.andromedad/config/config.toml
 
 
-echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[42m5. Setup config--> \e[0m" && sleep 1
 
 
 andromedad config chain-id galileo-3
@@ -105,7 +118,7 @@ sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $
 indexer="null" && \
 sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.andromedad/config/config.toml
 
-echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[42m6. Cosmovisor--> \e[0m" && sleep 1
 
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 mkdir -p ~/.andromedad/cosmovisor
@@ -114,7 +127,7 @@ mkdir -p ~/.andromedad/cosmovisor/genesis/bin
 mkdir -p ~/.andromedad/cosmovisor/upgrades
 cp `which andromedad` ~/.andromedad/cosmovisor/genesis/bin/andromedad
 
-echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[42m7. Service File--> \e[0m" && sleep 1
 
 sudo tee /etc/systemd/system/andromedad.service > /dev/null <<EOF
 [Unit]
@@ -140,21 +153,21 @@ systemctl enable andromedad
 systemctl restart andromedad
 
 echo '=============== SETUP FINISHED ==================='
-echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u andromedad -f -o cat\e[0m'
-echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
+echo -e 'Congratulations:        \e[1m\e[42mSUCCESSFUL NODE INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[43mjournalctl -u andromedad -f -o cat\e[0m'
+echo -e "To check sync status: \e[1m\e[45mcurl -s localhost:26657/status\e[0m"
 
-echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
+echo -e "                     \e[1m\e[42m8. Wallet--> \e[0m" && sleep 1
 
 andromedad keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[41m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m WALLET_ANDROMEDA:\e[0m"
+echo -e "      \e[1m\e[45m WALLET_ANDROMEDA:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"
 read WALLET_ANDROMEDA
 echo "export WALLET_ANDROMEDA="${WALLET_ANDROMEDA}"" >> $HOME/.bash_profile
 source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[41m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 break
 ;;
@@ -177,7 +190,7 @@ systemctl restart andromedad && journalctl -u andromedad -f -o cat
 break/*
 ;;
 "UPDATE")
-echo -e "      \e[1m\e[32m SOOOON\e[0m"
+echo -e "      \e[1m\e[42m SOOOON\e[0m"
 andromedad version
 
 break

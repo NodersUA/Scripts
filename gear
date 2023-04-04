@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+if [ -z "$MONIKER" ]; then
+  echo -e "      \e[1m\e[35m SET YOUR MONIKER (node_name):\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+  source $HOME/.bash_profile
+fi
+
+apt update && apt upgrade -y
+
+cd $HOME && mkdir -p gear && cd $HOME/gear && \
+wget https://get.gear.rs/gear-nightly-linux-x86_64.tar.xz && \
+tar xvf gear-nightly-linux-x86_64.tar.xz && \
+rm gear-nightly-linux-x86_64.tar.xz && \
+sudo cp gear /usr/bin && \
+cd $HOME && rm -rf gear
+
+# Create service file
+sudo tee <<EOF >/dev/null /etc/systemd/system/gear-node.service
+[Unit]
+Description=Gear Node
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/
+ExecStart=/usr/bin/gear --name "$MONIKER" --telemetry-url "ws://telemetry-backend-shard.gear-tech.io:32001/submit 0"
+Restart=always
+RestartSec=3
+LimitNOFILE=10000
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start the node
+systemctl daemon-reload
+systemctl enable nibid
+systemctl restart gear-node && journalctl -u gear-node -f -o cat

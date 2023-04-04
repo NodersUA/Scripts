@@ -23,7 +23,7 @@ case $opt in
 "Install Node")
 if [ -z "$MONIKER" ]; then
   echo "*********************"
-  echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your DEFUND_MONIKER:\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
@@ -37,6 +37,19 @@ echo 'export DEFUND_MONIKER='$DEFUND_MONIKER >> $HOME/.bash_profile
 echo "export DEFUND_CHAIN_ID=orbit-alpha-1" >> $HOME/.bash_profile
 echo "export DEFUND_PORT=13" >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+CHAIN_ID="orbit-alpha-1"
+CHAIN_DENOM="ufetf"
+BINARY_NAME="defundd"
+BINARY_VERSION_TAG="v0.2.6"
+
+echo "$$$$$$$$$$$$$$$$$$$$$$"
+echo -e "\e[1m\e[32m Node moniker:       $DEFUND_MONIKER \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "$$$$$$$$$$$$$$$$$$$$$$"
+sleep 1
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -119,8 +132,6 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.defund/config/app.tom
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.defund/config/app.toml
 sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.defund/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.defund/config/app.toml
-indexer="null" && \
-sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.defund/config/config.toml
 
 echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
 
@@ -171,14 +182,14 @@ echo -e "To check sync status: \e[1m\e[35mcurl localhost:${DEFUND_PORT}657/statu
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
 defundd keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to DEFUND_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m DEFUND_ADDRESS:\e[0m"
+echo -e "      \e[1m\e[32m DEFUND_ADDRESS:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"
 read DEFUND_ADDRESS
 echo "export DEFUND_ADDRESS="${DEFUND_ADDRESS}"" >> $HOME/.bash_profile
 source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 break
 ;;

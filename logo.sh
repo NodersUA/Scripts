@@ -8,5 +8,5 @@ echo -e "\033[0;33m        " NNNNN NNN OO       OO DD     DD EEEEEE   RRRRRR   S
                       echo " NNN NNNNN OO       OO DD     DD EE       RR  RR       SS   UU      UU    AA     AA "  
                       echo " NNN  NNNN  OO     OO  DD    DD  EE       RR   RR      SS    UU    UU    AA       AA "  
                       echo " NNN   NNN   OOOOOOO   DDDDDD    EEEEEEEE RR    RR SSSSS      UUUUUU    AA         AA "   
-echo -e \033[00m]" 
+echo -e \033[00m" 
 

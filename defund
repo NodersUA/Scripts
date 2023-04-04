@@ -4,7 +4,6 @@ while true
 do
 
 # Logo
-
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
 # Menu
@@ -22,13 +21,18 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your DEFUND_MONIKER:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read DEFUND_MONIKER
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your DEFUND_MONIKER:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read DEFUND_MONIKER
+  echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  DEFUND_MONIKER=$MONIKER
+fi
+
 echo 'export DEFUND_MONIKER='$DEFUND_MONIKER >> $HOME/.bash_profile
 echo "export DEFUND_CHAIN_ID=orbit-alpha-1" >> $HOME/.bash_profile
 echo "export DEFUND_PORT=13" >> $HOME/.bash_profile
@@ -41,7 +45,7 @@ apt install curl iptables build-essential git wget jq make gcc nano tmux htop nv
 
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
-ver="1.20.1" && \
+ver="1.20.2" && \
 wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
 sudo rm -rf /usr/local/go && \
 sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \

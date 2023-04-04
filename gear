@@ -13,6 +13,8 @@ fi
 
 apt update && apt upgrade -y
 
+ufw allow 30333
+
 cd $HOME && mkdir -p gear && cd $HOME/gear && \
 wget https://get.gear.rs/gear-nightly-linux-x86_64.tar.xz && \
 tar xvf gear-nightly-linux-x86_64.tar.xz && \

@@ -26,9 +26,6 @@ echo "*********************"
 echo -e "\e[1m\e[34m		Lets's begin\e[0m"
 echo "*********************"
 echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read MONIKER_ANDROMEDA
-echo "_|-_|-_|-_|-_|-_|-_|"
 echo 'export MONIKER_ANDROMEDA='$MONIKER_ANDROMEDA >> $HOME/.bash_profile
 echo "export CHAIN_ID_ANDROMEDA=galileo-3" >> $HOME/.bash_profile
 echo "export PORT_ANDROMEDA=15" >> $HOME/.bash_profile
@@ -39,12 +36,12 @@ CHAIN_DENOM="uandr"
 BINARY_NAME="andromedad"
 BINARY_VERSION_TAG="galileo-3-v1.1.0-beta1"
 
-echo "$$$$$$$$$$$$$$$$$$$$$$"
+echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $MONIKER_ANDROMEDA \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
 echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
-echo "$$$$$$$$$$$$$$$$$$$$$$"
+echo "*****************************"
 sleep 1
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1

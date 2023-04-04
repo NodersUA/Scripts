@@ -23,16 +23,26 @@ case $opt in
 
 "Install Node")
 echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
+echo -e "\e[1m\e[34m		Lets's begin\e[0m"
 echo "*********************"
 echo -e "\e[1m\e[32m	Enter your MONIKER_DYMENSION:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read MONIKER_DYMENSION
-echo "_|-_|-_|-_|-_|-_|-_|"
 echo 'export MONIKER_DYMENSION='$MONIKER_DYMENSION >> $HOME/.bash_profile
 echo "export CHAIN_ID_DYMENSION=35-C" >> $HOME/.bash_profile
 echo "export PORT_DYMENSION=35" >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+CHAIN_ID="35-C"
+CHAIN_DENOM="udym"
+BINARY_NAME="dymd"
+BINARY_VERSION_TAG="v0.2.0-beta"
+
+echo "*****************************"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER_DYMENSION \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "*****************************"
+sleep 1
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -41,7 +51,7 @@ apt install curl iptables build-essential git wget jq make gcc nano tmux htop nv
 
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
-ver="1.20.1" && \
+ver="1.20.2" && \
 wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
 sudo rm -rf /usr/local/go && \
 sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
@@ -124,9 +134,6 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.dymension/config/app.
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.dymension/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.dymension/config/app.toml
 
-indexer="null"
-sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.dymension/config/config.toml
-
 
 echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
 
@@ -177,14 +184,14 @@ echo -e "To check sync status: \e[1m\e[35mdymd status 2>&1 | jq .SyncInfo\e[0m"
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
 dymd keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_DYMENSION to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
 echo -e "      \e[1m\e[35m WALLET_DYMENSION:\e[0m"
 echo "_|-_|-_|-_|-_|-_|-_|"
 read WALLET_DYMENSION
 echo "export WALLET_DYMENSION="${WALLET_DYMENSION}"" >> $HOME/.bash_profile
 source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 break
 ;;

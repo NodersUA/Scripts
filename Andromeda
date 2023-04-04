@@ -39,12 +39,12 @@ CHAIN_DENOM="uandr"
 BINARY_NAME="andromedad"
 BINARY_VERSION_TAG="galileo-3-v1.1.0-beta1"
 
-printLine
-echo -e "Node moniker:       ${CYAN}$MONIKER_ANDROMEDA${NC}"
-echo -e "Chain id:           ${CYAN}$CHAIN_ID${NC}"
-echo -e "Chain demon:        ${CYAN}$CHAIN_DENOM${NC}"
-echo -e "Binary version tag: ${CYAN}$BINARY_VERSION_TAG${NC}"
-printLine
+echo "$$$$$$$$$$$$$$$$$$$$$$"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER_ANDROMEDA \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "$$$$$$$$$$$$$$$$$$$$$$"
 sleep 1
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1

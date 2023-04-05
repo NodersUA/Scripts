@@ -121,7 +121,8 @@ PEERS="4d31b1306f36a7ac657a6ef0ba9fc14c0ac2bd7d@188.143.170.30:26656 ,
 1e7e1faf277d19df05facebe2a7e403044662234@213.239.217.52:37656 ,
 39e84967c02c7c04a0dd4bd426d484a65373d158@206.189.49.63:46656 ,
 1dcf307315f780d8287ce44c26fe57598bf51333@144.76.97.251:31656 ,
-6d9d3315f71e8557a2c0f9acc3b26765fa133adf@44.202.66.61:26656"
+6d9d3315f71e8557a2c0f9acc3b26765fa133adf@44.202.66.61:26656 ,
+26124ac249d9137bf436f270f58a71b0a146c8ee@rpc.realio-t.indonode.net:44656"
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.realio-network/config/config.toml
 
 # Set up filter for "bad" peers

@@ -26,6 +26,9 @@ echo "*********************"
 echo -e "\e[1m\e[34m		Lets's begin\e[0m"
 echo "*********************"
 echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read MONIKER_ANDROMEDA
+echo "_|-_|-_|-_|-_|-_|-_|"
 echo 'export MONIKER_ANDROMEDA='$MONIKER_ANDROMEDA >> $HOME/.bash_profile
 echo "export CHAIN_ID_ANDROMEDA=galileo-3" >> $HOME/.bash_profile
 echo "export PORT_ANDROMEDA=15" >> $HOME/.bash_profile

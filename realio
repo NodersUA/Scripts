@@ -76,7 +76,7 @@ realio-networkd version
 realio-networkd init $REALIO_NODE_NAME --chain-id $REALIO_CHAIN_ID
 
 # Download Genesis
-curl https://raw.githubusercontent.com/realiotech/testnets/blob/main/realionetwork_3300-2/genesis.json > $HOME/.realio-network/config/genesis.json
+curl https://raw.githubusercontent.com/realiotech/testnets/main/realionetwork_3300-2/genesis.json > $HOME/.realio-network/config/genesis.json
 
 # Check Genesis
 sha256sum $HOME/.realio-network/config/genesis.json 
@@ -101,8 +101,6 @@ sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:$
 
 echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
 
-
-Setup config
 # correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
 realio-networkd config chain-id $REALIO_CHAIN_ID
 

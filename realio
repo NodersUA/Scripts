@@ -40,7 +40,7 @@ BINARY_NAME="realio-networkd"
 BINARY_VERSION_TAG="v0.8.0-rc4"
 
 echo "*****************************"
-echo -e "\e[1m\e[32m Node moniker:       $MONIKER_DYMENSION \e[0m"
+echo -e "\e[1m\e[32m Node moniker:       $REALIO_NODE_NAME \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
 echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"

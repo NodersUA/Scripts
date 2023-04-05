@@ -193,13 +193,13 @@ echo -e "      \e[1m\e[32m SOOOON\e[0m"
 break
 ;;
 "Delete Node")
-sudo systemctl stop realio-network && \
-sudo systemctl disable realio-network && \
+sudo systemctl stop realio-networkd && \
+sudo systemctl disable realio-networkd && \
 rm /etc/systemd/system/realio-networkd.service && \
 sudo systemctl daemon-reload && \
 cd $HOME && \
-rm -rf realio-networkd && \
-rm -rf .realio-networkd && \
+rm -rf realio-network && \
+rm -rf .realio-network && \
 rm -rf $(which realio-networkd)
 
 break

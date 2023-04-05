@@ -76,14 +76,14 @@ realio-networkd version
 realio-networkd init $REALIO_NODE_NAME --chain-id $REALIO_CHAIN_ID
 
 # Download Genesis
-curl https://raw.githubusercontent.com/realiotech/testnets/master/realionetwork_3300-2/genesis.json > $HOME/.realio-network/config/genesis.json
+curl https://raw.githubusercontent.com/realiotech/testnets/blob/main/realionetwork_3300-2/genesis.json > $HOME/.realio-network/config/genesis.json
 
 
  > $HOME/.realio-network/config/genesis.json
 
 # Check Genesis
 sha256sum $HOME/.realio-network/config/genesis.json 
-# 695c10ad99740908d6a1efb2260b51eeeb1c496ac3e515fcf18933b51633d2e8
+# 7e3fef8375567d9cbffbbc9e32907c3c87143fd79ef2b6a1f13d232d89057ddc
 
 echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
 

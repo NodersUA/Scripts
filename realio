@@ -164,18 +164,6 @@ echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33msudo journalctl -u realio-networkd -f -o cat\e[0m'
 echo -e "To check sync status: \e[1m\e[35mrealio-networkd status 2>&1 | jq "{catching_up: .SyncInfo.catching_up}"\e[0m"
 
-echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
-
-realio-networkd keys add wallet
-echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to REALIO_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m REALIO_ADDRESS:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read REALIO_ADDRESS
-echo "export REALIO_ADDRESS=$REALIO_ADDRESS" >> $HOME/.bash_profile
-source $HOME/.bash_profile
-echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
-
 break
 ;;
 "Synchronization via StateSync")

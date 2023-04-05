@@ -1,0 +1,224 @@
+#!/bin/bash
+
+while true
+do
+
+# Logo
+
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+"Install Node")
+echo "*********************"
+echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+echo "*********************"
+echo -e "\e[1m\e[32m	Enter your REALIO_NODE_NAME:\e[0m"
+echo 'export REALIO_NODE_NAME='$REALIO_NODE_NAME>> $HOME/.bash_profile
+echo "export REALIO_CHAIN_ID=realionetwork_3300-2" >> $HOME/.bash_profile
+echo "export REALIO_PORT=12" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+CHAIN_ID="realionetwork_3300-2"
+CHAIN_DENOM="ario"
+BINARY_NAME="realio-networkd"
+BINARY_VERSION_TAG="v0.8.0-rc4"
+
+echo "*****************************"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER_DYMENSION \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "*****************************"
+sleep 1
+
+echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
+#UPDATE APT
+sudo apt update && apt upgrade -y
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
+
+echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
+#INSTALL GO
+ver="1.20.2" && \
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
+sudo rm -rf /usr/local/go && \
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
+rm "go$ver.linux-amd64.tar.gz" && \
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
+source $HOME/.bash_profile && \
+go version
+
+echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
+#INSTALL
+cd $HOME
+git clone https://github.com/realiotech/realio-network.git 
+cd realio-network
+git checkout v0.8.0-rc4
+make install
+sudo cp $HOME/go/bin/realio-networkd /usr/local/bin/realio-networkd
+realio-networkd version
+
+realio-networkd init $REALIO_NODE_NAME --chain-id $REALIO_CHAIN_ID
+
+# Download Genesis
+curl https://raw.githubusercontent.com/realiotech/testnets/blob/main/realionetwork_3300-2/genesis.json > $HOME/.realio-network/config/genesis.json
+
+# Check Genesis
+sha256sum $HOME/.realio-network/config/genesis.json 
+# 695c10ad99740908d6a1efb2260b51eeeb1c496ac3e515fcf18933b51633d2e8
+
+echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
+
+# Set the ports
+
+# config.toml
+sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${REALIO_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${REALIO_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${REALIO_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${REALIO_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${REALIO_PORT}660\"%" $HOME/.realio-network/config/config.toml
+
+# app.toml
+sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${REALIO_PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${REALIO_PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${REALIO_PORT}7\"%" $HOME/.realio-network/config/app.toml
+
+# client.toml
+sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${REALIO_PORT}657\"%" $HOME/.realio-network/config/client.toml
+
+external_address=$(wget -qO- eth0.me)
+sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${REALIO_PORT}656\"/" $HOME/.realio-network/config/config.toml
+
+
+echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
+
+
+Setup config
+# correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
+realio-networkd config chain-id $REALIO_CHAIN_ID
+
+# adjust if necessary keyring-backend в client.toml 
+realio-networkd config keyring-backend test
+
+realio-networkd config node tcp://localhost:${REALIO_PORT}657
+
+# Set the minimum price for gas
+sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0ario\"/" $HOME/.realio-network/config/app.toml
+
+# Add seeds/peers в config.toml
+SEEDS="ee23c6b2367c7df0d71a7def5540cda879a06dab@realio-testnet-seed.itrocket.net:23656"
+PEERS="1057d9a2d9231093b4aadf3015efff8293290859@realio-testnet-peer.itrocket.net:23656"
+sed -i -e "s/^seeds *=.*/seeds = \"$SEEDS\"/; s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.realio-network/config/config.toml
+
+# Set up filter for "bad" peers
+sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $HOME/.realio-network/config/config.toml
+
+# Set up pruning
+pruning="custom"
+pruning_keep_recent="100"
+pruning_keep_every="500"
+pruning_interval="10"
+sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.realio-network/config/app.toml
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.realio-network/config/app.toml
+sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.realio-network/config/app.toml
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.realio-network/config/app.toml
+
+echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
+
+# Install Cosmovisor
+go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
+# Create directories
+mkdir -p ~/.realio-network/cosmovisor
+mkdir -p ~/.realio-network/cosmovisor/genesis
+mkdir -p ~/.realio-network/cosmovisor/genesis/bin
+mkdir -p ~/.realio-network/cosmovisor/upgrades
+# Copy the binary file to the cosmovisor folder
+cp `which realio-networkd` ~/.realio-network/cosmovisor/genesis/bin/realio-networkd
+
+echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
+
+# Create service file (One command)
+sudo tee /etc/systemd/system/realio-networkd.service > /dev/null <<EOF
+[Unit]
+Description=realio-networkd daemon
+After=network-online.target
+
+[Service]
+User=$USER
+ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
+Restart=always
+RestartSec=3
+LimitNOFILE=infinity
+
+Environment="DAEMON_NAME=realio-networkd"
+Environment="DAEMON_HOME=${HOME}/.realio-network"
+Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
+Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start the node
+sudo systemctl daemon-reload
+sudo systemctl enable realio-networkd
+sudo systemctl start realio-networkd
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33msudo journalctl -u realio-networkd -f -o cat\e[0m'
+echo -e "To check sync status: \e[1m\e[35mrealio-networkd status 2>&1 | jq "{catching_up: .SyncInfo.catching_up}"\e[0m"
+
+echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
+
+realio-networkd keys add wallet
+echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to REALIO_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
+echo "_|-_|-_|-_|-_|-_|-_|"
+echo -e "      \e[1m\e[35m REALIO_ADDRESS:\e[0m"
+echo "_|-_|-_|-_|-_|-_|-_|"
+read REALIO_ADDRESS
+echo "export REALIO_ADDRESS=$REALIO_ADDRESS" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+break
+;;
+"Synchronization via StateSync")
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+
+break
+;;
+"UPDATE")
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+dymd version
+
+break
+;;
+"Synchronization via SnapShot")
+echo -e "      \e[1m\e[32m SOOOON\e[0m"
+
+break
+;;
+"Delete Node")
+sudo systemctl stop realio-networkd && \
+sudo systemctl disable realio-networkd && \
+rm /etc/systemd/system/realio-networkd.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf realio-networkd && \
+rm -rf .realio-networkd && \
+rm -rf $(which realio-networkd)
+
+break
+;;
+"Exit")
+exit
+esac
+done
+done

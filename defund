@@ -182,14 +182,13 @@ echo -e "To check sync status: \e[1m\e[35mcurl localhost:${DEFUND_PORT}657/statu
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
 defundd keys add wallet
-echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to DEFUND_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[32m DEFUND_ADDRESS:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read DEFUND_ADDRESS
-echo "export DEFUND_ADDRESS="${DEFUND_ADDRESS}"" >> $HOME/.bash_profile
-source $HOME/.bash_profile
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+DEFAND_ADDRESS=$(defundd keys show wallet -a)
+DEFAND_VALOPER=$(defundd keys show wallet --bech val -a)
+echo "export DEFAND_ADDRESS="${DEFAND_ADDRESS} >> $HOME/.bash_profile
+echo "export DEFAND_VALOPER="${DEFAND_VALOPER} >> $HOME/.bash_profile
+source $HOME/.bash_profile
 
 break
 ;;

@@ -21,7 +21,7 @@ select opt in "${options[@]}"
 do
 case $opt in
 
-`echo PS3='Select an action: '
+PS3='Select an action: '
 options=(
 "Enter '1' for Create new wallet" 
 "Enter '2' for Recover my wallet")

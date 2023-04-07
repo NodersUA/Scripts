@@ -175,7 +175,7 @@ do
       ;;
     *) echo "Invalid option. Please try again.";;
 # Execute the saved command
-${command}
+eval $command
 
 #andromedad keys add wallet
 echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"

@@ -33,7 +33,6 @@ if [ -z "$MONIKER" ]; then
 else
   REALIO_NODE_NAME=$MONIKER
 fi
-
 echo 'export REALIO_NODE_NAME='$REALIO_NODE_NAME>> $HOME/.bash_profile
 echo "export REALIO_CHAIN_ID=realionetwork_3300-2" >> $HOME/.bash_profile
 echo "export REALIO_PORT=12" >> $HOME/.bash_profile
@@ -51,6 +50,26 @@ echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
 echo "*****************************"
 sleep 1
+
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="realio-networkd keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="realio-networkd keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -163,6 +182,19 @@ echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33msudo journalctl -u realio-networkd -f -o cat\e[0m'
 echo -e "To check sync status: \e[1m\e[35mrealio-networkd status 2>&1 | jq "{catching_up: .SyncInfo.catching_up}"\e[0m"
+
+echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
+
+# Execute the saved command
+eval "$command"
+
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+REALIO_ADDRESS=$(realio-networkd keys show wallet -a)
+REALIO_VALOPER=$(realio-networkd keys show wallet --bech val -a)
+echo "export REALIO_ADDRESS="${REALIO_ADDRESS} >> $HOME/.bash_profile
+echo "export REALIO_VALOPER="${REALIO_VALOPER} >> $HOME/.bash_profile
+source $HOME/.bash_profile
 
 break
 ;;

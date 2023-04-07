@@ -22,17 +22,54 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your MONIKER_LAVA:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read MONIKER_LAVA
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER_LAVA:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read MONIKER_LAVA
+  echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  MONIKER_LAVA=$MONIKER
+fi
 echo 'export MONIKER_LAVA='$MONIKER_LAVA >> $HOME/.bash_profile
 echo "export CHAIN_ID_LAVA=lava-testnet-1" >> $HOME/.bash_profile
 echo "export PORT_LAVA=33" >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+CHAIN_ID="lava-testnet-1"
+CHAIN_DENOM="utlor"
+BINARY_NAME="lavad"
+BINARY_VERSION_TAG="v0.8.1"
+
+echo "*****************************"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER_LAVA \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "*****************************"
+sleep 1
+
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="lavad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="lavad keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -162,15 +199,16 @@ echo -e "To check sync status: \e[1m\e[35mcurl localhost:${PORT_LAVA}657/status\
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-lavad keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m WALLET_LAVA:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read WALLET_LAVA
-echo "export WALLET_LAVA="${WALLET_LAVA}"" >> $HOME/.bash_profile
+# Execute the saved command
+eval "$command"
+
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+WALLET_LAVA=$(defundd keys show wallet -a)
+VALOPER_LAVA=$(defundd keys show wallet --bech val -a)
+echo "export WALLET_LAVA="${WALLET_LAVA} >> $HOME/.bash_profile
+echo "export VALOPER_LAVA="${VALOPER_LAVA} >> $HOME/.bash_profile
 source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 break
 ;;

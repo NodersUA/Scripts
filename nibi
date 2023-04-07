@@ -22,17 +22,54 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your NIBIRU_MONIKER:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read NIBIRU_MONIKER
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your NIBIRU_MONIKER:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read NIBIRU_MONIKER
+  echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  NIBIRU_MONIKER=$MONIKER
+fi
 echo 'export NIBIRU_MONIKER='$NIBIRU_MONIKER >> $HOME/.bash_profile
 echo "export NIBIRU_CHAIN_ID=nibiru-itn-1" >> $HOME/.bash_profile
 echo "export NIBIRU_PORT=11" >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+CHAIN_ID="nibiru-itn-1"
+CHAIN_DENOM="unibi"
+BINARY_NAME="nibid"
+BINARY_VERSION_TAG="v0.19.2"
+
+echo "*****************************"
+echo -e "\e[1m\e[32m Node moniker:       $NIBIRU_MONIKER \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "*****************************"
+sleep 1
+
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="nibid keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="nibid keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -173,7 +210,18 @@ echo -e "To check sync status: \e[1m\e[35mnibid status 2>&1 | jq .SyncInfo\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-nibid keys add wallet
+# Execute the saved command
+eval "$command"
+
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+NIBIRU_ADDRESS=$(defundd keys show wallet -a)
+NIBIRU_VALOPER=$(defundd keys show wallet --bech val -a)
+echo "export NIBIRU_ADDRESS="${NIBIRU_ADDRESS} >> $HOME/.bash_profile
+echo "export NIBIRU_VALOPER="${NIBIRU_VALOPER} >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+
 echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to NIBIRU_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
 echo -e "      \e[1m\e[35m NIBIRU_ADDRESS:\e[0m"

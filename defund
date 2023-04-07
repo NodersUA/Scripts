@@ -51,6 +51,26 @@ echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
 echo "*****************************"
 sleep 1
 
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="andromedad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="andromedad keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
+
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
 sudo apt update && apt upgrade -y
@@ -181,7 +201,9 @@ echo -e "To check sync status: \e[1m\e[35mcurl localhost:${DEFUND_PORT}657/statu
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-defundd keys add wallet
+# Execute the saved command
+eval "$command"
+
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 DEFUND_ADDRESS=$(defundd keys show wallet -a)

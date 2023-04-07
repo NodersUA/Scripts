@@ -215,8 +215,8 @@ eval "$command"
 
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-NIBIRU_ADDRESS=$(defundd keys show wallet -a)
-NIBIRU_VALOPER=$(defundd keys show wallet --bech val -a)
+NIBIRU_ADDRESS=$(nibid keys show wallet -a)
+NIBIRU_VALOPER=$(nibid keys show wallet --bech val -a)
 echo "export NIBIRU_ADDRESS="${NIBIRU_ADDRESS} >> $HOME/.bash_profile
 echo "export NIBIRU_VALOPER="${NIBIRU_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile

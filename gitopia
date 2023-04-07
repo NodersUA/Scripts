@@ -44,7 +44,7 @@ BINARY_NAME="gitopia"
 BINARY_VERSION_TAG="v1.2.0"
 
 echo "*****************************"
-echo -e "\e[1m\e[32m Node moniker:       $MONIKER_ANDROMEDA \e[0m"
+echo -e "\e[1m\e[32m Node moniker:       $GITOPIA_NODE_NAME \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
 echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
@@ -57,11 +57,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="andromedad keys add wallet"
+      command="gitopiad keys add wallet"
       break
       ;;
     "Recover an old wallet")
-      command="andromedad keys add wallet --recover"
+      command="gitopiad keys add wallet --recover"
       break
       ;;
     "Exit")

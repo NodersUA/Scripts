@@ -184,10 +184,10 @@ echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 defundd keys add wallet
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-DEFAND_ADDRESS=$(defundd keys show wallet -a)
-DEFAND_VALOPER=$(defundd keys show wallet --bech val -a)
-echo "export DEFAND_ADDRESS="${DEFAND_ADDRESS} >> $HOME/.bash_profile
-echo "export DEFAND_VALOPER="${DEFAND_VALOPER} >> $HOME/.bash_profile
+DEFUND_ADDRESS=$(defundd keys show wallet -a)
+DEFUND_VALOPER=$(defundd keys show wallet --bech val -a)
+echo "export DEFUND_ADDRESS="${DEFUND_ADDRESS} >> $HOME/.bash_profile
+echo "export DEFUND_VALOPER="${DEFUND_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 break

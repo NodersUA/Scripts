@@ -57,11 +57,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="andromedad keys add wallet"
+      command="defundd keys add wallet"
       break
       ;;
     "Recover an old wallet")
-      command="andromedad keys add wallet --recover"
+      command="defundd keys add wallet --recover"
       break
       ;;
     "Exit")

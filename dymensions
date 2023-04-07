@@ -22,13 +22,17 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[34m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your MONIKER_DYMENSION:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
 read MONIKER_DYMENSION
 echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  MONIKER_ANDROMEDA=$MONIKER
+fi
 echo 'export MONIKER_DYMENSION='$MONIKER_DYMENSION >> $HOME/.bash_profile
 echo "export CHAIN_ID_DYMENSION=35-C" >> $HOME/.bash_profile
 echo "export PORT_DYMENSION=35" >> $HOME/.bash_profile
@@ -46,6 +50,26 @@ echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
 echo "*****************************"
 sleep 1
+
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="andromedad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="andromedad keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -186,15 +210,16 @@ echo -e "To check sync status: \e[1m\e[35mdymd status 2>&1 | jq .SyncInfo\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-dymd keys add wallet
-echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_DYMENSION to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m WALLET_DYMENSION:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read WALLET_DYMENSION
-echo "export WALLET_DYMENSION="${WALLET_DYMENSION}"" >> $HOME/.bash_profile
-source $HOME/.bash_profile
+# Execute the saved command
+eval "$command"
+
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+WALLET_DYMENSION=$(defundd keys show wallet -a)
+VALOPER_DYMENSION=$(defundd keys show wallet --bech val -a)
+echo "export WALLET_DYMENSION="${WALLET_DYMENSION} >> $HOME/.bash_profile
+echo "export VALOPER_DYMENSION="${VALOPER_DYMENSION} >> $HOME/.bash_profile
+source $HOME/.bash_profile
 
 break
 ;;

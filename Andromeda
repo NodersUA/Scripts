@@ -21,24 +21,6 @@ select opt in "${options[@]}"
 do
 case $opt in
 
-PS3="Select an action: "
-options=("Create a new wallet" 
-"Recover an old wallet")
-select opt in "${options[@]}"
-do
-  case $opt in
-    "Create a new wallet")
-      command="gitopiad keys add wallet"
-      break
-      ;;
-    "Recover an old wallet")
-      command="gitopiad keys add wallet --recover"
-      break
-      ;;
-    *) echo "Invalid option. Please try again.";;
-  esac
-done
-
 "Install Node")
 echo "*********************"
 echo -e "\e[1m\e[34m		Lets's begin\e[0m"
@@ -177,6 +159,21 @@ echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
+PS3="Select an action: "
+options=("Create a new wallet" 
+"Recover an old wallet")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="gitopiad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="gitopiad keys add wallet --recover"
+      break
+      ;;
+    *) echo "Invalid option. Please try again.";;
 # Execute the saved command
 $command
 
@@ -246,4 +243,6 @@ break
 exit
 esac
 done
+done
+esac
 done

@@ -21,6 +21,21 @@ select opt in "${options[@]}"
 do
 case $opt in
 
+echo "Do you want to create a new wallet or recover an old wallet? (Enter '1' for new wallet or '2' for old wallet)"
+read choice
+
+if [[ $Create new wallet ]]; then
+  # Save the command to create a new wallet
+  command="gitopiad keys add wallet"
+elif [[ $Recover my wallet ]]; then
+  # Save the command to recover an old wallet
+  command="gitopiad keys add wallet --recover"
+else
+  # Handle invalid input
+  echo "Invalid input. Please try again."
+  exit 1
+fi
+
 "Install Node")
 echo "*********************"
 echo -e "\e[1m\e[34m		Lets's begin\e[0m"
@@ -159,7 +174,10 @@ echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-andromedad keys add wallet
+# Execute the saved command
+$command
+
+#andromedad keys add wallet
 echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
 echo "_|-_|-_|-_|-_|-_|-_|"
 echo -e "      \e[1m\e[35m WALLET_ANDROMEDA:\e[0m"

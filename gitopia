@@ -22,17 +22,54 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your GITOPIA_NODE_NAME:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read GITOPIA_NODE_NAME
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your GITOPIA_NODE_NAME:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read GITOPIA_NODE_NAME
+  echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  GITOPIA_NODE_NAME=$MONIKER
+fi
 echo 'export GITOPIA_NODE_NAME='$GITOPIA_NODE_NAME >> $HOME/.bash_profile
 echo "export GITOPIA_CHAIN_ID=gitopia-janus-testnet-2" >> $HOME/.bash_profile
 echo "export GITOPIA_PORT=10" >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+CHAIN_ID="gitopia-janus-testnet-2"
+CHAIN_DENOM="utlor"
+BINARY_NAME="gitopia"
+BINARY_VERSION_TAG="v1.2.0"
+
+echo "*****************************"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER_ANDROMEDA \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "*****************************"
+sleep 1
+
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="andromedad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="andromedad keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -161,15 +198,16 @@ echo -e "To check sync status: \e[1m\e[35mgitopiad status 2>&1 | jq .SyncInfo\e[
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-gitopiad keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m GITOPIA_ADDRESS:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read GITOPIA_ADDRESS
-echo "export GITOPIA_ADDRESS="${GITOPIA_ADDRESS}"" >> $HOME/.bash_profile
+# Execute the saved command
+eval "$command"
+
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+GITOPIA_ADDRESS=$(gitopiad keys show wallet -a)
+GITOPIA_VALOPER=$(gitopiad keys show wallet --bech val -a)
+echo "export GITOPIA_VALOPER="${GITOPIA_VALOPER} >> $HOME/.bash_profile
+echo "export GITOPIA_VALOPER="${GITOPIA_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 break
 ;;

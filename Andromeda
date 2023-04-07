@@ -21,8 +21,12 @@ select opt in "${options[@]}"
 do
 case $opt in
 
+while true
+do
+
 PS3="Select an action: "
-options=("Create a new wallet" "Recover an old wallet")
+options=("Create a new wallet" 
+"Recover an old wallet")
 select opt in "${options[@]}"
 do
   case $opt in

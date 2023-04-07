@@ -159,9 +159,8 @@ echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-PS3="Select an action: "
-options=("Create a new wallet" 
-"Recover an old wallet")
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
 select opt in "${options[@]}"
 do
   case $opt in
@@ -173,9 +172,15 @@ do
       command="gitopiad keys add wallet --recover"
       break
       ;;
+    "Exit")
+      exit
+      ;;
     *) echo "Invalid option. Please try again.";;
+  esac
+done
+
 # Execute the saved command
-eval $command
+eval "$command"
 
 #andromedad keys add wallet
 echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"

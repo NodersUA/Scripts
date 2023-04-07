@@ -63,8 +63,8 @@ ojod version --long | grep -e version -e commit -e build
 
 ojod init $MONIKER_OJO --chain-id $CHAIN_ID_OJO
 
-curl -Ls https://rpc.devnet-n0.ojo-devnet.node.ojo.network/genesis > $HOME/.ojo/config/genesis.json
-curl -s https://snapshots2-testnet.nodejumper.io/ojo-testnet/addrbook.json > $HOME/.ojo/config/addrbook.json
+wget -O $HOME/.ojo/config/genesis.json "https://service.ppnv.space/ojo/genesis.json"
+wget -O $HOME/.ojo/config/addrbook.json "https://service.ppnv.space/ojo/addrbook.json"
 
 
 echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1

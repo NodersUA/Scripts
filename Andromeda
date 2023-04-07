@@ -22,13 +22,17 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[34m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read MONIKER_ANDROMEDA
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read DMONIKER_ANDROMEDA
+  echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  MONIKER_ANDROMEDA=$MONIKER
+fi
 echo 'export MONIKER_ANDROMEDA='$MONIKER_ANDROMEDA >> $HOME/.bash_profile
 echo "export CHAIN_ID_ANDROMEDA=galileo-3" >> $HOME/.bash_profile
 echo "export PORT_ANDROMEDA=15" >> $HOME/.bash_profile
@@ -182,15 +186,14 @@ echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 # Execute the saved command
 eval "$command"
 
-#andromedad keys add wallet
-echo -e "      \e[1m\e[31m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_ANDROMEDA to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m WALLET_ANDROMEDA:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read WALLET_ANDROMEDA
-echo "export WALLET_ANDROMEDA="${WALLET_ANDROMEDA}"" >> $HOME/.bash_profile
-source $HOME/.bash_profile
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+WALLET_ANDROMEDA=$(defundd keys show wallet -a)
+VALOPER_ANDROMEDA=$(defundd keys show wallet --bech val -a)
+echo "export WALLET_ANDROMEDA="${WALLET_ANDROMEDA} >> $HOME/.bash_profile
+echo "export VALOPER_ANDROMEDA="${VALOPER_ANDROMEDA} >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
 
 break
 ;;

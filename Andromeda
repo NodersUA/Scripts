@@ -28,7 +28,7 @@ if [ -z "$MONIKER" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
-  read DMONIKER_ANDROMEDA
+  read MONIKER_ANDROMEDA
   echo "_|-_|-_|-_|-_|-_|-_|"
 else
   MONIKER_ANDROMEDA=$MONIKER
@@ -193,7 +193,6 @@ VALOPER_ANDROMEDA=$(defundd keys show wallet --bech val -a)
 echo "export WALLET_ANDROMEDA="${WALLET_ANDROMEDA} >> $HOME/.bash_profile
 echo "export VALOPER_ANDROMEDA="${VALOPER_ANDROMEDA} >> $HOME/.bash_profile
 source $HOME/.bash_profile
-
 
 break
 ;;

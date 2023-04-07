@@ -47,6 +47,26 @@ echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
 echo "*****************************"
 sleep 1
 
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="gitopiad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="gitopiad keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
+
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
 sudo apt update && apt upgrade -y
@@ -158,26 +178,6 @@ echo -e 'To check logs:        \e[1m\e[33mjournalctl -u andromedad -f -o cat\e[0
 echo -e "To check sync status: \e[1m\e[35mcurl -s localhost:26657/status\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
-
-PS3='Select an action: '
-options=("Create a new wallet" "Recover an old wallet" "Exit")
-select opt in "${options[@]}"
-do
-  case $opt in
-    "Create a new wallet")
-      command="gitopiad keys add wallet"
-      break
-      ;;
-    "Recover an old wallet")
-      command="gitopiad keys add wallet --recover"
-      break
-      ;;
-    "Exit")
-      exit
-      ;;
-    *) echo "Invalid option. Please try again.";;
-  esac
-done
 
 # Execute the saved command
 eval "$command"

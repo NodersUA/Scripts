@@ -204,8 +204,8 @@ eval "$command"
 
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-WALLET_LAVA=$(defundd keys show wallet -a)
-VALOPER_LAVA=$(defundd keys show wallet --bech val -a)
+WALLET_LAVA=$(lavad keys show wallet -a)
+VALOPER_LAVA=$(lavad keys show wallet --bech val -a)
 echo "export WALLET_LAVA="${WALLET_LAVA} >> $HOME/.bash_profile
 echo "export VALOPER_LAVA="${VALOPER_LAVA} >> $HOME/.bash_profile
 source $HOME/.bash_profile

@@ -21,8 +21,11 @@ select opt in "${options[@]}"
 do
 case $opt in
 
-`echo "Do you want to create a new wallet or recover an old wallet? (Enter '1' for Create new wallet or '2' for Recover my wallet)"`
-read choice
+`echo PS3='Select an action: '
+options=(
+"Enter '1' for Create new wallet" 
+"Enter '2' for Recover my wallet")
+select opt in "${options[@]}"
 
 if [[ $Create new wallet ]]; then
   # Save the command to create a new wallet

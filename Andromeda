@@ -53,11 +53,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="gitopiad keys add wallet"
+      command="andromedad keys add wallet"
       break
       ;;
     "Recover an old wallet")
-      command="gitopiad keys add wallet --recover"
+      command="andromedad keys add wallet --recover"
       break
       ;;
     "Exit")

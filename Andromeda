@@ -21,23 +21,22 @@ select opt in "${options[@]}"
 do
 case $opt in
 
-PS3='Select an action: '
-options=(
-"Enter '1' for Create new wallet" 
-"Enter '2' for Recover my wallet")
+PS3="Select an action: "
+options=("Create a new wallet" "Recover an old wallet")
 select opt in "${options[@]}"
-
-if [[ $Create new wallet ]]; then
-  # Save the command to create a new wallet
-  command="gitopiad keys add wallet"
-elif [[ $Recover my wallet ]]; then
-  # Save the command to recover an old wallet
-  command="gitopiad keys add wallet --recover"
-else
-  # Handle invalid input
-  echo "Invalid input. Please try again."
-  exit 1
-fi
+do
+  case $opt in
+    "Create a new wallet")
+      command="gitopiad keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="gitopiad keys add wallet --recover"
+      break
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 "Install Node")
 echo "*********************"

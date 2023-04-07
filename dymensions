@@ -26,12 +26,12 @@ if [ -z "$MONIKER" ]; then
   echo "*********************"
   echo -e "\e[1m\e[34m		Lets's begin\e[0m"
   echo "*********************"
-  echo -e "\e[1m\e[32m	Enter your MONIKER_ANDROMEDA:\e[0m"
+  echo -e "\e[1m\e[32m	Enter your MONIKER_DYMENSION:\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
-read MONIKER_DYMENSION
-echo "_|-_|-_|-_|-_|-_|-_|"
+  read MONIKER_DYMENSION
+  echo "_|-_|-_|-_|-_|-_|-_|"
 else
-  MONIKER_ANDROMEDA=$MONIKER
+  MONIKER_DYMENSION=$MONIKER
 fi
 echo 'export MONIKER_DYMENSION='$MONIKER_DYMENSION >> $HOME/.bash_profile
 echo "export CHAIN_ID_DYMENSION=35-C" >> $HOME/.bash_profile
@@ -215,8 +215,8 @@ eval "$command"
 
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-WALLET_DYMENSION=$(defundd keys show wallet -a)
-VALOPER_DYMENSION=$(defundd keys show wallet --bech val -a)
+WALLET_DYMENSION=$(dymd keys show wallet -a)
+VALOPER_DYMENSION=$(dymd keys show wallet --bech val -a)
 echo "export WALLET_DYMENSION="${WALLET_DYMENSION} >> $HOME/.bash_profile
 echo "export VALOPER_DYMENSION="${VALOPER_DYMENSION} >> $HOME/.bash_profile
 source $HOME/.bash_profile

@@ -210,8 +210,8 @@ eval "$command"
 
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-WALLET_NOLUS=$(defundd keys show wallet -a)
-VALOPER_NOLUS=$(defundd keys show wallet --bech val -a)
+WALLET_NOLUS=$(nolusd keys show wallet -a)
+VALOPER_NOLUS=$(nolusd keys show wallet --bech val -a)
 echo "export WALLET_NOLUS="${WALLET_NOLUS} >> $HOME/.bash_profile
 echo "export VALOPER_NOLUS="${VALOPER_NOLUS} >> $HOME/.bash_profile
 source $HOME/.bash_profile

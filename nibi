@@ -221,16 +221,6 @@ echo "export NIBIRU_ADDRESS="${NIBIRU_ADDRESS} >> $HOME/.bash_profile
 echo "export NIBIRU_VALOPER="${NIBIRU_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to NIBIRU_ADDRESS to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m NIBIRU_ADDRESS:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read NIBIRU_ADDRESS
-echo "export NIBIRU_ADDRESS="${NIBIRU_ADDRESS}"" >> $HOME/.bash_profile
-source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
-
 break
 ;;
 "Synchronization via StateSync")

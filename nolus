@@ -157,6 +157,11 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.nolus/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.nolus/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.nolus/config/app.toml
 
+nolusd tendermint unsafe-reset-all --home $HOME/.nolus --keep-addr-book
+SNAP_NAME=$(curl -s https://snapshots1-testnet.nodejumper.io/nolus-testnet/info.json | jq -r .fileName)
+curl "https://snapshots1-testnet.nodejumper.io/nolus-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.nolus"
+
+
 echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
 
 # Install Cosmovisor

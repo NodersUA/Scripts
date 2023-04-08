@@ -94,7 +94,7 @@ rm -rf nolus-core
 git clone https://github.com/Nolus-Protocol/nolus-core
 cd nolus-core
 git fetch --all
-git checkout [latest version]
+git checkout v0.2.1
 make install
 sudo cp $HOME/go/bin/nolusd /usr/local/bin/nolusd
 nolusd version --long | grep -e version -e commit -e build
@@ -146,7 +146,7 @@ sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"10s\"/" $HOME/.nolus/config
 sed -i -e "s/^timeout_propose *=.*/timeout_propose = \"10s\"/" $HOME/.nolus/config/config.toml
 sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \"10s\"/" $HOME/.nolus/config/config.toml
 sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.nolus/config/config.toml
-sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "10s"/g' ~/.nolus/config/config.tom
+sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "10s"/g' ~/.nolus/config/config.toml
 
 # Set up pruning
 pruning="nothing"

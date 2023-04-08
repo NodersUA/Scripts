@@ -22,17 +22,54 @@ do
 case $opt in
 
 "Install Node")
-echo "*********************"
-echo -e "\e[1m\e[35m		Lets's begin\e[0m"
-echo "*********************"
-echo -e "\e[1m\e[32m	Enter your MONIKER_OJO:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read MONIKER_OJO
-echo "_|-_|-_|-_|-_|-_|-_|"
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER_OJO:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read MONIKER_OJO
+  echo "_|-_|-_|-_|-_|-_|-_|"
+else
+  MONIKER_OJO=$MONIKER
+fi
 echo 'export MONIKER_OJO='$MONIKER_OJO >> $HOME/.bash_profile
 echo "export CHAIN_ID_OJO=ojo-devnet" >> $HOME/.bash_profile
 echo "export PORT_OJO=37" >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+CHAIN_ID="ojo-devnet"
+CHAIN_DENOM="uojo"
+BINARY_NAME="ojod"
+BINARY_VERSION_TAG="v0.1.2"
+
+echo "*****************************"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER_OJO \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
+echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo "*****************************"
+sleep 1
+
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="ojod keys add wallet"
+      break
+      ;;
+    "Recover an old wallet")
+      command="ojod keys add wallet --recover"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
 
 echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 #UPDATE APT
@@ -173,15 +210,16 @@ echo -e "To check sync status: \e[1m\e[35mojod status 2>&1 | jq "{catching_up: .
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
-ojod keys add wallet
-echo -e "      \e[1m\e[32m!!!!!!!!!!!!!!!!!!!!!!!!!Сору your adress and input to WALLET_OJO to save it !!!!!!!!!!!!!!!!!!!!!!!!!\e[0m'"
-echo "_|-_|-_|-_|-_|-_|-_|"
-echo -e "      \e[1m\e[35m WALLET_OJO:\e[0m"
-echo "_|-_|-_|-_|-_|-_|-_|"
-read WALLET_OJO
-echo "export WALLET_OJO="${WALLET_OJO}"" >> $HOME/.bash_profile
+# Execute the saved command
+eval "$command"
+
+echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+
+WALLET_OJO=$(ojod keys show wallet -a)
+VALOPER_OJO=$(ojod keys show wallet --bech val -a)
+echo "export WALLET_OJO="${WALLET_OJO} >> $HOME/.bash_profile
+echo "export VALOPER_OJO="${VALOPER_OJO} >> $HOME/.bash_profile
 source $HOME/.bash_profile
-echo -e "      \e[1m\e[32m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 break
 ;;
@@ -216,7 +254,7 @@ break
 ;;
 "UPDATE")
 echo -e "      \e[1m\e[32m SOOOON\e[0m"
-nibid version
+ojod version
 
 break
 ;;

@@ -7,6 +7,10 @@ sleep 2
 # Update the repositories and developer packages
 sudo apt-get update && sudo apt-get install -y --no-install-recommends tzdata libprotobuf-dev ca-certificates build-essential libssl-dev libclang-dev pkg-config openssl protobuf-compiler git clang cmake -y
 
+# Open ports
+ufw allow 9000
+ufw allow 9184
+
 # Install Rust
 sudo curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env

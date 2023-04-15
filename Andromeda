@@ -117,7 +117,7 @@ echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
 
 
 andromedad config chain-id galileo-3
-andromedad config keyring-backend os
+andromedad config keyring-backend test
 andromedad config node tcp://localhost:${PORT_ANDROMEDA}657
 sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0025uandr\"/;" ~/.andromedad/config/app.toml
 peers=""
@@ -188,8 +188,8 @@ eval "$command"
 
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-WALLET_ANDROMEDA=$(defundd keys show wallet -a)
-VALOPER_ANDROMEDA=$(defundd keys show wallet --bech val -a)
+WALLET_ANDROMEDA=$(andromedad keys show wallet -a)
+VALOPER_ANDROMEDA=$(andromedad keys show wallet --bech val -a)
 echo "export WALLET_ANDROMEDA="${WALLET_ANDROMEDA} >> $HOME/.bash_profile
 echo "export VALOPER_ANDROMEDA="${VALOPER_ANDROMEDA} >> $HOME/.bash_profile
 source $HOME/.bash_profile

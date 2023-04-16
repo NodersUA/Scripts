@@ -212,6 +212,54 @@ echo "export DEFUND_ADDRESS="${DEFUND_ADDRESS} >> $HOME/.bash_profile
 echo "export DEFUND_VALOPER="${DEFUND_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
+# ===========================================================================================
+# Add discord bot
+apt install pip -y
+cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_defund
+cd df_defund && apt install pip -y
+pip install -r requirements.txt
+
+tee $HOME/df_defund/src/config/accounts.txt > /dev/null <<EOF
+$TOKEN
+EOF
+
+tee $HOME/df_defund/src/config/messages.txt > /dev/null <<EOF
+!faucet $DEFUND_ADDRESS
+EOF
+
+tee $HOME/df_defund/src/config/config.yaml > /dev/null <<EOF
+messages_file: config/messages.txt
+accounts_file: config/accounts.txt
+chat_id: 1038133368841310280
+
+use_proxy: False
+proxy_file: config/proxy.txt
+
+send_delay: 10
+
+log_send: True
+log_read: False
+log_tg: False
+
+read_delay: 0.1
+
+typing_delay_per_character: 2
+EOF
+
+tee $HOME/df_nibiru/db.sh > /dev/null <<EOF
+#!/bin/bash
+
+while true
+do
+    date
+    cd /root/df_nibiru/src/ && python3 main.py
+    sleep 86600
+    echo "===================================="
+done
+EOF
+
+chmod +x $HOME/df_defund/db.sh
+
 break
 ;;
 "Synchronization via StateSync")

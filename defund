@@ -246,13 +246,13 @@ read_delay: 0.1
 typing_delay_per_character: 2
 EOF
 
-tee $HOME/df_nibiru/db.sh > /dev/null <<EOF
+tee $HOME/df_defund/db.sh > /dev/null <<EOF
 #!/bin/bash
 
 while true
 do
     date
-    cd /root/df_nibiru/src/ && python3 main.py
+    cd /root/df_defund/src/ && python3 main.py
     sleep 86600
     echo "===================================="
 done

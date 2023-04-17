@@ -19,12 +19,9 @@ source $HOME/.cargo/env
 cd && mkdir $HOME/.sui
 
 # Clone GitHub SUI repository
-cd $HOME
-git clone https://github.com/MystenLabs/sui.git
-cd sui
-git remote add upstream https://github.com/MystenLabs/sui
-git fetch upstream
-git checkout --track upstream/testnet
+cd $HOME && git clone https://github.com/MystenLabs/sui.git
+cd sui && git pull
+git checkout testnet-0.31.0
 
 # Make a copy of fullnode.yaml and update path to db and genesis state file.
 cp $HOME/sui/crates/sui-config/data/fullnode-template.yaml $HOME/.sui/fullnode.yaml

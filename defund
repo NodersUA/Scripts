@@ -76,6 +76,13 @@ echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 sudo apt update && apt upgrade -y
 apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
+# Add discord bot
+apt install pip -y
+cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_defund
+cd df_defund && apt install pip -y
+pip install -r requirements.txt
+cd $HOME
+
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
 ver="1.20.2" && \
@@ -213,11 +220,7 @@ echo "export DEFUND_VALOPER="${DEFUND_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # ===========================================================================================
-# Add discord bot
-apt install pip -y
-cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_defund
-cd df_defund && apt install pip -y
-pip install -r requirements.txt
+# Settings discord bot
 
 tee $HOME/df_defund/src/config/accounts.txt > /dev/null <<EOF
 $TOKEN

@@ -354,8 +354,8 @@ transfer_wallet=$(nibid keys show transfer_wallet -a) && \
 BALANCE_QUERY="{\"balance\": {\"address\": \"$NIBIRU_ADDRESS\"}}" && \
 TRANSFER="{\"transfer\":{\"recipient\":\"$transfer_wallet\",\"amount\":\"50\"}}" && \
 sleep 5 && CONTRACT=$(nibid query wasm list-contract-by-code $code_id --output json | jq -r '.contracts[-1]') && \
-nibid tx wasm execute $CONTRACT $TRANSFER --gas-adjustment 1.2 --gas 8000000 --fees 200000unibi --from wallet --chain-id $NIBIRU_CHAIN_ID -y && \
-nibid query wasm contract-state smart $CONTRACT "$BALANCE_QUERY" --output json
+sleep 2 && nibid tx wasm execute $CONTRACT $TRANSFER --gas-adjustment 1.2 --gas 8000000 --fees 200000unibi --from wallet --chain-id $NIBIRU_CHAIN_ID -y && \
+sleep 5 && nibid query wasm contract-state smart $CONTRACT "$BALANCE_QUERY" --output json
 
 break
 ;;

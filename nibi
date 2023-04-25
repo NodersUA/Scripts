@@ -240,7 +240,7 @@ $TOKEN
 EOF
 
 tee $HOME/df_nibiru/src/config/messages.txt > /dev/null <<EOF
-$request $NIBIRU_ADDRESS
+\$request $NIBIRU_ADDRESS
 EOF
 
 tee $HOME/df_nibiru/src/config/config.yaml > /dev/null <<EOF

@@ -263,26 +263,6 @@ EOF
 
 chmod +x $HOME/df_defund/db.sh
 
-# Create df_defund service file (One command)
-sudo tee /etc/systemd/system/df_defund.service > /dev/null <<EOF
-[Unit]
-Description=df_defund Autorestart Service
-After=network.target
-
-[Service]
-User=$USER
-ExecStart=$HOME/df_defund/db.sh
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Start the df_defund autorestart service
-systemctl daemon-reload
-systemctl enable df_defund
-systemctl restart df_defund
-
 break
 ;;
 "Synchronization via StateSync")

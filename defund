@@ -278,6 +278,11 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
+# Start the df_defund autorestart service
+systemctl daemon-reload
+systemctl enable df_defund
+systemctl restart df_defund
+
 break
 ;;
 "Synchronization via StateSync")

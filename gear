@@ -38,7 +38,7 @@ do
       cd $HOME && rm -rf gear
 
       # Create service file
-      sudo tee /dev/null /etc/systemd/system/gear-node.service > /dev/null <<EOF
+      sudo tee /etc/systemd/system/gear-node.service > /dev/null <<EOF
       [Unit]
       Description=Gear Node
       After=network.target

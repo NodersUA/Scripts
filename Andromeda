@@ -214,7 +214,7 @@ EOF
 tee $HOME/df_andromeda/src/config/config.yaml > /dev/null <<EOF
 messages_file: config/messages.txt
 accounts_file: config/accounts.txt
-chat_id: 1038133368841310280
+chat_id: 1019632226113175552
 
 use_proxy: False
 proxy_file: config/proxy.txt

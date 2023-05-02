@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Update the repositories
+apt update && apt upgrade -y
+
+# Install developer packages
+sudo apt install curl ncdu htop git wget build-essential libssl-dev libpq-dev gcc make libssl-dev pkg-config npm expect -y
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker $USER
+docker --version
+
+# Install Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
+sudo chmod +x /usr/local/bin/docker-compose 
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+
+# Install NVM on Ubuntu
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
+source ~/.bashrc
+nvm install node
+
+# Download Repository and Set-up
+git clone --recurse-submodules https://github.com/Bundlr-Network/validator.git bundlr && cd bundlr
+cargo run --bin wallet-tool create > wallet.json
+BUNDLR_ADDRESS=$(cargo run --bin wallet-tool show-address --wallet ./wallet.json | jq -r '.address')
+echo "export BUNDLR_ADDRESS=<YOUR_ADDRESS>" >> ~/.bash_profile
+source ~/.bash_profile
+
+BUNDLER_PORT=42069
+BUNDLER_URL=https://testnet1.bundlr.network
+GW_CONTRACT="RkinCLBlY4L5GZFv8gCFcrygTyd5Xm91CzKlR6qxhKA"
+GW_ARWEAVE=https://arweave.testnet1.bundlr.network
+GW_STATE_ENDPOINT=https://faucet.testnet1.bundlr.network
+
+tee .env > /dev/null <<EOF
+PORT=$BUNDLER_PORT
+BUNDLER_URL=$BUNDLER_URL
+GW_CONTRACT=$GW_CONTRACT
+GW_ARWEAVE=$GW_ARWEAVE
+GW_STATE_ENDPOINT=$GW_STATE_ENDPOINT
+EOF
+
+cd $HOME/bundlr
+sed -i 's/source: ${PWD}\/wallet.json/source: .\/wallet.json/g' docker-compose.yml
+sudo docker-compose up -d
+
+sudo npm i -g @bundlr-network/testnet-cli@latest

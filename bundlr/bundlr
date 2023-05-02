@@ -58,4 +58,4 @@ sudo docker-compose up -d
 sudo npm i -g @bundlr-network/testnet-cli@latest
 
 echo "Please claim Testnet tokens in faucet https://bundlr.network/faucet"
-echo "\nYour bundlr address: $BUNDLR_ADDRESS"
+echo "Your bundlr address: $BUNDLR_ADDRESS"

@@ -230,7 +230,7 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-MESSAGE=\$request $CASCADIA_ADDRESS
+MESSAGE="\$request $CASCADIA_ADDRESS"
 DISKORD_DIR=df_cascadia
 CHAT_ID=1093030023012814948
 

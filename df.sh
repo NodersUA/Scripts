@@ -25,8 +25,8 @@ tee $HOME/$DISKORD_DIR/src/config/accounts.txt > /dev/null <<EOF
 $TOKEN
 EOF
 
+# \$request $ADDRESS = MESSAGE
 tee $HOME/$DISKORD_DIR/src/config/messages.txt > /dev/null <<EOF
-# \$request $ADDRESS
 $MESSAGE
 EOF
 

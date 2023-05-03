@@ -379,7 +379,7 @@ DISKORD_DIR=df_nibiru
 CHAT_ID=984840062871175219
 
 # import code from file
-curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh | bash
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
 
 break
 ;;

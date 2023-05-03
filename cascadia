@@ -230,9 +230,10 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-MESSAGE="\$request $CASCADIA_ADDRESS"
-DISKORD_DIR=df_cascadia
-CHAT_ID=1093030023012814948
+echo 'export MESSAGE="\$request $CASCADIA_ADDRESS"' >> $HOME/.bash_profile
+echo 'export DISKORD_DIR=df_cascadia' >> $HOME/.bash_profile
+echo 'export CHAT_ID=1093030023012814948' >> $HOME/.bash_profile
+source $HOME/.bash_profile
 
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)

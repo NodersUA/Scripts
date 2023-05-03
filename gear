@@ -85,7 +85,7 @@ while true; do
   echo \$h3
   if [ \$h3 -le \$h1 ] ||  [ \$h3 -le \$h2 ]; then
     rm -r /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
-    echo "rm substrate-wasmer-cache && sudo systemctl restart gear-node..."
+    echo "rm -r substrate-wasmer-cache && sudo systemctl restart gear-node..."
   fi
   sleep 20
 done

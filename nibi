@@ -374,9 +374,15 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-export MESSAGE="\$request $NIBIRU_ADDRESS"
-export DISKORD_DIR=df_nibiru
-export CHAT_ID=984840062871175219
+echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/.bash_profile
+echo 'export DISKORD_DIR=df_nibiru' >> $HOME/.bash_profile
+echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
+
+# export MESSAGE="\$request $NIBIRU_ADDRESS"
+# export DISKORD_DIR=df_nibiru
+# export CHAT_ID=984840062871175219
+
+source $HOME/.bash_profile
 
 # import code from file
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh | bash

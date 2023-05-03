@@ -15,106 +15,106 @@ options=(
 
 select opt in "${options[@]}"
 do
-  case $opt in
-    "Install Node")
+case $opt in
+"Install Node")
       
-      if [ -z "$MONIKER" ]; then
-        echo -e "      \e[1m\e[35m SET YOUR MONIKER (node_name):\e[0m"
-        echo "_|-_|-_|-_|-_|-_|-_|"
-        read MONIKER
-        echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
-        source $HOME/.bash_profile
-      fi
+if [ -z "$MONIKER" ]; then
+  echo -e "      \e[1m\e[35m SET YOUR MONIKER (node_name):\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+  source $HOME/.bash_profile
+fi
 
-      apt update && apt upgrade -y
+apt update && apt upgrade -y
 
-      ufw allow 30333
+ufw allow 30333
 
-      cd $HOME && mkdir -p gear && cd $HOME/gear && \
-      wget https://get.gear.rs/gear-nightly-linux-x86_64.tar.xz && \
-      tar xvf gear-nightly-linux-x86_64.tar.xz && \
-      rm gear-nightly-linux-x86_64.tar.xz && \
-      sudo cp gear /usr/bin && \
-      cd $HOME && rm -rf gear
+cd $HOME && mkdir -p gear && cd $HOME/gear && \
+wget https://get.gear.rs/gear-nightly-linux-x86_64.tar.xz && \
+tar xvf gear-nightly-linux-x86_64.tar.xz && \
+rm gear-nightly-linux-x86_64.tar.xz && \
+sudo cp gear /usr/bin && \
+cd $HOME && rm -rf gear
 
-      # Create service file
-      sudo tee /etc/systemd/system/gear-node.service > /dev/null <<EOF
-      [Unit]
-      Description=Gear Node
-      After=network.target
+# Create service file
+sudo tee /etc/systemd/system/gear-node.service > /dev/null <<EOF
+[Unit]
+Description=Gear Node
+After=network.target
 
-      [Service]
-      Type=simple
-      User=root
-      WorkingDirectory=/root/
-      ExecStart=/usr/bin/gear --name "$MONIKER" --telemetry-url "ws://telemetry-backend-shard.gear-tech.io:32001/submit 0"
-      Restart=always
-      RestartSec=3
-      LimitNOFILE=10000
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/
+ExecStart=/usr/bin/gear --name "$MONIKER" --telemetry-url "ws://telemetry-backend-shard.gear-tech.io:32001/submit 0"
+Restart=always
+RestartSec=3
+LimitNOFILE=10000
 
-      [Install]
-      WantedBy=multi-user.target
-      EOF
+[Install]
+WantedBy=multi-user.target
+EOF
 
-      # Start the node
-      systemctl daemon-reload
-      systemctl enable nibid
-      systemctl restart gear-node && journalctl -u gear-node -f -o cat
-      
-      break
-      ;;
+# Start the node
+systemctl daemon-reload
+systemctl enable nibid
+systemctl restart gear-node && journalctl -u gear-node -f -o cat
+
+break
+;;
     
-    "Autorestart")
+"Autorestart")
       
-      cd $HOME && mkdir -p scripts && cd scripts
+cd $HOME && mkdir -p scripts && cd scripts
       
-      tee $HOME/scripts/gear_autorestart.sh > /dev/null <<EOF
-      #!/bin/sh
-      while true; do
-        h1=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+')
-        echo "h1: $h1"
-        sleep 10
-        h2=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+')
-        echo "h2: $h2"
-        if [ "$(echo "$h1 $h2" | awk '{print ($1 == $2)}')" -eq 1 ]; then
-          sudo systemctl restart gear-node
-          echo "sudo systemctl restart gear-node..."
-        fi
-        sleep 60
-        h3=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+')
-        if [ "$(echo "$h1 $h3" | awk '{print ($1 == $2)}')" -eq 1 ]; then
-          rm /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
-          echo "rm substrate-wasmer-cache && sudo systemctl restart gear-node..."
-        fi
-        sleep 20
-      done
-      EOF
+tee $HOME/scripts/gear_autorestart.sh > /dev/null <<EOF
+#!/bin/sh
+while true; do
+  h1=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+')
+  echo "h1: $h1"
+  sleep 10
+  h2=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+')
+  echo "h2: $h2"
+  if [ "$(echo "$h1 $h2" | awk '{print ($1 == $2)}')" -eq 1 ]; then
+    sudo systemctl restart gear-node
+    echo "sudo systemctl restart gear-node..."
+  fi
+  sleep 60
+  h3=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+')
+  if [ "$(echo "$h1 $h3" | awk '{print ($1 == $2)}')" -eq 1 ]; then
+    rm /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
+    echo "rm substrate-wasmer-cache && sudo systemctl restart gear-node..."
+  fi
+  sleep 20
+done
+EOF
       
-      sudo tee /etc/systemd/system/gear_autorestart.service > /dev/null <<EOF
-      [Unit]
-      Description=Gear Autorestart Service
-      After=network.target
+sudo tee /etc/systemd/system/gear_autorestart.service > /dev/null <<EOF
+[Unit]
+Description=Gear Autorestart Service
+After=network.target
 
-      [Service]
-      User=$USER
-      ExecStart=$HOME/scripts/gear_autorestart.sh
-      Restart=always
+[Service]
+User=$USER
+ExecStart=$HOME/scripts/gear_autorestart.sh
+Restart=always
 
-      [Install]
-      WantedBy=multi-user.target
-      EOF
+[Install]
+WantedBy=multi-user.target
+EOF
       
-      systemctl daemon-reload
-      systemctl enable gear_autorestart
-      systemctl restart gear_autorestart
-      
-      break
-      ;;
-    "Exit")
-      exit
-      ;;
-    *) echo "Invalid option. Please try again.";;
-  esac
+systemctl daemon-reload
+systemctl enable gear_autorestart
+systemctl restart gear_autorestart
+
+break
+;;
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
   
 done
 done

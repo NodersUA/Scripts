@@ -84,7 +84,7 @@ while true; do
   h3=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
   echo \$h3
   if [ \$h3 -le \$h1 ] ||  [ \$h3 -le \$h2 ]; then
-    rm /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
+    rm -r /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
     echo "rm substrate-wasmer-cache && sudo systemctl restart gear-node..."
   fi
   sleep 20

@@ -78,13 +78,6 @@ echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 sudo apt update && apt upgrade -y
 apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
-## Add discord bot
-#apt install pip -y
-#cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_nibiru
-#cd df_nibiru && apt install pip -y
-#pip install -r requirements.txt
-#cd $HOME
-
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
 ver="1.20.1" && \
@@ -233,43 +226,6 @@ source $HOME/.bash_profile
 # Request tokens
 sleep 3
 curl -X POST -d '{"address": "'"$NIBIRU_ADDRESS"'", "coins": ["110000000unibi","100000000unusd","100000000uusdt"]}' "https://faucet.itn-1.nibiru.fi/"
-
-## ===========================================================================================
-## Settings discord bot
-#tee $HOME/df_nibiru/src/config/accounts.txt > /dev/null <<EOF
-#$TOKEN
-#EOF
-#
-#tee $HOME/df_nibiru/src/config/messages.txt > /dev/null <<EOF
-#\$request $NIBIRU_ADDRESS
-#EOF
-#
-#tee $HOME/df_nibiru/src/config/config.yaml > /dev/null <<EOF
-#messages_file: config/messages.txt
-#accounts_file: config/accounts.txt
-#chat_id: 984840062871175219
-#use_proxy: False
-#proxy_file: config/proxy.txt
-#send_delay: 10
-#log_send: True
-#log_read: False
-#log_tg: False
-#read_delay: 0.1
-#typing_delay_per_character: 2
-#EOF
-#
-#tee $HOME/df_nibiru/db.sh > /dev/null <<EOF
-##!/bin/bash
-#while true
-#do
-#    date
-#    cd /root/df_nibiru/src/ && python3 main.py
-#    sleep 86600
-#    echo "===================================="
-#done
-#EOF
-#
-#chmod +x $HOME/df_nibiru/db.sh
 
 break
 ;;

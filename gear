@@ -1,8 +1,23 @@
 #!/bin/bash
 
+while true
+do
+
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Autorestart"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+      
 if [ -z "$MONIKER" ]; then
   echo -e "      \e[1m\e[35m SET YOUR MONIKER (node_name):\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
@@ -23,7 +38,7 @@ sudo cp gear /usr/bin && \
 cd $HOME && rm -rf gear
 
 # Create service file
-sudo tee <<EOF >/dev/null /etc/systemd/system/gear-node.service
+sudo tee /etc/systemd/system/gear-node.service > /dev/null <<EOF
 [Unit]
 Description=Gear Node
 After=network.target
@@ -45,3 +60,66 @@ EOF
 systemctl daemon-reload
 systemctl enable nibid
 systemctl restart gear-node && journalctl -u gear-node -f -o cat
+
+break
+;;
+    
+"Autorestart")
+      
+cd $HOME && mkdir -p scripts && cd scripts
+      
+tee $HOME/scripts/gear_autorestart.sh > /dev/null <<EOF
+#!/bin/sh
+while true; do
+  h1=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
+  echo $h1
+  sleep 20
+  h2=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
+  echo \$h2
+  if [ \$h2 -le \$h1 ]; then
+    sudo systemctl restart gear-node
+    echo "sudo systemctl restart gear-node..."
+  fi
+  sleep 60
+  h3=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
+  echo \$h3
+  if [ \$h3 -le \$h1 ] ||  [ \$h3 -le \$h2 ]; then
+    rm /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
+    echo "rm substrate-wasmer-cache && sudo systemctl restart gear-node..."
+  fi
+  sleep 20
+done
+EOF
+
+chmod +x $HOME/scripts/gear_autorestart.sh
+      
+sudo tee /etc/systemd/system/gear_autorestart.service > /dev/null <<EOF
+[Unit]
+Description=Gear Autorestart Service
+After=network.target
+
+[Service]
+User=$USER
+ExecStart=$HOME/scripts/gear_autorestart.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+      
+systemctl daemon-reload
+systemctl enable gear_autorestart
+systemctl restart gear_autorestart
+
+echo "Check logs: journalctl -u gear_autorestart -f -o cat"
+
+break
+;;
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+  
+done
+done

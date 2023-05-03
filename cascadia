@@ -15,6 +15,7 @@ options=(
 "Synchronization via SnapShot"
 "UPDATE"
 "Delete Node"
+"Diskord Bot Autoinstall"
 "Exit")
 select opt in "${options[@]}"
 do
@@ -80,12 +81,6 @@ echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 sudo apt update && apt upgrade -y
 apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
-# Add discord bot
-apt install pip -y
-cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_$DIRECTORY
-cd df_$DIRECTORY && apt install pip -y
-pip install -r requirements.txt
-cd $HOME
 
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
@@ -203,50 +198,6 @@ echo "export CASCADIA_ADDRESS="${CASCADIA_ADDRESS} >> $HOME/.bash_profile
 echo "export CASCADIA_VALOPER="${CASCADIA_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-# ===========================================================================================
-# Settings discord bot
-
-tee $HOME/df_$DIRECTORY/src/config/accounts.txt > /dev/null <<EOF
-$TOKEN
-EOF
-
-tee $HOME/df_$DIRECTORY/src/config/messages.txt > /dev/null <<EOF
-\$request $CASCADIA_ADDRESS
-EOF
-
-tee $HOME/df_$DIRECTORY/src/config/config.yaml > /dev/null <<EOF
-messages_file: config/messages.txt
-accounts_file: config/accounts.txt
-chat_id: 1093030023012814948
-
-use_proxy: False
-proxy_file: config/proxy.txt
-
-send_delay: 10
-
-log_send: True
-log_read: False
-log_tg: False
-
-read_delay: 0.1
-
-typing_delay_per_character: 2
-EOF
-
-tee $HOME/df_$DIRECTORY/db.sh > /dev/null <<EOF
-#!/bin/bash
-
-while true
-do
-    date
-    cd /root/df_$DIRECTORY/src/ && python3 main.py
-    sleep 86600
-    echo "===================================="
-done
-EOF
-
-chmod +x $HOME/df_$DIRECTORY/db.sh
-
 break
 ;;
 "Synchronization via StateSync")
@@ -276,6 +227,20 @@ rm -rf $(which $BINARY_NAME)
 
 break
 ;;
+
+"Diskord Bot Autoinstall")
+# set variables
+echo 'export MESSAGE="\$request $CASCADIA_ADDRESS"' >> $HOME/.bash_profile
+echo 'export DISKORD_DIR=df_cascadia' >> $HOME/.bash_profile
+echo 'export CHAT_ID=1093030023012814948' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
+
+break
+;;
+
 "Exit")
 exit
 esac

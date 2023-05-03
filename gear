@@ -71,19 +71,19 @@ cd $HOME && mkdir -p scripts && cd scripts
 tee $HOME/scripts/gear_autorestart.sh > /dev/null <<EOF
 #!/bin/sh
 while true; do
-  h1=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
+  h1=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
   echo $h1
   sleep 20
-  h2=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
-  echo $h2
-  if [ $h2 -le $h1 ]; then
+  h2=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
+  echo \$h2
+  if [ \$h2 -le \$h1 ]; then
     sudo systemctl restart gear-node
     echo "sudo systemctl restart gear-node..."
   fi
   sleep 60
-  h3=$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
-  echo $h3
-  if [ $h3 -le $h1 ] ||  [ $h3 -le $h2 ]; then
+  h3=\$(sudo systemctl status gear-node | grep -Po '(?<=best: #)\d+' | head -1)
+  echo \$h3
+  if [ \$h3 -le \$h1 ] ||  [ \$h3 -le \$h2 ]; then
     rm /tmp/substrate-wasmer-cache && sudo systemctl restart gear-node
     echo "rm substrate-wasmer-cache && sudo systemctl restart gear-node..."
   fi

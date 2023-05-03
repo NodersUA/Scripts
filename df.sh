@@ -33,7 +33,7 @@ EOF
 tee $HOME/$DISKORD_DIR/src/config/config.yaml > /dev/null <<EOF
 messages_file: config/messages.txt
 accounts_file: config/accounts.txt
-chat_id: $CHAT_ID # 984840062871175219
+chat_id: $CHAT_ID
 use_proxy: False
 proxy_file: config/proxy.txt
 send_delay: 10

@@ -374,7 +374,7 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-MESSAGE=\$request $NIBIRU_ADDRESS
+MESSAGE="\$request $NIBIRU_ADDRESS"
 DISKORD_DIR=df_nibiru
 CHAT_ID=984840062871175219
 

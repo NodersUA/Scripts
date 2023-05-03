@@ -89,6 +89,8 @@ while true; do
   sleep 20
 done
 EOF
+
+chmod +x $HOME/scripts/gear_autorestart.sh
       
 sudo tee /etc/systemd/system/gear_autorestart.service > /dev/null <<EOF
 [Unit]

@@ -76,12 +76,12 @@ echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
 sudo apt update && apt upgrade -y
 apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
-# Add discord bot
-apt install pip -y
-cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_defund
-cd df_defund && apt install pip -y
-pip install -r requirements.txt
-cd $HOME
+# # Add discord bot
+# apt install pip -y
+# cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_defund
+# cd df_defund && apt install pip -y
+# pip install -r requirements.txt
+# cd $HOME
 
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
@@ -220,48 +220,48 @@ echo "export DEFUND_VALOPER="${DEFUND_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # ===========================================================================================
-# Settings discord bot
+# # Settings discord bot
 
-tee $HOME/df_defund/src/config/accounts.txt > /dev/null <<EOF
-$TOKEN
-EOF
-
-tee $HOME/df_defund/src/config/messages.txt > /dev/null <<EOF
-!faucet $DEFUND_ADDRESS
-EOF
-
-tee $HOME/df_defund/src/config/config.yaml > /dev/null <<EOF
-messages_file: config/messages.txt
-accounts_file: config/accounts.txt
-chat_id: 1038133368841310280
-
-use_proxy: False
-proxy_file: config/proxy.txt
-
-send_delay: 10
-
-log_send: True
-log_read: False
-log_tg: False
-
-read_delay: 0.1
-
-typing_delay_per_character: 2
-EOF
-
-tee $HOME/df_defund/db.sh > /dev/null <<EOF
-#!/bin/bash
-
-while true
-do
-    date
-    cd /root/df_defund/src/ && python3 main.py
-    sleep 86600
-    echo "===================================="
-done
-EOF
-
-chmod +x $HOME/df_defund/db.sh
+# tee $HOME/df_defund/src/config/accounts.txt > /dev/null <<EOF
+# $TOKEN
+# EOF
+# 
+# tee $HOME/df_defund/src/config/messages.txt > /dev/null <<EOF
+# !faucet $DEFUND_ADDRESS
+# EOF
+# 
+# tee $HOME/df_defund/src/config/config.yaml > /dev/null <<EOF
+# messages_file: config/messages.txt
+# accounts_file: config/accounts.txt
+# chat_id: 1038133368841310280
+# 
+# use_proxy: False
+# proxy_file: config/proxy.txt
+# 
+# send_delay: 10
+# 
+# log_send: True
+# log_read: False
+# log_tg: False
+# 
+# read_delay: 0.1
+# 
+# typing_delay_per_character: 2
+# EOF
+# 
+# tee $HOME/df_defund/db.sh > /dev/null <<EOF
+# #!/bin/bash
+# 
+# while true
+# do
+#     date
+#     cd /root/df_defund/src/ && python3 main.py
+#     sleep 86600
+#     echo "===================================="
+# done
+# EOF
+# 
+# chmod +x $HOME/df_defund/db.sh
 
 break
 ;;
@@ -303,6 +303,20 @@ rm -rf $(which defundd)
 
 break
 ;;
+
+"Diskord Bot Autoinstall")
+# set variables
+echo 'export MESSAGE="\$request $DEFUND_ADDRESS"' >> $HOME/.bash_profile
+echo 'export DISKORD_DIR=df_defund' >> $HOME/.bash_profile
+echo 'export CHAT_ID=1038133368841310280' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
+
+break
+;;
+
 "Exit")
 exit
 esac

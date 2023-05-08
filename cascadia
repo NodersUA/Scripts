@@ -43,7 +43,7 @@ source $HOME/.bash_profile
 CHAIN_ID=$CASCADIA_CHAIN_ID
 CHAIN_DENOM="aCC"
 BINARY_NAME="cascadiad"
-BINARY_VERSION_TAG="v0.1.1"
+BINARY_VERSION_TAG="v0.1.2"
 DIRECTORY=cascadia
 HIDDEN_DIRECTORY=".cascadiad"
 PORT=$CASCADIA_PORT
@@ -99,7 +99,7 @@ echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m"
 #INSTALL
 cd $HOME
 git clone https://github.com/cascadiafoundation/cascadia && cd $DIRECTORY
-git checkout v0.1.1
+git checkout $BINARY_VERSION_TAG
 make install
 $BINARY_NAME version --long | grep -e version -e commit
 
@@ -206,7 +206,13 @@ echo -e "      \e[1m\e[32m SOOOON\e[0m"
 break
 ;;
 "UPDATE")
-echo -e "      \e[1m\e[32m SOOOON\e[0m"
+systemctl stop cascadiad
+cd ~/cascadia
+git fetch
+git checkout v0.1.2
+make install
+systemctl restart cascadiad
+journalctl -u cascadiad -f --no-hostname -o cat
 
 break
 ;;

@@ -76,5 +76,5 @@ EOF
 
 # Start Diskord service file
 systemctl daemon-reload
-systemctl enable $DISKORD_DIR
-systemctl restart $DISKORD_DIR
+#systemctl enable $DISKORD_DIR
+#systemctl restart $DISKORD_DIR

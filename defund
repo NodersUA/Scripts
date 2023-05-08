@@ -15,6 +15,7 @@ options=(
 "Synchronization via SnapShot"
 "UPDATE"
 "Delete Node"
+"Diskord Bot Autoinstall"
 "Exit")
 select opt in "${options[@]}"
 do

@@ -307,7 +307,7 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-echo 'export MESSAGE="\$request $DEFUND_ADDRESS"' >> $HOME/.bash_profile
+echo 'export MESSAGE="!faucet $DEFUND_ADDRESS"' >> $HOME/.bash_profile
 echo 'export DISKORD_DIR=df_defund' >> $HOME/.bash_profile
 echo 'export CHAT_ID=1038133368841310280' >> $HOME/.bash_profile
 source $HOME/.bash_profile

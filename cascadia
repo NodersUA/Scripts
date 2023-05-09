@@ -42,11 +42,17 @@ source $HOME/.bash_profile
 
 CHAIN_ID=$CASCADIA_CHAIN_ID
 CHAIN_DENOM="aCC"
-BINARY_NAME="cascadiad"
 BINARY_VERSION_TAG="v0.1.2"
-DIRECTORY=cascadia
-HIDDEN_DIRECTORY=".cascadiad"
 PORT=$CASCADIA_PORT
+
+# export temporary vars to .bash_profile
+echo 'export BINARY_NAME="cascadiad"' >> $HOME/.bash_profile
+echo 'export DIRECTORY=cascadia' >> $HOME/.bash_profile
+echo 'export HIDDEN_DIRECTORY=".cascadiad"' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# set up cosmos_autorestart (disabled)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
 
 echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $CASCADIA_MONIKER \e[0m"

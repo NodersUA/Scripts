@@ -34,7 +34,7 @@ nvm install node
 git clone --recurse-submodules https://github.com/Bundlr-Network/validator.git bundlr && cd bundlr
 cargo run --bin wallet-tool create > wallet.json
 BUNDLR_ADDRESS=$(cargo run --bin wallet-tool show-address --wallet ./wallet.json | jq -r '.address')
-echo "export BUNDLR_ADDRESS=<YOUR_ADDRESS>" >> ~/.bash_profile
+echo "export BUNDLR_ADDRESS="$BUNDLR_ADDRESS >> ~/.bash_profile
 source ~/.bash_profile
 
 BUNDLER_PORT=42069

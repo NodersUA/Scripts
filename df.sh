@@ -1,7 +1,9 @@
 #!/bin/bash
 
 cd $HOME
-if [ ! -d "$DISKORD_DIR"  ]; then
+if [ -d "$DISKORD_DIR" ]; then
+    rm -rf "$DISKORD_DIR"
+fi
 
 if [ -z "$TOKEN" ]; then
   echo "*********************"
@@ -56,8 +58,6 @@ done
 EOF
 
 chmod +x $HOME/$DISKORD_DIR/db.sh
-
-fi
 
 # Create Diskord service file (One command)
 sudo tee /etc/systemd/system/$DISKORD_DIR.service > /dev/null <<EOF

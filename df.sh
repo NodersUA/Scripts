@@ -48,11 +48,15 @@ EOF
 
 tee $HOME/$DISKORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
+
+sleep $(shuf -i 0-9999 -n 1) # 3 години рандома
+
 while true
 do
     date
     cd $HOME/$DISKORD_DIR/src/ && python3 main.py
     sleep 86600
+    sleep $(shuf -i 0-1800 -n 1) # Півгодини рандома
     echo "===================================="
 done
 EOF

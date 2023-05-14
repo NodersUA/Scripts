@@ -13,15 +13,15 @@ tee $HOME/scripts/$DIRECTORY_autorestart.sh > /dev/null <<EOF
 #!/bin/sh
 
 while true; do
-  h1=$($BINARY_NAME status 2>&1 | jq ."SyncInfo"."latest_block_height")
-  echo "h1: $h1"
+  h1=\$($BINARY_NAME status 2>&1 | jq ."SyncInfo"."latest_block_height")
+  echo "h1: \$h1"
 
   sleep 10
 
-  h2=$($BINARY_NAME status 2>&1 | jq ."SyncInfo"."latest_block_height")
-  echo "h2: $h2"
+  h2=\$($BINARY_NAME status 2>&1 | jq ."SyncInfo"."latest_block_height")
+  echo "h2: \$h2"
 
-  if [ "$(echo "$h1 $h2" | awk '{print ($1 == $2)}')" -eq 1 ]; then
+  if [ "\$(echo "\$h1 \$h2" | awk '{print (\$1 == \$2)}')" -eq 1 ]; then
     systemctl restart $BINARY_NAME
     echo "systemctl restart $BINARY_NAME"
   fi

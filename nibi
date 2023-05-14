@@ -17,7 +17,6 @@ options=(
 "UPDATE"
 "Delete Node"
 "Diskord Bot Autoinstall"
-"Autorestart"
 "Smart Contract Tasks"
 "Exit")
 select opt in "${options[@]}"
@@ -343,17 +342,6 @@ break
 # set variables
 echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/.bash_profile
 echo 'export DISKORD_DIR=df_nibiru' >> $HOME/.bash_profile
-echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
-source $HOME/.bash_profile
-
-# import code from file
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
-
-break
-;;
-
-"Autorestart")
-echo 'export DIRECTORY=nibiru' >> $HOME/.bash_profile
 echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 

@@ -16,8 +16,9 @@ options=(
 "Synchronization via SnapShot"
 "UPDATE"
 "Delete Node"
-"Smart Contract Tasks"
 "Diskord Bot Autoinstall"
+"Autorestart"
+"Smart Contract Tasks"
 "Exit")
 select opt in "${options[@]}"
 do
@@ -42,8 +43,17 @@ source $HOME/.bash_profile
 
 CHAIN_ID="nibiru-itn-1"
 CHAIN_DENOM="unibi"
-BINARY_NAME="nibid"
 BINARY_VERSION_TAG="v0.19.2"
+PORT=$NIBIRU_PORT
+
+# export temporary vars to .bash_profile
+echo 'export BINARY_NAME="nibid"' >> $HOME/.bash_profile
+echo 'export DIRECTORY=nibiru' >> $HOME/.bash_profile
+echo 'export HIDDEN_DIRECTORY=".nibid"' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# set up cosmos_autorestart (disabled)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
 
 echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $NIBIRU_MONIKER \e[0m"
@@ -59,11 +69,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="nibid keys add wallet"
+      command="$BINARY_NAME keys add wallet"
       break
       ;;
     "Recover an old wallet")
-      command="nibid keys add wallet --recover"
+      command="$BINARY_NAME keys add wallet --recover"
       break
       ;;
     "Exit")
@@ -80,22 +90,23 @@ apt install curl iptables build-essential git wget jq make gcc nano tmux htop nv
 
 echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
 #INSTALL GO
-ver="1.20.1" && \
+if [ "$(go version)" != "go version go1.20.2 linux/amd64" ]; then \
+ver="1.20.2" && \
 wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
 sudo rm -rf /usr/local/go && \
 sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
 rm "go$ver.linux-amd64.tar.gz" && \
 echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
-source $HOME/.bash_profile && \
+source $HOME/.bash_profile ; \
+fi
 go version
 
 echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
 #INSTALL
 cd $HOME
-git clone https://github.com/NibiruChain/nibiru
-cd nibiru
+git clone https://github.com/NibiruChain/nibiru && cd $DIRECTORY
 git fetch --all
-git checkout v0.19.2
+git checkout $BINARY_VERSION_TAG
 make install
 sudo cp ./build/nibid /usr/local/bin/ && cd $HOME
 nibid version --long | grep -e version -e commit
@@ -332,6 +343,17 @@ break
 # set variables
 echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/.bash_profile
 echo 'export DISKORD_DIR=df_nibiru' >> $HOME/.bash_profile
+echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
+
+break
+;;
+
+"Autorestart")
+echo 'export DIRECTORY=nibiru' >> $HOME/.bash_profile
 echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 

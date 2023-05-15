@@ -9,7 +9,7 @@ echo "BINARY_NAME: $BINARY_NAME"
 mkdir -p "$HOME/scripts"
 
 # write nibiru_autorestart.sh to scripts/
-tee $HOME/scripts/$DIRECTORY_autorestart.sh > /dev/null <<EOF
+tee $HOME/scripts/${DIRECTORY}_autorestart.sh > /dev/null <<EOF
 #!/bin/sh
 
 while true; do
@@ -32,19 +32,19 @@ done
 EOF
 
 # set run script rights
-chmod +x $HOME/scripts/$DIRECTORY_autorestart.sh
+chmod +x $HOME/scripts/${DIRECTORY}_autorestart.sh
 # avoid error <BINARY_NAME> command not found
 sudo cp $HOME/go/bin/$BINARY_NAME /usr/local/bin/
 
 # Create <DIRECTORY>_autorestart service file (One command)
-sudo tee /etc/systemd/system/$DIRECTORY_autorestart.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/${DIRECTORY}_autorestart.service > /dev/null <<EOF
 [Unit]
 Description=$DIRECTORY Autorestart Service
 After=network.target
 
 [Service]
 User=$USER
-ExecStart=$HOME/scripts/$DIRECTORY_autorestart.sh
+ExecStart=$HOME/scripts/${DIRECTORY}_autorestart.sh
 Restart=always
 
 [Install]
@@ -53,6 +53,6 @@ EOF
 
 # Start <DIRECTORY>_autorestart service file
 systemctl daemon-reload
-# systemctl enable $DIRECTORY_autorestart.service
-# systemctl restart $DIRECTORY_autorestart.service
+# systemctl enable ${DIRECTORY}_autorestart.service
+# systemctl restart ${DIRECTORY}_autorestart.service
 

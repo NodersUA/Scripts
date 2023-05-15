@@ -41,8 +41,17 @@ source $HOME/.bash_profile
 
 CHAIN_ID="orbit-alpha-1"
 CHAIN_DENOM="ufetf"
-BINARY_NAME="defundd"
+# BINARY_NAME="defundd"
 BINARY_VERSION_TAG="v0.2.6"
+
+# export temporary vars to .bash_profile
+echo 'export BINARY_NAME="defundd"' >> $HOME/.bash_profile
+echo 'export DIRECTORY=defund' >> $HOME/.bash_profile
+echo 'export HIDDEN_DIRECTORY=".defund"' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# set up cosmos_autorestart (disabled)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
 
 echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $DEFUND_MONIKER \e[0m"
@@ -263,6 +272,11 @@ source $HOME/.bash_profile
 # EOF
 # 
 # chmod +x $HOME/df_defund/db.sh
+
+# Remove temp .bash_profile variables
+sed -i '/BINARY_NAME/d' ~/.bash_profile
+sed -i '/DIRECTORY/d' ~/.bash_profile
+sed -i '/HIDDEN_DIRECTORY/d' ~/.bash_profile
 
 break
 ;;

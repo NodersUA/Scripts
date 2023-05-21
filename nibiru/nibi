@@ -52,9 +52,6 @@ echo 'export DIRECTORY=nibiru' >> $HOME/.bash_profile
 echo 'export HIDDEN_DIRECTORY=".nibid"' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-# set up cosmos_autorestart (disabled)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
-
 echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $NIBIRU_MONIKER \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
@@ -215,6 +212,9 @@ EOF
 systemctl daemon-reload
 systemctl enable nibid
 systemctl restart nibid
+
+# set up cosmos_autorestart (disabled)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'

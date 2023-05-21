@@ -216,9 +216,6 @@ systemctl daemon-reload
 systemctl enable nibid
 systemctl restart nibid
 
-# set up cosmos_autorestart (disabled)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
-
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u nibid -f -o cat\e[0m'

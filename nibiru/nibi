@@ -108,7 +108,7 @@ git clone https://github.com/NibiruChain/nibiru && cd $DIRECTORY
 git fetch --all
 git checkout $BINARY_VERSION_TAG
 make install
-sudo cp ./build/nibid /usr/local/bin/ && cd $HOME
+sudo cp $(which nibid) /usr/local/bin/ && cd $HOME
 nibid version --long | grep -e version -e commit
 
 nibid init $NIBIRU_MONIKER --chain-id $NIBIRU_CHAIN_ID

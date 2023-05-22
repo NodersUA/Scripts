@@ -50,9 +50,6 @@ echo 'export DIRECTORY=defund' >> $HOME/.bash_profile
 echo 'export HIDDEN_DIRECTORY=".defund"' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-# set up cosmos_autorestart (disabled)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
-
 echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $DEFUND_MONIKER \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
@@ -211,6 +208,9 @@ systemctl daemon-reload
 systemctl enable defundd
 systemctl restart defundd
 
+# set up cosmos_autorestart (disabled)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
+
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u defundd -f -o cat\e[0m'
@@ -303,6 +303,11 @@ curl "https://snapshots2-testnet.nodejumper.io/defund-testnet/${SNAP_NAME}" | lz
 mv $HOME/.defund/priv_validator_state.json.backup $HOME/.defund/data/priv_validator_state.json 
 sudo systemctl restart defundd
 sudo journalctl -u defundd -f --no-hostname -o cat
+
+sleep 60
+sudo systemctl enable defund_autorestart
+sudo systemctl restart defund_autorestart
+sudo journalctl -u defund_autorestart -f --no-hostname -o cat
 
 break
 ;;

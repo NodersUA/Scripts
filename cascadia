@@ -51,9 +51,6 @@ echo 'export DIRECTORY=cascadia' >> $HOME/.bash_profile
 echo 'export HIDDEN_DIRECTORY=".cascadiad"' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-# set up cosmos_autorestart (disabled)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
-
 echo "*****************************"
 echo -e "\e[1m\e[32m Node moniker:       $CASCADIA_MONIKER \e[0m"
 echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
@@ -186,6 +183,9 @@ systemctl daemon-reload
 systemctl enable $BINARY_NAME
 systemctl restart $BINARY_NAME
 
+# set up cosmos_autorestart (disabled)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
+
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u ${BINARY_NAME} -f -o cat\e[0m'
@@ -203,6 +203,11 @@ CASCADIA_VALOPER=$(cascadiad keys show wallet --bech val -a)
 echo "export CASCADIA_ADDRESS="${CASCADIA_ADDRESS} >> $HOME/.bash_profile
 echo "export CASCADIA_VALOPER="${CASCADIA_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+# Remove temp .bash_profile variables
+sed -i '/BINARY_NAME/d' ~/.bash_profile
+sed -i '/DIRECTORY/d' ~/.bash_profile
+sed -i '/HIDDEN_DIRECTORY/d' ~/.bash_profile
 
 break
 ;;

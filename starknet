@@ -10,7 +10,7 @@ if [ -z "$STARKNET_RPC" ]; then
   echo -e "\e[1m\e[32m	Enter your your_ethereum_mainnet_rpc:\e[0m"
   echo "*********************"
   read STARKNET_RPC
-  echo "*********************"
+  echo "==================================================="
   echo 'export STARKNET_RPC='$STARKNET_RPC >> $HOME/.bash_profile
   source $HOME/.bash_profile
 fi

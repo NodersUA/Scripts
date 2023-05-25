@@ -19,6 +19,7 @@ fi
 apt update && apt upgrade -y
 
 # Install Docker
+sudo apt install snap
 sudo snap install docker
 
 # Create a directory

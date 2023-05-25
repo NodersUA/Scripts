@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+if [ -z "$STARKNET_RPC" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your your_ethereum_mainnet_rpc:\e[0m"
+  echo "*********************"
+  read STARKNET_RPC
+  echo "*********************"
+  echo 'export STARKNET_RPC='$STARKNET_RPC >> $HOME/.bash_profile
+  source $HOME/.bash_profile
+fi
+
+# Update the repositories
+apt update && apt upgrade -y
+
+# Install Docker
+sudo snap install docker
+
+# Create a directory
+mkdir -p $HOME/pathfinder
+
+# Start the pathfinder container
+sudo docker run \
+  --name pathfinder \
+  --restart unless-stopped \
+  --detach \
+  -p 9545:9545 \
+  --user "$(id -u):$(id -g)" \
+  -e RUST_LOG=info \
+  -e PATHFINDER_ETHEREUM_API_URL=$STARKNET_RPC \
+  -v $HOME/pathfinder:/usr/share/pathfinder/data \
+  eqlabs/pathfinder
+  
+# Check logs
+sudo docker logs -f pathfinder

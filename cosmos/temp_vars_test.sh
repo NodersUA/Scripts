@@ -13,4 +13,4 @@ echo 'CHAIN_DENOM="aCC"' >> config.sh
 source config.sh
 
 # Call the script
-./your_script.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/remote_script_test.sh)

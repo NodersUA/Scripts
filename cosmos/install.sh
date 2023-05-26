@@ -191,3 +191,10 @@ source $HOME/.bash_profile
 sed -i '/BINARY_NAME/d' ~/.bash_profile
 sed -i '/DIRECTORY/d' ~/.bash_profile
 sed -i '/HIDDEN_DIRECTORY/d' ~/.bash_profile
+
+# NEW
+sed -i '/NODE_NAME/d' ~/.bash_profile
+sed -i '/NODE_CHAIN_ID/d' ~/.bash_profile
+sed -i '/NODE_PORT/d' ~/.bash_profile
+sed -i '/BINARY_VERSION_TAG/d' ~/.bash_profile
+sed -i '/CHAIN_DENOM/d' ~/.bash_profile

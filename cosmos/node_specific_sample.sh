@@ -8,6 +8,7 @@ CHAIN_DENOM="aCC"
 BINARY_NAME="cascadiad"
 DIRECTORY="cascadia"
 HIDDEN_DIRECTORY=".cascadiad"
+NODE_URL="https://github.com/cascadiafoundation/cascadia"
 # *************************************
 
 # export temp variables
@@ -19,6 +20,7 @@ echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
 echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
 echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
 echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
 source $HOME/config.sh
 
 # import code from cosmos/install.sh

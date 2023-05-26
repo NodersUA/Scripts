@@ -93,9 +93,12 @@ go version
 echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
 #INSTALL
 cd $HOME
-git clone https://github.com/cascadiafoundation/cascadia && cd $DIRECTORY
+git clone $NODE_URL && cd $DIRECTORY
+git fetch --all
 git checkout $BINARY_VERSION_TAG
 make install
+TEMP=$(which $BINARY_NAME)
+sudo cp $TEMP /usr/local/bin/ && cd $HOME
 $BINARY_NAME version --long | grep -e version -e commit
 
 $BINARY_NAME init $MONIKER --chain-id $CHAIN_ID

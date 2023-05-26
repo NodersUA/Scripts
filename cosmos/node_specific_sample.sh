@@ -8,7 +8,7 @@ CHAIN_DENOM="aCC"
 # *************************************
 
 # export temp variables
-echo 'export NODE_NAME='$NODE_NAME >> $HOME/config.sh
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
 echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
 echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
 echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh

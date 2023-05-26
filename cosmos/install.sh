@@ -1,7 +1,13 @@
+#!/bin/bash
 # NODE_NAME (NIBIRU, DEFUND, CASCADIA)
 # NODE_CHAIN_ID
 # NODE_PORT
 # BINARY_VERSION_TAG
+# CHAIN_DENOM
+# BINARY_NAME
+# DIRECTORY
+# HIDDEN_DIRECTORY
+
 
 if [ -z "$MONIKER" ]; then
   echo "*********************"
@@ -12,7 +18,7 @@ if [ -z "$MONIKER" ]; then
   #read CASCADIA_MONIKER
   read MONIKER
   echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
-  echo "========================================"
+  echo "==============================================="
   #MONIKER=$CASCADIA_MONIKER
 #else
   #CASCADIA_MONIKER=$MONIKER
@@ -29,16 +35,19 @@ fi
 #PORT=$CASCADIA_PORT
 
 # export temporary vars to .bash_profile
-echo 'export BINARY_NAME="cascadiad"' >> $HOME/.bash_profile
-echo 'export DIRECTORY=cascadia' >> $HOME/.bash_profile
-echo 'export HIDDEN_DIRECTORY=".cascadiad"' >> $HOME/.bash_profile
+#echo 'export BINARY_NAME="cascadiad"' >> $HOME/.bash_profile
+#echo 'export DIRECTORY=cascadia' >> $HOME/.bash_profile
+#echo 'export HIDDEN_DIRECTORY=".cascadiad"' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 echo "*****************************"
-echo -e "\e[1m\e[32m Node moniker:       $CASCADIA_MONIKER \e[0m"
-echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
+echo -e "\e[1m\e[32m Node moniker:       $MONIKER \e[0m"
+echo -e "\e[1m\e[32m Chain id:           $NODE_CHAIN_ID \e[0m"
 echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
 echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
+echo -e "\e[1m\e[32m Binary name: $BINARY_NAME \e[0m"
+echo -e "\e[1m\e[32m Directory: $DIRECTORY \e[0m"
+echo -e "\e[1m\e[32m Hidden directory: $HIDDEN_DIRECTORY \e[0m"
 echo "*****************************"
 sleep 1
 
@@ -188,13 +197,6 @@ echo "export CASCADIA_VALOPER="${CASCADIA_VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # Remove temp .bash_profile variables
-sed -i '/BINARY_NAME/d' ~/.bash_profile
-sed -i '/DIRECTORY/d' ~/.bash_profile
-sed -i '/HIDDEN_DIRECTORY/d' ~/.bash_profile
-
-# NEW
-sed -i '/NODE_NAME/d' ~/.bash_profile
-sed -i '/NODE_CHAIN_ID/d' ~/.bash_profile
-sed -i '/NODE_PORT/d' ~/.bash_profile
-sed -i '/BINARY_VERSION_TAG/d' ~/.bash_profile
-sed -i '/CHAIN_DENOM/d' ~/.bash_profile
+#sed -i '/BINARY_NAME/d' ~/.bash_profile
+#sed -i '/DIRECTORY/d' ~/.bash_profile
+#sed -i '/HIDDEN_DIRECTORY/d' ~/.bash_profile

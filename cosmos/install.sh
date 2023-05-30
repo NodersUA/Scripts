@@ -94,37 +94,37 @@ echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m"
 #INSTALL
 cd $HOME
 git clone $NODE_URL && cd $DIRECTORY
-git fetch --all
+git fetch --all  # ?(nibiru only)
 git checkout $BINARY_VERSION_TAG
 make install
 TEMP=$(which $BINARY_NAME)
 sudo cp $TEMP /usr/local/bin/ && cd $HOME
 $BINARY_NAME version --long | grep -e version -e commit
 
-$BINARY_NAME init $MONIKER --chain-id $CHAIN_ID
+$BINARY_NAME init $MONIKER --chain-id $NODE_CHAIN_ID
 
 wget -O $HOME/$HIDDEN_DIRECTORY/config/genesis.json "https://anode.team/Cascadia/test/genesis.json"
 
 
 echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
 
-sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
-sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${PORT}7\"%" $HOME/$HIDDEN_DIRECTORY/config/app.toml
-sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${PORT}657\"%" $HOME/$HIDDEN_DIRECTORY/config/client.toml
+sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${NODE_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${NODE_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${NODE_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${NODE_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${NODE_PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
+sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${NODE_PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${NODE_PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${NODE_PORT}7\"%" $HOME/$HIDDEN_DIRECTORY/config/app.toml
+sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${NODE_PORT}657\"%" $HOME/$HIDDEN_DIRECTORY/config/client.toml
 external_address=$(wget -qO- eth0.me)
-sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${PORT}656\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
+sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${NODE_PORT}656\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
 
 echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
 
 
 # correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
-$BINARY_NAME config chain-id $CHAIN_ID
+$BINARY_NAME config chain-id $NODE_CHAIN_ID
 
 # adjust if necessary keyring-backend в client.toml 
 $BINARY_NAME config keyring-backend test
 
-$BINARY_NAME config node tcp://localhost:${PORT}657
+$BINARY_NAME config node tcp://localhost:${NODE_PORT}657
 
 # Set the minimum price for gas
 sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0025aCC\"/;" ~/$HIDDEN_DIRECTORY/config/app.toml
@@ -153,16 +153,16 @@ sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/conf
 echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
 
 # Create service file (One command)
-sudo tee /etc/systemd/system/cascadiad.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
 [Unit]
-Description=Cascadia Node
+Description=$NODE_NAME Node
 After=network.target
  
 [Service]
 Type=simple
 User=$USER
 WorkingDirectory=$HOME/go/bin
-ExecStart=/root/go/bin/cascadiad start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable
+ExecStart=/root/go/bin/$BINARY_NAME start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable
 Restart=on-failure
 StartLimitInterval=0
 RestartSec=3
@@ -184,7 +184,7 @@ source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u ${BINARY_NAME} -f -o cat\e[0m'
-echo -e "To check sync status: \e[1m\e[35mcurl localhost:${PORT}657/status\e[0m"
+echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
 
 echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
 
@@ -193,10 +193,10 @@ eval "$command"
 
 echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
-CASCADIA_ADDRESS=$(cascadiad keys show wallet -a)
-CASCADIA_VALOPER=$(cascadiad keys show wallet --bech val -a)
-echo "export CASCADIA_ADDRESS="${CASCADIA_ADDRESS} >> $HOME/.bash_profile
-echo "export CASCADIA_VALOPER="${CASCADIA_VALOPER} >> $HOME/.bash_profile
+ADDRESS=$($BINARY_NAME keys show wallet -a)
+VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
+echo "export ${NODE_NAME}_ADDRESS="${ADDRESS} >> $HOME/.bash_profile
+echo "export ${NODE_NAME}_VALOPER="${VALOPER} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # Remove temp .bash_profile variables

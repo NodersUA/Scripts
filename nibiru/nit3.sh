@@ -21,6 +21,7 @@ sleep $(shuf -i 1800-7200 -n 1)
 nibid tx perp close-position ubtc:unusd  --from wallet --gas-adjustment 1.4 --gas auto --gas-prices 0.025unibi -y
 sleep $(shuf -i 30-200 -n 1)
 nibid tx perp close-position ueth:unusd  --from wallet --gas-adjustment 1.4 --gas auto --gas-prices 0.025unibi -y
+sleep $(shuf -i 100-300 -n 1)
 
 # Swap
 nibid tx spot swap-assets --token-in=$(shuf -i $percentage_min-$percentage_max -n 1)000unusd --token-out-denom=uusdt --from wallet --pool-id=2 --chain-id=$NIBIRU_CHAIN_ID --gas-adjustment 1.4 --gas auto --gas-prices 0.025unibi -y

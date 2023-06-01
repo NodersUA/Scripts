@@ -39,3 +39,10 @@ echo $command_7 && eval $command_7
 sleep $(shuf -i 30-200 -n 1)
 command_8=$"nibid tx spot swap-assets --token-in=$(shuf -i $percentage_min-$percentage_max -n 1)unibi --token-out-denom=unusd --from wallet --pool-id=1 --chain-id=$NIBIRU_CHAIN_ID --gas-adjustment 1.4 --gas auto --gas-prices 0.025unibi -y"
 echo $command_8 && eval $command_8
+sleep $(shuf -i 30-200 -n 1)
+
+command_9=$"nibid tx spot join-pool --pool-id=1 --tokens-in=10000000unusd --tokens-in=10000000unibi --use-all-coins --from wallet --chain-id=$NIBIRU_CHAIN_ID --gas-adjustment 1.4 --gas auto --gas-prices 0.025unibi -y"
+echo $command_9 && eval $command_9
+sleep $(shuf -i 30-200 -n 1)
+command_10=$"nibid tx spot join-pool --pool-id=2 --tokens-in=10000000unusd --tokens-in=10000000uusdt --use-all-coins --from wallet --chain-id=$NIBIRU_CHAIN_ID --gas-adjustment 1.4 --gas auto --gas-prices 0.025unibi -y"
+echo $command_10 && eval $command_10

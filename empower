@@ -1,0 +1,135 @@
+#!/bin/bash
+
+while true
+do
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="EMPOWER"
+NODE_CHAIN_ID="circulus-1"
+NODE_PORT="20"
+BINARY_VERSION_TAG="v1.0.0-rc2"
+CHAIN_DENOM="umpwr"
+BINARY_NAME="empowerd"
+DIRECTORY="empowerchain"
+HIDDEN_DIRECTORY=".empowerchain"
+NODE_URL="https://github.com/EmpowerPlastic/empowerchain.git"
+GENESIS_URL="https://github.com/EmpowerPlastic/empowerchain/blob/main/testnets/circulus-1/genesis.json"
+MINIMUM_GAS_PRICES="0.001umpwr"
+PEERS=""
+SEEDS="258f523c96efde50d5fe0a9faeea8a3e83be22ca@seed.circulus-1.empower.aviaone.com:20272,d6a7cd9fa2bafc0087cb606de1d6d71216695c25@51.159.161.174:26656,babc3f3f7804933265ec9c40ad94f4da8e9e0017@testnet-seed.rhinostake.com:17456"
+pruning="custom"
+pruning_keep_recent="100"
+pruning_interval="10"
+snapshot_interval="0"
+indexer="null"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+break
+;;
+
+#================================================================
+
+"Synchronization via StateSync")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"UPDATE")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Synchronization via SnapShot")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop $BINARY_NAME && \
+sudo systemctl disable $BINARY_NAME && \
+rm /etc/systemd/system/$BINARY_NAME.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf $DIRECTORY && \
+rm -rf $HIDDEN_DIRECTORY && \
+rm -rf $(which $BINARY_NAME)
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+echo 'export MESSAGE="\$request $EMPOWER_ADDRESS circulus-1"' >> $HOME/.bash_profile
+echo 'export DISKORD_DIR=df_empower' >> $HOME/.bash_profile
+echo 'export CHAT_ID=1026598604523180043' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done
+done

@@ -100,7 +100,7 @@ $BINARY_NAME config keyring-backend test
 $BINARY_NAME config node tcp://localhost:${NODE_PORT}657
 
 # Set the minimum price for gas
-sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"$minimum-gas-prices\"/;" ~/$HIDDEN_DIRECTORY/config/app.toml
+sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"$MINIMUM_GAS_PRICES\"/;" ~/$HIDDEN_DIRECTORY/config/app.toml
 
 # Add seeds/peers в config.toml
 sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
@@ -113,9 +113,8 @@ sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $HOME/$HIDDEN_DIRECTOR
 sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/$HIDDEN_DIRECTORY/config/app.toml
-sed -i -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot-interval\"/" $HOME/$HIDDEN_DIRECTORY/config/app.toml
+sed -i -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 
-indexer="null" && \
 sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
 echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1

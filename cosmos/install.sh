@@ -42,13 +42,13 @@ do
   esac
 done
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Updating packages and dependencies *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Updating packages and dependencies *****/////]] \e[0m" && sleep 1
 #UPDATE APT
 sudo apt update && apt upgrade -y
 apt install bc curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Installing GO ***** \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Installing GO *****/////]] \e[0m" && sleep 1
 #INSTALL GO
 if [ "$(go version)" != "go version go1.20.5 linux/amd64" ]; then \
 ver="1.20.5" && \
@@ -61,7 +61,7 @@ source $HOME/.bash_profile ; \
 fi
 go version
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Downloading and building binaries *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Downloading and building binaries *****/////]] \e[0m" && sleep 1
 #INSTALL
 cd $HOME
 git clone $NODE_URL && cd $DIRECTORY
@@ -78,7 +78,7 @@ $BINARY_NAME init $MONIKER --chain-id $NODE_CHAIN_ID
 wget -O $HOME/$HIDDEN_DIRECTORY/config/genesis.json $GENESIS_URL
 
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Set the ports *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Set the ports *****/////]] \e[0m" && sleep 1
 # config.toml
 sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${NODE_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${NODE_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${NODE_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${NODE_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${NODE_PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 # app.toml
@@ -90,7 +90,7 @@ external_address=$(wget -qO- eth0.me)
 sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${NODE_PORT}656\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Setup config *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Setup config *****/////]] \e[0m" && sleep 1
 # correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
 $BINARY_NAME config chain-id $NODE_CHAIN_ID
 
@@ -117,7 +117,7 @@ sed -i -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/
 
 sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Service File *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
 
 # Create service file (One command)
 sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
@@ -153,7 +153,7 @@ echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m'
 echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
 
-echo -e "\e[1m\e[32m [[/\/\/\/\/\***** Wallet *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
 
 # Execute the saved command
 eval "$command"

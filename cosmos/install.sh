@@ -164,4 +164,5 @@ ADDRESS=$($BINARY_NAME keys show wallet -a)
 VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
 echo "export ${NODE_NAME}_ADDRESS="${ADDRESS} >> $HOME/.bash_profile
 echo "export ${NODE_NAME}_VALOPER="${VALOPER} >> $HOME/.bash_profile
+echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
 source $HOME/.bash_profile

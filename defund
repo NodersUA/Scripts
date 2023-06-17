@@ -332,7 +332,7 @@ echo 'export CHAT_ID=1038133368841310280' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # import code from file
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/df.sh)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
 
 break
 ;;

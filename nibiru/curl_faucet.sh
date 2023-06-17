@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tee $HOME/$DISKORD_DIR/curl_faucet.sh > /dev/null <<EOF
+tee $HOME/df_nibiru/curl_faucet.sh > /dev/null <<EOF
 #!/bin/bash
 
 sleep $(shuf -i 0-21600 -n 1) # 6 годин рандома
@@ -16,7 +16,7 @@ do
 done
 EOF
 
-chmod +x $HOME/$DISKORD_DIR/curl_faucet.sh
+chmod +x $HOME/df_nibiru/curl_faucet.sh
 
 # Create Diskord service file (One command)
 sudo tee /etc/systemd/system/curl_nibiru.service > /dev/null <<EOF
@@ -26,7 +26,7 @@ After=network.target
 
 [Service]
 User=$USER
-ExecStart=$HOME/$DISKORD_DIR/curl_faucet.sh
+ExecStart=$HOME/df_nibiru/curl_faucet.sh
 Restart=always
 
 [Install]

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/curl_faucet.sh)
+
 tee $HOME/df_nibiru/curl_faucet.sh > /dev/null <<EOF
 #!/bin/bash
 

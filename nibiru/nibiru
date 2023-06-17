@@ -1,0 +1,178 @@
+#!/bin/bash
+
+while true
+do
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="NIBIRU"
+NODE_CHAIN_ID="nibiru-itn-1"
+NODE_PORT="11"
+BINARY_VERSION_TAG="v0.19.2"
+CHAIN_DENOM="unibi"
+BINARY_NAME="nibid"
+DIRECTORY="nibiru"
+HIDDEN_DIRECTORY=".nibid"
+NODE_URL="https://github.com/NibiruChain/nibiru"
+GENESIS_URL="https://networks.itn.nibiru.fi/$NODE_CHAIN_ID/genesis"
+MINIMUM_GAS_PRICES="0.025unibi"
+PEERS=""
+SEEDS=""
+pruning="custom"
+pruning_keep_recent="1000"
+pruning_interval="10"
+snapshot_interval="0"
+indexer="null"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Autodelegate"
+"nit1 tasks"
+"nit2 tasks"
+"nit3 tasks"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+break
+;;
+
+#================================================================
+
+"Synchronization via StateSync")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"UPDATE")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Synchronization via SnapShot")
+sudo systemctl stop nibiru_autorestart
+
+snapshot_interval=1000
+sed -i.bak -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" ~/.nibid/config/app.toml
+# install dependencies, if needed
+sudo apt update
+sudo apt install lz4 -y
+sudo systemctl stop nibid
+cp $HOME/.nibid/data/priv_validator_state.json $HOME/.nibid/priv_validator_state.json.backup 
+nibid tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book
+SNAP_NAME=$(curl -s https://snapshots2-testnet.nodejumper.io/nibiru-testnet/info.json | jq -r .fileName)
+curl "https://snapshots2-testnet.nodejumper.io/nibiru-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C $HOME/.nibid
+mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validator_state.json 
+sudo systemctl start nibid
+
+sleep 60
+sudo systemctl enable nibiru_autorestart
+sudo systemctl restart nibiru_autorestart
+sudo journalctl -u nibiru_autorestart -f --no-hostname -o cat
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop nibid && \
+sudo systemctl disable nibid && \
+rm /etc/systemd/system/nibid.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf nibid && \
+rm -rf .nibid && \
+rm -rf $(which nibid)
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/.bash_profile
+echo 'export DISKORD_DIR=df_nibiru' >> $HOME/.bash_profile
+echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/curl_faucet.sh)
+
+break
+;;
+
+#================================================================
+
+"Autodelegate")
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
+
+#================================================================
+
+"nit1 tasks")
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/nit1.sh)
+
+#================================================================
+
+"nit2 tasks")
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/nit2.sh)
+
+#================================================================
+
+"nit3 tasks")
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/nit3.sh)
+
+#================================================================
+
+"Exit")
+exit
+esac
+done
+done

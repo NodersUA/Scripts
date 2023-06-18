@@ -6,6 +6,48 @@ do
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
+# Set parameters
+NODE_NAME="DEFUND"
+NODE_CHAIN_ID="orbit-alpha-1"
+NODE_PORT="13"
+BINARY_VERSION_TAG="v0.2.6"
+CHAIN_DENOM="ufetf"
+BINARY_NAME="defundd"
+DIRECTORY="defund"
+HIDDEN_DIRECTORY=".defund"
+NODE_URL="https://github.com/defund-labs/defund"
+GENESIS_URL="https://raw.githubusercontent.com/defund-labs/testnet/main/orbit-alpha-1/genesis.json"
+MINIMUM_GAS_PRICES="0.0025ufetf"
+PEERS="9f92e47ea6861f75bf8a450a681218baae396f01@94.130.219.37:26656,f03f3a18bae28f2099648b1c8b1eadf3323cf741@162.55.211.136:26656,f8fa20444c3c56a2d3b4fdc57b3fd059f7ae3127@148.251.43.226:56656,70a1f41dea262730e7ab027bcf8bd2616160a9a9@142.132.202.86:17000,e47e5e7ae537147a23995117ea8b2d4c2a408dcb@172.104.159.69:45656,74e6425e7ec76e6eaef92643b6181c42d5b8a3b8@defund-testnet-seed.itrocket.net:443"
+SEEDS="9f92e47ea6861f75bf8a450a681218baae396f01@94.130.219.37:26656,f03f3a18bae28f2099648b1c8b1eadf3323cf741@162.55.211.136:26656,f8fa20444c3c56a2d3b4fdc57b3fd059f7ae3127@148.251.43.226:56656,70a1f41dea262730e7ab027bcf8bd2616160a9a9@142.132.202.86:17000,e47e5e7ae537147a23995117ea8b2d4c2a408dcb@172.104.159.69:45656,74e6425e7ec76e6eaef92643b6181c42d5b8a3b8@defund-testnet-seed.itrocket.net:443"
+pruning="custom"
+pruning_keep_recent="100"
+pruning_interval="10"
+snapshot_interval="0"
+indexer="null"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
 # Menu
 
 PS3='Select an action: '
@@ -21,275 +63,33 @@ select opt in "${options[@]}"
 do
 case $opt in
 
+#================================================================
+
 "Install Node")
-if [ -z "$MONIKER" ]; then
-  echo "*********************"
-  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
-  echo "*********************"
-  echo -e "\e[1m\e[32m	Enter your DEFUND_MONIKER:\e[0m"
-  echo "_|-_|-_|-_|-_|-_|-_|"
-  read DEFUND_MONIKER
-  echo "_|-_|-_|-_|-_|-_|-_|"
-else
-  DEFUND_MONIKER=$MONIKER
-fi
-
-echo 'export DEFUND_MONIKER='$DEFUND_MONIKER >> $HOME/.bash_profile
-echo "export DEFUND_CHAIN_ID=orbit-alpha-1" >> $HOME/.bash_profile
-echo "export DEFUND_PORT=13" >> $HOME/.bash_profile
-source $HOME/.bash_profile
-
-CHAIN_ID="orbit-alpha-1"
-CHAIN_DENOM="ufetf"
-# BINARY_NAME="defundd"
-BINARY_VERSION_TAG="v0.2.6"
-
-# export temporary vars to .bash_profile
-echo 'export BINARY_NAME="defundd"' >> $HOME/.bash_profile
-echo 'export DIRECTORY=defund' >> $HOME/.bash_profile
-echo 'export HIDDEN_DIRECTORY=".defund"' >> $HOME/.bash_profile
-source $HOME/.bash_profile
-
-echo "*****************************"
-echo -e "\e[1m\e[32m Node moniker:       $DEFUND_MONIKER \e[0m"
-echo -e "\e[1m\e[32m Chain id:           $CHAIN_ID \e[0m"
-echo -e "\e[1m\e[32m Chain demon:        $CHAIN_DENOM \e[0m"
-echo -e "\e[1m\e[32m Binary version tag: $BINARY_VERSION_TAG \e[0m"
-echo "*****************************"
-sleep 1
-
-PS3='Select an action: '
-options=("Create a new wallet" "Recover an old wallet" "Exit")
-select opt in "${options[@]}"
-do
-  case $opt in
-    "Create a new wallet")
-      command="defundd keys add wallet"
-      break
-      ;;
-    "Recover an old wallet")
-      command="defundd keys add wallet --recover"
-      break
-      ;;
-    "Exit")
-      exit
-      ;;
-    *) echo "Invalid option. Please try again.";;
-  esac
-done
-
-echo -e "\e[1m\e[32m1. Updating packages and dependencies--> \e[0m" && sleep 1
-#UPDATE APT
-sudo apt update && apt upgrade -y
-apt install bc curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
-
-# # Add discord bot
-# apt install pip -y
-# cd $HOME && git clone https://github.com/TechCryptoBots/Discord-Whitelist-Bot.git df_defund
-# cd df_defund && apt install pip -y
-# pip install -r requirements.txt
-# cd $HOME
-
-echo -e "        \e[1m\e[32m2. Installing GO--> \e[0m" && sleep 1
-#INSTALL GO
-ver="1.20.2" && \
-wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
-sudo rm -rf /usr/local/go && \
-sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
-rm "go$ver.linux-amd64.tar.gz" && \
-echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
-source $HOME/.bash_profile && \
-go version
-
-echo -e "              \e[1m\e[32m3. Downloading and building binaries--> \e[0m" && sleep 1
-#INSTALL
-cd $HOME
-git clone https://github.com/defund-labs/defund
-cd defund
-git checkout v0.2.6
-make install
-defundd version --long | grep -e version -e commit
-
-defundd init $DEFUND_MONIKER --chain-id $DEFUND_CHAIN_ID
-
-wget -O $HOME/.defund/config/genesis.json "https://raw.githubusercontent.com/defund-labs/testnet/main/orbit-alpha-1/genesis.json"
-wget -O $HOME/.defund/config/addrbook.json "https://share.utsa.tech/defund/addrbook.json"
-
-
-echo -e "                     \e[1m\e[32m4. Set the ports--> \e[0m" && sleep 1
-
-sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${DEFUND_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${DEFUND_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${DEFUND_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${DEFUND_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${DEFUND_PORT}660\"%" $HOME/.defund/config/config.toml
-sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${DEFUND_PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${DEFUND_PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${DEFUND_PORT}7\"%" $HOME/.defund/config/app.toml
-sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${DEFUND_PORT}657\"%" $HOME/.defund/config/client.toml
-external_address=$(wget -qO- eth0.me)
-sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${DEFUND_PORT}656\"/" $HOME/.defund/config/config.toml
-
-
-echo -e "                     \e[1m\e[32m5. Setup config--> \e[0m" && sleep 1
-
-
-# correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
-defundd config chain-id $DEFUND_CHAIN_ID
-
-# adjust if necessary keyring-backend в client.toml 
-defundd config keyring-backend test
-
-defundd config node tcp://localhost:${DEFUND_PORT}657
-
-# Set the minimum price for gas
-sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0025ufetf\"/;" ~/.defund/config/app.toml
-
-# Add seeds/peers в config.toml
-peers="9f92e47ea6861f75bf8a450a681218baae396f01@94.130.219.37:26656,f03f3a18bae28f2099648b1c8b1eadf3323cf741@162.55.211.136:26656,f8fa20444c3c56a2d3b4fdc57b3fd059f7ae3127@148.251.43.226:56656,70a1f41dea262730e7ab027bcf8bd2616160a9a9@142.132.202.86:17000,
-e47e5e7ae537147a23995117ea8b2d4c2a408dcb@172.104.159.69:45656,74e6425e7ec76e6eaef92643b6181c42d5b8a3b8@defund-testnet-seed.itrocket.net:443"
-sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$peers\"/" $HOME/.defund/config/config.toml
-
-seeds="9f92e47ea6861f75bf8a450a681218baae396f01@94.130.219.37:26656,f03f3a18bae28f2099648b1c8b1eadf3323cf741@162.55.211.136:26656,f8fa20444c3c56a2d3b4fdc57b3fd059f7ae3127@148.251.43.226:56656,70a1f41dea262730e7ab027bcf8bd2616160a9a9@142.132.202.86:17000,e47e5e7ae537147a23995117ea8b2d4c2a408dcb@172.104.159.69:45656,74e6425e7ec76e6eaef92643b6181c42d5b8a3b8@defund-testnet-seed.itrocket.net:443"
-sed -i.bak -e "s/^seeds =.*/seeds = \"$seeds\"/" $HOME/.defund/config/config.toml
-
-# Set up filter for "bad" peers
-sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $HOME/.defund/config/config.toml
-
-#
-sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"60s\"/" $HOME/.defund/config/config.toml
-sed -i -e "s/^timeout_propose *=.*/timeout_propose = \"60s\"/" $HOME/.defund/config/config.toml
-sed -i -e "s/^create_empty_blocks_interval *=.*/create_empty_blocks_interval = \"60s\"/" $HOME/.defund/config/config.toml
-sed -i 's/create_empty_blocks = .*/create_empty_blocks = true/g' ~/.defund/config/config.toml
-sed -i 's/timeout_broadcast_tx_commit = ".*s"/timeout_broadcast_tx_commit = "601s"/g' ~/.defund/config/config.toml
-
-# Set up pruning
-pruning="custom"
-pruning_keep_recent="100"
-pruning_keep_every="0"
-pruning_interval="10"
-sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.defund/config/app.toml
-sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.defund/config/app.toml
-sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.defund/config/app.toml
-sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.defund/config/app.toml
-
-echo -e "                     \e[1m\e[32m6. Cosmovisor--> \e[0m" && sleep 1
-
-# Install Cosmovisor
-go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
-# Create directories
-mkdir -p ~/.defund/cosmovisor
-mkdir -p ~/.defund/cosmovisor/genesis
-mkdir -p ~/.defund/cosmovisor/genesis/bin
-mkdir -p ~/.defund/cosmovisor/upgrades
-# Copy the binary file to the cosmovisor folder
-cp `which defundd` ~/.defund/cosmovisor/genesis/bin/defundd
-
-echo -e "                     \e[1m\e[32m7. Service File--> \e[0m" && sleep 1
-
-# Create service file (One command)
-sudo tee /etc/systemd/system/defundd.service > /dev/null <<EOF
-[Unit]
-Description=defundd daemon
-After=network-online.target
-
-[Service]
-User=$USER
-ExecStart=$(which cosmovisor) run start --x-crisis-skip-assert-invariants
-Restart=always
-RestartSec=3
-LimitNOFILE=infinity
-
-Environment="DAEMON_NAME=defundd"
-Environment="DAEMON_HOME=${HOME}/.defund"
-Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
-Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Start the node
-systemctl daemon-reload
-systemctl enable defundd
-systemctl restart defundd
-
-# set up cosmos_autorestart (disabled)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos_autorestart.sh)
-
-echo '=============== SETUP FINISHED ==================='
-echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u defundd -f -o cat\e[0m'
-echo -e "To check sync status: \e[1m\e[35mcurl localhost:${DEFUND_PORT}657/status\e[0m"
-
-echo -e "                     \e[1m\e[32m8. Wallet--> \e[0m" && sleep 1
-
-# Execute the saved command
-eval "$command"
-
-echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
-
-DEFUND_ADDRESS=$(defundd keys show wallet -a)
-DEFUND_VALOPER=$(defundd keys show wallet --bech val -a)
-echo "export DEFUND_ADDRESS="${DEFUND_ADDRESS} >> $HOME/.bash_profile
-echo "export DEFUND_VALOPER="${DEFUND_VALOPER} >> $HOME/.bash_profile
-source $HOME/.bash_profile
-
-# ===========================================================================================
-# # Settings discord bot
-
-# tee $HOME/df_defund/src/config/accounts.txt > /dev/null <<EOF
-# $TOKEN
-# EOF
-# 
-# tee $HOME/df_defund/src/config/messages.txt > /dev/null <<EOF
-# !faucet $DEFUND_ADDRESS
-# EOF
-# 
-# tee $HOME/df_defund/src/config/config.yaml > /dev/null <<EOF
-# messages_file: config/messages.txt
-# accounts_file: config/accounts.txt
-# chat_id: 1038133368841310280
-# 
-# use_proxy: False
-# proxy_file: config/proxy.txt
-# 
-# send_delay: 10
-# 
-# log_send: True
-# log_read: False
-# log_tg: False
-# 
-# read_delay: 0.1
-# 
-# typing_delay_per_character: 2
-# EOF
-# 
-# tee $HOME/df_defund/db.sh > /dev/null <<EOF
-# #!/bin/bash
-# 
-# while true
-# do
-#     date
-#     cd /root/df_defund/src/ && python3 main.py
-#     sleep 86600
-#     echo "===================================="
-# done
-# EOF
-# 
-# chmod +x $HOME/df_defund/db.sh
-
-# Remove temp .bash_profile variables
-sed -i '/BINARY_NAME/d' ~/.bash_profile
-sed -i '/DIRECTORY/d' ~/.bash_profile
-sed -i '/HIDDEN_DIRECTORY/d' ~/.bash_profile
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
 
 break
 ;;
+
+#================================================================
+
 "Synchronization via StateSync")
-echo -e "      \e[1m\e[32m SOOOON\e[0m"
+echo -e "\e[1m\e[32m Soon...\e[0m"
 
 break
 ;;
+
+#================================================================
+
 "UPDATE")
-echo -e "      \e[1m\e[32m SOOOON\e[0m"
+echo -e "\e[1m\e[32m Soon...\e[0m"
 
 break
 ;;
+
+#================================================================
+
 "Synchronization via SnapShot")
 # install dependencies, if needed
 sudo apt update
@@ -311,6 +111,9 @@ sudo journalctl -u defund_autorestart -f --no-hostname -o cat
 
 break
 ;;
+
+#================================================================
+
 "Delete Node")
 sudo systemctl stop defundd && \
 sudo systemctl disable defundd && \
@@ -324,19 +127,23 @@ rm -rf $(which defundd)
 break
 ;;
 
+#================================================================
+
 "Diskord Bot Autoinstall")
 # set variables
 DEFUND_ADDRESS=$(defundd keys show wallet -a)
 echo 'export MESSAGE="!faucet $DEFUND_ADDRESS"' >> $HOME/config.sh
 echo 'export DISKORD_DIR=df_defund' >> $HOME/config.sh
 echo 'export CHAT_ID=1038133368841310280' >> $HOME/config.sh
-source $HOME/.bash_profile
+source $HOME/config.sh
 
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
 
 break
 ;;
+
+#================================================================
 
 "Exit")
 exit

@@ -115,10 +115,11 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-echo 'export MESSAGE="\$request $EMPOWER_ADDRESS circulus-1"' >> $HOME/.bash_profile
-echo 'export DISKORD_DIR=df_empower' >> $HOME/.bash_profile
-echo 'export CHAT_ID=1026598604523180043' >> $HOME/.bash_profile
-source $HOME/.bash_profile
+EMPOWER_ADDRESS=$(empowerd keys show wallet -a)
+echo 'export MESSAGE="\$request $EMPOWER_ADDRESS circulus-1"' >> $HOME/config.sh
+echo 'export DISKORD_DIR=df_empower' >> $HOME/config.sh
+echo 'export CHAT_ID=1026598604523180043' >> $HOME/config.sh
+source $HOME/config.sh
 
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)

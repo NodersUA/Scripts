@@ -154,20 +154,32 @@ break
 "Autodelegate")
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
+break
+;;
+
 #================================================================
 
 "nit1 tasks")
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/nit1.sh)
+
+break
+;;
 
 #================================================================
 
 "nit2 tasks")
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/nit2.sh)
 
+break
+;;
+
 #================================================================
 
 "nit3 tasks")
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/nit3.sh)
+
+break
+;;
 
 #================================================================
 

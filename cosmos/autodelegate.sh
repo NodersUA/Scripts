@@ -16,8 +16,8 @@ GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
 next=false
-sleep_timeout=\$sleep_timeout
-min_balance=\$min_balance
+sleep_timeout=$sleep_timeout
+min_balance=$min_balance
 
 get_balance() { ${BINARY_NAME} q bank balances ${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 

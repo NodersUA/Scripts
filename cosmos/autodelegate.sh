@@ -22,12 +22,12 @@ get_balance() { ${BINARY_NAME} q bank balances ${address} --output=json | jq -r 
 get_timeout() {
   per_sec=\$((delegate / sleep_timeout))
   procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
-  sleep_timeout=$(echo "scale=10; $fees * 2 / (\$per_sec * \$procent)" | bc)
+  sleep_timeout=\$(echo "scale=10; $fees * 2 / (\$per_sec * \$procent)" | bc)
 }
 
 execute_with_sequence_check() {
   cmd=\$1
-  sequence=\$(${BINARY_NAME} query account ${address} | grep -oP '(?<=sequence: ")[^"]+' | awk '{print $1}')
+  sequence=\$(${BINARY_NAME} query account ${address} | grep -oP '(?<=sequence: ")[^"]+' | awk '{print \$1}')
   new_cmd="\$cmd --sequence=\$sequence -y"
   echo \$new_cmd
   echo "\$(eval \${new_cmd})"
@@ -41,7 +41,7 @@ voting_power=\$(${BINARY_NAME} q staking validator ${valoper} | grep -oP '(?<=to
 start_balance=\$(get_balance) && sleep 1
 
 echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
-echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --fees ${fees}${CHAIN_DENOM} --gas=500000 --commission -y)"
+echo "\$(${BINARY_NAME} tx distribution withdraw-rewards ${valoper} --from wallet --fees ${fees}${CHAIN_DENOM} --gas=500000 --commission -y)"
 
 sleep 3
 balance=\$(get_balance) && sleep 1

@@ -160,6 +160,8 @@ echo 'export BINARY_NAME=nibid' >> $HOME/config.sh
 echo 'export CHAIN_DENOM=unibi' >> $HOME/config.sh
 echo 'export DIRECTORY=nibiru' >> $HOME/config.sh
 echo 'export fees=12500' >> $HOME/config.sh
+echo 'export sleep_timeout=100000' >> $HOME/config.sh
+echo 'export min_balance=100000000' >> $HOME/config.sh
 source $HOME/config.sh
 
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)

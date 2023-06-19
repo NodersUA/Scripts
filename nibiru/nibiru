@@ -137,10 +137,10 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/.bash_profile
-echo 'export DISKORD_DIR=df_nibiru' >> $HOME/.bash_profile
-echo 'export CHAT_ID=984840062871175219' >> $HOME/.bash_profile
-source $HOME/.bash_profile
+echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/config.sh
+echo 'export DISKORD_DIR=df_nibiru' >> $HOME/config.sh
+echo 'export CHAT_ID=984840062871175219' >> $HOME/config.sh
+source $HOME/config.sh
 
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
@@ -152,6 +152,16 @@ break
 #================================================================
 
 "Autodelegate")
+ADDRESS=$(nibid keys show wallet -a)
+VALOPER=$(nibid keys show wallet --bech val -a)
+echo "export address="${ADDRESS} >> $HOME/config.sh
+echo "export valoper="${VALOPER} >> $HOME/config.sh
+echo 'export BINARY_NAME=nibid' >> $HOME/config.sh
+echo 'export CHAIN_DENOM=unibi' >> $HOME/config.sh
+echo 'export DIRECTORY=nibiru' >> $HOME/config.sh
+echo 'export fees=12500' >> $HOME/config.sh
+source $HOME/config.sh
+
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
 break

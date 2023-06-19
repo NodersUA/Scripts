@@ -16,6 +16,8 @@ GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
 next=false
+sleep_timeout=\$sleep_timeout
+min_balance=\$min_balance
 
 get_balance() { ${BINARY_NAME} q bank balances ${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
@@ -63,6 +65,8 @@ done
 
 EOF
 
+chmod +x $HOME/scripts/nibiru_autodelegate.sh
+
 #===========================================================================
 
 # Create ${DIRECTORY}_autodelegate service file (One command)
@@ -82,5 +86,5 @@ EOF
 
 # Start Diskord service file
 systemctl daemon-reload
-#systemctl enable ${DIRECTORY}_autodelegate
-#systemctl restart ${DIRECTORY}_autodelegate
+systemctl enable ${DIRECTORY}_autodelegate
+systemctl restart ${DIRECTORY}_autodelegate

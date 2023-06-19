@@ -33,10 +33,8 @@ get_timeout() {
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
     sleep_timeout=\$(echo "scale=10; $fees * 2 / (\$per_sec * \$procent)" | bc)
-    echo -e "\${GREEN}>>> Validator status is active \${ENDCOLOR}"
   else
     sleep_timeout=\$def_sleep_timeout
-    echo -e "\${RED}>>> Validator status is not active \${ENDCOLOR}"
   fi
 }
 

@@ -83,7 +83,7 @@ chmod +x $HOME/scripts/nibiru_autodelegate.sh
 # Create ${DIRECTORY}_autodelegate service file (One command)
 sudo tee /etc/systemd/system/${DIRECTORY}_autodelegate.service > /dev/null <<EOF
 [Unit]
-Description=${DIRECTORY} curl faucet service
+Description=${DIRECTORY}_autodelegate service
 After=network.target
 
 [Service]

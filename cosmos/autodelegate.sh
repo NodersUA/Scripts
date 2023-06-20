@@ -15,7 +15,6 @@ tee $HOME/scripts/${DIRECTORY}_autodelegate.sh > /dev/null <<EOF
 #!/bin/bash
 
 GREEN="\e[32m"
-RED="\e[31m"
 ENDCOLOR="\e[0m"
 
 next=false

@@ -27,7 +27,7 @@ valoper=$valoper
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
 get_timeout() {
-  status=\$(nibid q staking validator \${valoper} --output=json | jq -r '.status')
+  status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.status')
   if [ "\$status" == "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)

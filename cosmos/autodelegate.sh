@@ -101,4 +101,4 @@ systemctl daemon-reload
 systemctl enable ${DIRECTORY}_autodelegate
 systemctl restart ${DIRECTORY}_autodelegate
 
-#journalctl -u ${DIRECTORY}_autodelegate -f -o cat
+journalctl -u ${DIRECTORY}_autodelegate -f -o cat

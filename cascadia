@@ -162,6 +162,9 @@ source $HOME/config.sh
 
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
+break
+;;
+
 #================================================================
 
 "Exit")

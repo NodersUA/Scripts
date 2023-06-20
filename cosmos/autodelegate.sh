@@ -27,7 +27,6 @@ valoper=$valoper
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
 get_timeout() {
-  status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.status')
   if [ "\$status" == "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
@@ -46,14 +45,17 @@ execute_with_sequence_check() {
 }
 
 while true; do
+status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.status')
 
 echo -e "\${GREEN}>>> Date: [ \$(date) ]\${ENDCOLOR}"
 
 voting_power=\$(${BINARY_NAME} q staking validator \${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
 start_balance=\$(get_balance) && sleep 1
 
+if [ "\$status" == "BOND_STATUS_BONDED" ]; then
 echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
 echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --fees ${fees}${CHAIN_DENOM} --gas=500000 --commission -y)"
+fi
 
 sleep 3
 balance=\$(get_balance) && sleep 1

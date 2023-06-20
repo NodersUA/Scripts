@@ -17,22 +17,22 @@ source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/
 
 #===============================================================================================
 
-# Install CASCADIA
-TEMP=$(which cascadiad) && sudo cp $TEMP /usr/local/bin/
+## Install CASCADIA
+#TEMP=$(which cascadiad) && sudo cp $TEMP /usr/local/bin/
+#
+#echo 'export CHAIN_DENOM=aCC' >> $HOME/config.sh
+#echo 'export BINARY_NAME=cascadiad' >> $HOME/config.sh
+#echo 'export DIRECTORY=cascadia' >> $HOME/config.sh
+#ADDRESS=$(cascadiad keys show wallet -a)
+#VALOPER=$(cascadiad keys show wallet --bech val -a)
+#echo "export address="${ADDRESS} >> $HOME/config.sh
+#echo "export valoper="${VALOPER} >> $HOME/config.sh
+#echo 'export fees=3000000' >> $HOME/config.sh
+#echo 'export sleep_timeout=100000' >> $HOME/config.sh
+#echo 'export min_balance=5000000000000000000' >> $HOME/config.sh
+#source $HOME/config.sh
 
-echo 'export CHAIN_DENOM=aCC' >> $HOME/config.sh
-echo 'export BINARY_NAME=cascadiad' >> $HOME/config.sh
-echo 'export DIRECTORY=cascadia' >> $HOME/config.sh
-ADDRESS=$(cascadiad keys show wallet -a)
-VALOPER=$(cascadiad keys show wallet --bech val -a)
-echo "export address="${ADDRESS} >> $HOME/config.sh
-echo "export valoper="${VALOPER} >> $HOME/config.sh
-echo 'export fees=3000000' >> $HOME/config.sh
-echo 'export sleep_timeout=100000' >> $HOME/config.sh
-echo 'export min_balance=5000000000000000000' >> $HOME/config.sh
-source $HOME/config.sh
-
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
 #===============================================================================================
 

@@ -12,7 +12,7 @@ do
     date
     # Request tokens
     curl -X POST -d '{"address": "$(nibid keys show wallet -a)", "coins": ["110000000unibi","100000000unusd","100000000uusdt"]}' "https://faucet.itn-1.nibiru.fi/"
-    sleep 22000 # 6 годин з запасом
+    sleep 87000 # Доба з запасом
     sleep \$(shuf -i 0-900 -n 1) # 15 хв рандома
     echo "===================================="
 done

@@ -135,7 +135,7 @@ ADDRESS=$(empowerd keys show wallet -a)
 VALOPER=$(empowerd keys show wallet --bech val -a)
 echo "export address="${ADDRESS} >> $HOME/config.sh
 echo "export valoper="${VALOPER} >> $HOME/config.sh
-echo 'export fees=5000' >> $HOME/config.sh
+echo 'export fees=12500' >> $HOME/config.sh
 echo 'export sleep_timeout=100000' >> $HOME/config.sh
 echo 'export min_balance=3000000' >> $HOME/config.sh
 source $HOME/config.sh

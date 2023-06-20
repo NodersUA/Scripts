@@ -76,7 +76,7 @@ done
 
 EOF
 
-chmod +x $HOME/scripts/nibiru_autodelegate.sh
+chmod +x $HOME/scripts/${DIRECTORY}_autodelegate.sh
 
 #===========================================================================
 

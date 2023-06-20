@@ -16,7 +16,7 @@ source $HOME/config.sh
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
 #===============================================================================================
-sleep \$(shuf -i 500-3600 -n 1) # 1 година рандома
+sleep $(shuf -i 500-3600 -n 1) # 1 година рандома
 
 ## Install CASCADIA
 #TEMP=$(which cascadiad) && sudo cp $TEMP /usr/local/bin/
@@ -53,7 +53,7 @@ source $HOME/config.sh
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
 #===============================================================================================
-sleep \$(shuf -i 500-3600 -n 1) # 1 година рандома
+sleep $(shuf -i 500-3600 -n 1) # 1 година рандома
 
 # Install EMPOWER
 echo 'export CHAIN_DENOM=umpwr' >> $HOME/config.sh

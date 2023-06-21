@@ -10,7 +10,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 NODE_NAME="EMPOWER"
 NODE_CHAIN_ID="circulus-1"
 NODE_PORT="20"
-BINARY_VERSION_TAG="v1.0.0-rc2"
+BINARY_VERSION_TAG="v1.0.0-rc3"
 CHAIN_DENOM="umpwr"
 BINARY_NAME="empowerd"
 DIRECTORY="empowerchain"
@@ -84,7 +84,16 @@ break
 #================================================================
 
 "UPDATE")
-echo -e "\e[1m\e[32m Soon...\e[0m"
+systemctl stop empowerd
+cd ~/empowerchain
+git fetch
+git checkout v1.0.0-rc3
+cd chain && make install
+
+sudo cp ~/go/bin/empowerd /usr/local/bin/
+empowerd version --long | grep -e version -e commit
+systemctl restart empowerd
+journalctl -u empowerd -f --no-hostname -o cat
 
 break
 ;;

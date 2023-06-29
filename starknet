@@ -1,7 +1,24 @@
 #!/bin/bash
 
+while true
+do
+
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===========================================================================
 
 if [ -z "$STARKNET_RPC" ]; then
   echo "*********************"
@@ -47,3 +64,44 @@ sudo docker run \
   
 # Check logs
 sudo docker logs -f pathfinder
+
+break
+;;
+
+#===========================================================================
+
+"Update")
+
+# Get last version
+sudo docker pull eqlabs/pathfinder
+
+# This stops the running instance
+sudo docker stop pathfinder
+# This removes the current instance (using the old version of pathfinder)
+sudo docker rm pathfinder
+# This command re-creates the container instance with the latest version
+sudo docker run \
+  --name pathfinder \
+  --restart unless-stopped \
+  --detach \
+  -p 9545:9545 \
+  --user "$(id -u):$(id -g)" \
+  -e RUST_LOG=info \
+  -e PATHFINDER_ETHEREUM_API_URL=$STARKNET_RPC \
+  -v $HOME/pathfinder:/usr/share/pathfinder/data \
+  eqlabs/pathfinder
+
+ver=$(sudo docker exec -it pathfinder pathfinder -V)
+
+echo '=============== UPDATE FINISHED ==================='
+echo -e 'Congratulations:    \e[1m\e[32mNode Updated to $ver\e[0m'
+echo -e 'To check logs:      \e[1m\e[33msudo docker exec -it pathfinder pathfinder -V\e[0m'
+echo -e "To restart:         \e[1m\e[35msudo docker restart pathfinder && sudo docker logs pathfinder -fn100\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+done
+done

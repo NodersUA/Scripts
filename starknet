@@ -103,5 +103,11 @@ break
 
 #===========================================================================
 
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
 done
 done

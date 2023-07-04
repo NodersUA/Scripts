@@ -1,8 +1,5 @@
 #!/bin/bash
 
-while true
-do
-
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
@@ -59,6 +56,7 @@ options=(
 "Delete Node"
 "Diskord Bot Autoinstall"
 "Autodelegate"
+"Autorestart"
 "Exit")
 select opt in "${options[@]}"
 do
@@ -163,8 +161,19 @@ break
 
 #================================================================
 
+"Autorestart")
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
+
+systemctl daemon-reload
+systemctl enable ${DIRECTORY}_autorestart.service
+systemctl restart ${DIRECTORY}_autorestart.service
+
+break
+;;
+
+#================================================================
+
 "Exit")
 exit
 esac
-done
 done

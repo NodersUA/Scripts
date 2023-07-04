@@ -26,7 +26,7 @@ while true; do
     echo "systemctl restart $BINARY_NAME"
   fi
 
-  sleep 3
+  sleep 60
 
 done
 EOF
@@ -54,5 +54,5 @@ EOF
 # Start <DIRECTORY>_autorestart service file
 systemctl daemon-reload
 # systemctl enable ${DIRECTORY}_autorestart.service
-# systemctl restart ${DIRECTORY}_autorestart.service
+systemctl restart ${DIRECTORY}_autorestart.service
 

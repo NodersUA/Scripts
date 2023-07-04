@@ -94,7 +94,7 @@ break
 sudo apt update
 sudo apt install lz4 -y
 
-sudo systemctl stop defund_autorestart
+sudo systemctl stop ar_defund
 sudo systemctl stop defundd
 cp $HOME/.defund/data/priv_validator_state.json $HOME/.defund/priv_validator_state.json.backup 
 defundd tendermint unsafe-reset-all --home $HOME/.defund --keep-addr-book 
@@ -104,9 +104,9 @@ mv $HOME/.defund/priv_validator_state.json.backup $HOME/.defund/data/priv_valida
 sudo systemctl restart defundd
 
 sleep 60
-sudo systemctl enable defund_autorestart
-sudo systemctl restart defund_autorestart
-sudo journalctl -u defund_autorestart -f --no-hostname -o cat
+sudo systemctl enable ar_defund
+sudo systemctl restart ar_defund
+sudo journalctl -u defundd -f --no-hostname -o cat
 
 break
 ;;

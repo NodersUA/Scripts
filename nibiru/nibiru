@@ -142,7 +142,7 @@ source $HOME/config.sh
 
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/curl_faucet.sh)
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nibiru/curl_faucet.sh)
 
 break
 ;;

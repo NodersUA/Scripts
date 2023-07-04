@@ -54,5 +54,5 @@ EOF
 # Start <DIRECTORY>_autorestart service file
 systemctl daemon-reload
 # systemctl enable ${DIRECTORY}_autorestart.service
-systemctl restart ${DIRECTORY}_autorestart.service
+# systemctl restart ${DIRECTORY}_autorestart.service
 

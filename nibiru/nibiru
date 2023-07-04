@@ -109,9 +109,9 @@ mv $HOME/.nibid/priv_validator_state.json.backup $HOME/.nibid/data/priv_validato
 sudo systemctl start nibid
 
 sleep 60
-sudo systemctl enable nibiru_autorestart
-sudo systemctl restart nibiru_autorestart
-sudo journalctl -u nibiru_autorestart -f --no-hostname -o cat
+sudo systemctl enable ar_nibiru
+sudo systemctl restart ar_nibiru
+sudo journalctl -u nibid -f --no-hostname -o cat
 
 break
 ;;

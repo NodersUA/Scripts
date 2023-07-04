@@ -165,8 +165,8 @@ break
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
 
 systemctl daemon-reload
-systemctl enable ${DIRECTORY}_autorestart.service
-systemctl restart ${DIRECTORY}_autorestart.service
+systemctl enable ar_${DIRECTORY}.service
+systemctl restart ar_${DIRECTORY}.service
 
 break
 ;;

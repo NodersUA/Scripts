@@ -101,7 +101,7 @@ break
 sudo apt update
 sudo apt install lz4 -y
 
-sudo systemctl stop cascadia_autorestart
+sudo systemctl stop ar_cascadia
 sudo systemctl stop cascadiad
 cp $HOME/.cascadiad/data/priv_validator_state.json $HOME/.cascadiad/priv_validator_state.json.backup 
 cascadiad tendermint unsafe-reset-all --home $HOME/.cascadiad --keep-addr-book
@@ -111,9 +111,9 @@ mv $HOME/.cascadiad/priv_validator_state.json.backup $HOME/.cascadiad/data/priv_
 sudo systemctl restart cascadiad
 
 sleep 60
-sudo systemctl enable cascadia_autorestart
-sudo systemctl restart cascadia_autorestart
-sudo journalctl -u cascadia_autorestart -f --no-hostname -o cat
+sudo systemctl enable ar_cascadia
+sudo systemctl restart ar_cascadia
+sudo journalctl -u cascadiad -f --no-hostname -o cat
 
 break
 ;;

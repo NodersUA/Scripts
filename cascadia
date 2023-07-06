@@ -110,10 +110,13 @@ curl "https://snapshots1-testnet.nodejumper.io/cascadia-testnet/${SNAP_NAME}" | 
 mv $HOME/.cascadiad/priv_validator_state.json.backup $HOME/.cascadiad/data/priv_validator_state.json 
 sudo systemctl restart cascadiad
 
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u cascadiad -f -o cat\e[0m'
+
 sleep 60
 sudo systemctl enable ar_cascadia
 sudo systemctl restart ar_cascadia
-sudo journalctl -u cascadiad -f --no-hostname -o cat
 
 break
 ;;

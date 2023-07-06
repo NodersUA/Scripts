@@ -1,0 +1,15 @@
+#!/bin/bash
+
+my_ip=$(wget -qO- eth0.me)
+
+ufw allow 11657
+ufw allow 13657
+ufw allow 18657
+
+sed -i 's/laddr = "tcp:\/\/127.0.0.1:11657"/laddr = "tcp:\/\/'"$my_ip"':11657"/' ~/.nibid/config/config.toml
+sed -i 's/laddr = "tcp:\/\/127.0.0.1:13657"/laddr = "tcp:\/\/'"$my_ip"':13657"/' ~/.defund/config/config.toml
+sed -i 's/laddr = "tcp:\/\/127.0.0.1:18657"/laddr = "tcp:\/\/'"$my_ip"':18657"/' ~/.cascadiad/config/config.toml
+
+sed -i "s/node = \"tcp:\/\/.*:11657\"/node = \"tcp:\/\/$my_ip:11657\"/" ~/.nibid/config/client.toml
+sed -i "s/node = \"tcp:\/\/.*:13657\"/node = \"tcp:\/\/$my_ip:13657\"/" ~/.defund/config/client.toml
+sed -i "s/node = \"tcp:\/\/.*:18657\"/node = \"tcp:\/\/$my_ip:18657\"/" ~/.cascadiad/config/client.toml

@@ -122,6 +122,8 @@ sudo systemctl daemon-reload && \
 sudo systemctl enable subspaced && \
 sudo systemctl restart subspaced
 
+rm ~/subspace_init.expect
+
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33msudo journalctl -fu subspaced --no-hostname -o cat\e[0m'

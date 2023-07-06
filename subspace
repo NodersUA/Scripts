@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/usr/bin/expect -f
 
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
@@ -29,7 +28,7 @@ apt update && apt upgrade -y
 
 # Install developer packages (One command)
 sudo apt-get install wget jq ocl-icd-opencl-dev \
-libopencl-clang-dev libgomp1 ocl-icd-libopencl1 -y
+libopencl-clang-dev libgomp1 ocl-icd-libopencl1 expect -y
 
 cpu_version=$(echo 'BEGIN {
     while (!/flags/) if (getline < "/proc/cpuinfo" != 1) exit 1
@@ -53,17 +52,24 @@ fi
 sudo chmod +x subspace && cd
 echo -e "\n\nrelease >> ${VER}.\n\n"
 
+#-----------------------------------------------
 # Automation of the subspace init command
+sudo tee ~/subspace_init.expect > /dev/null <<EOF
+#!/usr/bin/expect -f
+
+spawn bash -c "source ~/.bash_profile; env"
+expect eof
+
 spawn subspace init
 
-expect "Do you have an existing farmer/reward address? [y/n]:"
+expect "Do you have an existing farmer/reward address? \[y/n\]:"
 send "y\r"
 
 expect "Enter your farmer/reward address:"
-send "$env(SUBSPACE_ADDRESS)\r"
+send "$SUBSPACE_ADDRESS\r"
 
 expect "Enter your node name to be identified on the network (defaults to 'root', press enter to use the default):"
-send "$env(MONIKER)\r"
+send "$MONIKER\r"
 
 expect "Specify a path for storing plot files (press enter to use the default: '/root/.local/share/subspace-cli/plots'):"
 send "\r"
@@ -76,6 +82,14 @@ send "100 GB\r"
 
 expect "Defaults to 'Gemini3e', press enter to use the default:"
 send "\r"
+
+expect eof
+
+EOF
+
+chmod +x subspace_init.expect
+expect subspace_init.expect
+#-----------------------------------------------
 
 # Fix journal (One command)
 sudo tee <<EOF >/dev/null /etc/systemd/journald.conf

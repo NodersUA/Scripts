@@ -59,17 +59,18 @@ expect -c '
   send "y\r"
   expect "Enter your farmer/reward address:"
   send "$env(SUBSPACE_ADDRESS)\r"
-  expect "Enter your node name to be identified on the network(defaults to `root`, press enter to use the default):"
+  expect "Enter your node name to be identified on the network (defaults to `root`, press enter to use the default):"
   send "$env(MONIKER)\r"
-  expect "Specify a path for storing plot files (press enter to use the default: `\"/root/.local/share/subspace-cli/plots\"`):"
+  expect "Specify a path for storing plot files (press enter to use the default: \"/root/.local/share/subspace-cli/plots\"):"
   send "\r"
-  expect "Specify a path for storing node files (press enter to use the default: `\"/root/.local/share/subspace-cli/node\"`):"
+  expect "Specify a path for storing node files (press enter to use the default: \"/root/.local/share/subspace-cli/node\"):"
   send "\r"
   expect "Specify a plot size (defaults to `2.0 GB`, press enter to use the default):"
   send "100 GB\r"
   expect "Defaults to `Gemini3e`, press enter to use the default:"
   send "\r"
   expect eof
+'
 
 # Fix journal (One command)
 sudo tee <<EOF >/dev/null /etc/systemd/journald.conf

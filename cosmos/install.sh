@@ -42,11 +42,14 @@ do
   esac
 done
 
+#==================================================================================================
+
 echo -e "\e[1m\e[32m [[\\\\\***** Updating packages and dependencies *****/////]] \e[0m" && sleep 1
 #UPDATE APT
 sudo apt update && apt upgrade -y
 apt install bc curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
+#==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Installing GO *****/////]] \e[0m" && sleep 1
 #INSTALL GO
@@ -60,6 +63,8 @@ echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile &
 source $HOME/.bash_profile ; \
 fi
 go version
+
+#==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Downloading and building binaries *****/////]] \e[0m" && sleep 1
 #INSTALL
@@ -77,18 +82,22 @@ $BINARY_NAME init $MONIKER --chain-id $NODE_CHAIN_ID
 
 wget -O $HOME/$HIDDEN_DIRECTORY/config/genesis.json $GENESIS_URL
 
+#==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Set the ports *****/////]] \e[0m" && sleep 1
+external_address=$(wget -qO- eth0.me)
 # config.toml
-sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${NODE_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:${NODE_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${NODE_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${NODE_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${NODE_PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
+sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${NODE_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://${external_address}:${NODE_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${NODE_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${NODE_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${NODE_PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
+sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${NODE_PORT}656\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 # app.toml
 sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${NODE_PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${NODE_PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${NODE_PORT}7\"%" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 sed -i.bak -e "s%^address = \"localhost:9090\"%address = \"localhost:${NODE_PORT}90\"%; s%^address = \"localhost:9091\"%address = \"localhost:${NODE_PORT}91\"%; s%^address = \"tcp://localhost:1317\"%address = \"tcp://localhost:1${NODE_PORT}7\"%" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 # client.toml
-sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://localhost:${NODE_PORT}657\"%" $HOME/$HIDDEN_DIRECTORY/config/client.toml
-external_address=$(wget -qO- eth0.me)
-sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${NODE_PORT}656\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
+sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://${external_address}:${NODE_PORT}657\"%" $HOME/$HIDDEN_DIRECTORY/config/client.toml
 
+ufw allow ${NODE_PORT}657
+
+#==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Setup config *****/////]] \e[0m" && sleep 1
 # correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
@@ -117,8 +126,9 @@ sed -i -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/
 
 sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
-echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
+#==================================================================================================
 
+echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
 # Create service file (One command)
 sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
 [Unit]
@@ -145,13 +155,19 @@ systemctl daemon-reload
 systemctl enable $BINARY_NAME
 systemctl restart $BINARY_NAME
 
+#==================================================================================================
+
 # set up cosmos_autorestart (disabled)
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
+
+#==================================================================================================
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m'
 echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
+
+#==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
 

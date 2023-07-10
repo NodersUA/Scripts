@@ -93,7 +93,7 @@ sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:$
 sed -i.bak -e "s%^address = \"0.0.0.0:9090\"%address = \"0.0.0.0:${NODE_PORT}90\"%; s%^address = \"0.0.0.0:9091\"%address = \"0.0.0.0:${NODE_PORT}91\"%; s%^address = \"tcp://0.0.0.0:1317\"%address = \"tcp://0.0.0.0:1${NODE_PORT}7\"%" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 sed -i.bak -e "s%^address = \"localhost:9090\"%address = \"localhost:${NODE_PORT}90\"%; s%^address = \"localhost:9091\"%address = \"localhost:${NODE_PORT}91\"%; s%^address = \"tcp://localhost:1317\"%address = \"tcp://localhost:1${NODE_PORT}7\"%" $HOME/$HIDDEN_DIRECTORY/config/app.toml
 # client.toml
-sed -i.bak -e "s%^node = \"tcp://localhost:26657\"%node = \"tcp://${external_address}:${NODE_PORT}657\"%" $HOME/$HIDDEN_DIRECTORY/config/client.toml
+sed -i.bak -e "s%^node *=.*\"%node = \"tcp://${external_address}:${NODE_PORT}657\"%" $HOME/$HIDDEN_DIRECTORY/config/client.toml
 
 ufw allow ${NODE_PORT}657
 

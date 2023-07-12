@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===========================================================================
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo "==================================================="
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+  source $HOME/.bash_profile
+fi
+
+# Update the repositories
+apt update && apt upgrade -y
+
+# Install Docker
+if ! [ -x "$(command -v docker)" ]; then
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker $USER
+docker --version
+else
+echo $(docker --version)
+fi
+
+# Ports
+FIRE_PORT=44
+echo 'export FIRE_PORT='$FIRE_PORT >> $HOME/.bash_profile
+source $HOME/.bash_profile
+ufw allow 30${FIRE_PORT}3
+ufw allow 9${FIRE_PORT}4
+ufw allow 9${FIRE_PORT}3
+
+# Start the 5ire container
+sudo docker run \
+  --name 5ire \
+  --restart unless-stopped \
+  --detach \
+  -p 30${FIVEIRE_PORT}3:30${FIVEIRE_PORT}3 \
+  -p 9${FIVEIRE_PORT}3:9${FIVEIRE_PORT}3 \
+  -p 9${FIVEIRE_PORT}4:9${FIVEIRE_PORT}4 5irechain/5ire-thunder-node:0.12 \
+  --port 30${FIVEIRE_PORT}3 \
+  --no-telemetry \
+  --name $MONIKER \
+  --base-path /5ire/data \
+  --keystore-path /5ire/data \
+  --node-key-file /5ire/secrets/node.key \
+  --chain /5ire/thunder-chain-spec.json \
+  --bootnodes /ip4/3.128.99.18/tcp/30333/p2p/12D3KooWSTawLxMkCoRMyzALFegVwp7YsNVJqh8D2p7pVJDqQLhm \
+  --validator
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs:      \e[1m\e[33msudo docker logs -fn100 5ire\e[0m"
+echo -e "To restart:         \e[1m\e[33msudo docker restart 5ire && sudo docker logs 5ire -fn100\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Update")
+echo -e "\e[1m\e[32m	Soon...\e[0m"
+
+#echo '=============== UPDATE FINISHED ==================='
+#echo -e "Congratulations:    \e[1m\e[32mNode Updated to ${ver}\e[0m"
+#echo -e "To check logs:      \e[1m\e[33msudo docker logs pathfinder -fn100\e[0m"
+#echo -e "To restart:         \e[1m\e[33msudo docker restart pathfinder && sudo docker logs pathfinder -fn100\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

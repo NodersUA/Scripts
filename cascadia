@@ -88,9 +88,10 @@ cd /usr/local/bin/
 curl -L https://github.com/CascadiaFoundation/cascadia/releases/download/v0.1.3/cascadiad-v0.1.3-linux-amd64 -o cascadiad
 chmod +x cascadiad && cd
 systemctl restart cascadiad
+ver=$(cascadiad version)
 
 echo '=============== UPDATE FINISHED ==================='
-echo -e "Congratulations:    \e[1m\e[32mNode Updated to ${BINARY_VERSION_TAG}\e[0m"
+echo -e "Congratulations:    \e[1m\e[32mNode Updated to ${ver}\e[0m"
 echo -e "To check logs:      \e[1m\e[33msudo journalctl -u cascadiad -f --no-hostname -o cat\e[0m"
 echo -e "To restart:         \e[1m\e[33msudo systemctl restart cascadiad\e[0m"
 

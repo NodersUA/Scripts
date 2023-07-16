@@ -106,7 +106,7 @@ $BINARY_NAME config chain-id $NODE_CHAIN_ID
 # adjust if necessary keyring-backend в client.toml 
 $BINARY_NAME config keyring-backend test
 
-$BINARY_NAME config node tcp://localhost:${NODE_PORT}657
+$BINARY_NAME config node tcp://${external_address}:${NODE_PORT}657
 
 # Set the minimum price for gas
 sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"$MINIMUM_GAS_PRICES\"/;" ~/$HIDDEN_DIRECTORY/config/app.toml

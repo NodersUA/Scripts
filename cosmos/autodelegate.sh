@@ -6,12 +6,12 @@ apt install bc -y
 fi
 
 # make sure scripts is in path. If not then make dir
-mkdir -p "$HOME/scripts"
+mkdir -p "~/scripts"
 
 #===========================================================================
 
 # write nibiru_autorestart.sh to scripts/
-tee $HOME/scripts/${DIRECTORY}_autodelegate.sh > /dev/null <<EOF
+tee ~/scripts/ad_${DIRECTORY}.sh > /dev/null <<EOF
 #!/bin/bash
 
 GREEN="\e[32m"
@@ -77,19 +77,19 @@ done
 
 EOF
 
-chmod +x $HOME/scripts/${DIRECTORY}_autodelegate.sh
+chmod +x ~/scripts/ad_${DIRECTORY}.sh
 
 #===========================================================================
 
-# Create ${DIRECTORY}_autodelegate service file (One command)
-sudo tee /etc/systemd/system/${DIRECTORY}_autodelegate.service > /dev/null <<EOF
+# Create ad_${DIRECTORY} service file (One command)
+sudo tee /etc/systemd/system/ad_${DIRECTORY}.service > /dev/null <<EOF
 [Unit]
-Description=${DIRECTORY}_autodelegate service
+Description=ad_${DIRECTORY} service
 After=network.target
 
 [Service]
 User=$USER
-ExecStart=$HOME/scripts/${DIRECTORY}_autodelegate.sh
+ExecStart=$HOME/scripts/ad_${DIRECTORY}.sh
 Restart=always
 
 [Install]
@@ -98,7 +98,8 @@ EOF
 
 # Start Diskord service file
 systemctl daemon-reload
-systemctl enable ${DIRECTORY}_autodelegate
-systemctl restart ${DIRECTORY}_autodelegate
+systemctl enable ad_${DIRECTORY}
+systemctl restart ad_${DIRECTORY}
 
-#journalctl -u ${DIRECTORY}_autodelegate -f -o cat
+echo '=============== SETUP FINISHED ==================='
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u ad_${DIRECTORY} -f -o cat\e[0m'

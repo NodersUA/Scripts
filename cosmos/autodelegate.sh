@@ -45,6 +45,8 @@ execute_with_sequence_check() {
 }
 
 while true; do
+sleep \$(shuf -i 0-43200 -n 1)
+
 status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.status')
 
 echo -e "\${GREEN}>>> Date: [ \$(date) ]\${ENDCOLOR}"

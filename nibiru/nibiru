@@ -164,6 +164,9 @@ source $HOME/config.sh
 
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
 
+echo '=============== SETUP FINISHED ==================='
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u ad_nibiru -f -o cat\e[0m'
+
 break
 ;;
 

@@ -93,7 +93,7 @@ break
 #================================================================
 
 "Synchronization via SnapShot")
-sudo systemctl stop ar_nibiru
+sudo systemctl stop ar_nibiru ad_nibiru
 
 snapshot_interval=1000
 sed -i.bak -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/" ~/.nibid/config/app.toml
@@ -113,8 +113,8 @@ echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0
 echo -e 'To check logs:        \e[1m\e[33mjournalctl -u nibid -f -o cat\e[0m'
 
 sleep 60
-sudo systemctl enable ar_nibiru
-sudo systemctl restart ar_nibiru
+sudo systemctl enable ar_nibiru ad_nibiru
+sudo systemctl restart ar_nibiru ad_nibiru
 
 break
 ;;

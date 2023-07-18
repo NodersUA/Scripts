@@ -45,7 +45,7 @@ execute_with_sequence_check() {
 }
 
 while true; do
-sl=\$(shuf -i 0-43200 -n 1)
+sl=\$(shuf -i 0-432000 -n 1)
 echo "sleep \$sl sec..."
 sleep \$sl
 

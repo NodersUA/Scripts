@@ -1,6 +1,6 @@
 #!/bin/bash
 
-number=100000000
+number=50000000
 percentage_min=$(( (number * 10) / 100 ))
 percentage_max=$(( (number * 30) / 100 ))
 

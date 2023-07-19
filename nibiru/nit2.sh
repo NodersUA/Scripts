@@ -1,5 +1,9 @@
 #!/bin/bash
 
+sed -i -e "s/^indexer *=.*/indexer = \"kv\"/" ~/.nibid/config/config.toml
+systemctl restart nibiid
+sleep 60
+
 cd && git clone https://github.com/NibiruChain/cw-nibiru
 txhash=$(nibid tx wasm store $HOME/cw-nibiru/artifacts-cw-plus/cw20_base.wasm --from wallet \
 --gas-adjustment 1.2 --gas auto --fees 80000unibi -y -o json | jq -r '.txhash')
@@ -28,3 +32,6 @@ CONTRACT="null"
 while [ "$CONTRACT" = "null" ]; do CONTRACT=$(nibid query wasm list-contract-by-code $code_id --output json | jq -r '.contracts[-1]'); sleep 5; done
 nibid tx wasm execute $CONTRACT $TRANSFER --gas-adjustment 1.2 --gas 8000000 --fees 200000unibi --from wallet --chain-id $NIBIRU_CHAIN_ID -y && sleep 7
 nibid query wasm contract-state smart $CONTRACT "$BALANCE_QUERY" --output json
+
+sed -i -e "s/^indexer *=.*/indexer = \"null\"/" ~/.nibid/config/config.toml
+systemctl restart nibiid

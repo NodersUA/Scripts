@@ -33,8 +33,8 @@ echo "Random Valoper 2: $valoper2"
 #echo "Random Valoper 3: $valoper3"
 
 # Виконуємо команди з перевіркою на помилку sequence
-execute_with_sequence_check "nibid tx staking delegate $valoper1 $(shuf -i 1000000-10000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 2000000
-execute_with_sequence_check "nibid tx staking delegate $NIBIRU_VALOPER $(shuf -i 1000000-10000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 8000000
-execute_with_sequence_check "nibid tx staking redelegate $NIBIRU_VALOPER $valoper2 $(shuf -i 1000000-10000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 3000000
-execute_with_sequence_check "nibid tx staking unbond $NIBIRU_VALOPER $(shuf -i 1000000-10000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 2000000
+execute_with_sequence_check "nibid tx staking delegate $valoper1 $(shuf -i 6000000-10000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 2000000
+execute_with_sequence_check "nibid tx staking delegate $NIBIRU_VALOPER $(shuf -i 6000000-10000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 8000000
+execute_with_sequence_check "nibid tx staking redelegate $NIBIRU_VALOPER $valoper2 $(shuf -i 1000000-3000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 3000000
+execute_with_sequence_check "nibid tx staking unbond $NIBIRU_VALOPER $(shuf -i 1000000-3000000 -n 1)unibi --from wallet --fees 7500unibi --gas=300000" # 2000000
 execute_with_sequence_check "nibid tx distribution withdraw-all-rewards --from wallet --fees 7500unibi --gas=300000"

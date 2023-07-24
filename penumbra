@@ -1,0 +1,157 @@
+#!/bin/bash
+
+while true
+do
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+#=======================================================
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Create Validator"
+"Exit")
+
+#=======================================================
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#=======================================================
+
+if [ -z "$MONIKER" ]; then
+  echo -e "      \e[1m\e[35m SET YOUR IDENTITY(nickname):\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read MONIKER
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  echo "export MONIKER="${MONIKER}"" >> $HOME/.bash_profile
+  source $HOME/.bash_profile
+fi
+
+#=======================================================
+
+## Installation
+
+# Update, upgrade and install requirements
+sudo apt-get update && \
+sudo apt-get upgrade -y && \
+sudo curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+source "$HOME/.cargo/env" && \
+cargo install sccache && \
+sudo apt-get install build-essential cmake clang pkg-config libssl-dev protobuf-compiler git-lfs -y
+
+#=======================================================
+
+# Clone repository and build
+git clone https://github.com/penumbra-zone/penumbra
+cd penumbra && git fetch && git checkout v0.56.0
+cargo build --release --bin pcli
+cargo build --release --bin pd
+cp ~/penumbra/target/release/{pcli,pd} /usr/local/bin
+
+#=======================================================
+
+#INSTALL GO
+if [ "$(go version)" != "go version go1.20.5 linux/amd64" ]; then \
+ver="1.20.5" && \
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
+sudo rm -rf /usr/local/go && \
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
+rm "go$ver.linux-amd64.tar.gz" && \
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
+source $HOME/.bash_profile ; \
+fi
+go version
+
+echo export GOPATH=\"\$HOME/go\" >> ~/.bash_profile
+echo export PATH=\"\$PATH:\$GOPATH/bin\" >> ~/.bash_profile
+source ~/.bash_profile
+
+#=======================================================
+
+# INSTALL TERDENMINT
+cd $HOME
+git clone https://github.com/tendermint/tendermint.git
+cd tendermint
+git checkout v0.34.23
+make install
+cp $(which tendermint) /usr/local/bin/ && cd $HOME
+tendermint version
+
+#=======================================================
+
+pd testnet join --external-address $(wget -qO- eth0.me):26656 --moniker $MONIKER
+
+#=======================================================
+
+# Create service file for Penumbra
+sudo tee /etc/systemd/system/penumbra.service > /dev/null <<EOF
+[Unit]
+Description=Penumbra pd
+Wants=tendermint.service
+
+[Service]
+ExecStart=/usr/local/bin/pd start --home ~/.penumbra/testnet_data/node0/pd
+Restart=on-failure
+RestartSec=5
+User=$USER
+Environment=RUST_LOG=info,pd=debug,penumbra=debug,jmt=debug
+
+[Install]
+WantedBy=default.target
+EOF
+
+#=======================================================
+
+# Create service file for Tendermint
+sudo tee /etc/systemd/system/tendermint.service > /dev/null <<EOF
+[Unit]
+Description=Tendermint for Penumbra
+
+[Service]
+ExecStart=/usr/local/bin/tendermint start --home /root/.penumbra/testnet_data/node0/tendermint
+Restart=on-failure
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=default.target
+EOF
+
+#=======================================================
+
+sudo systemctl daemon-reload
+sudo systemctl restart penumbra tendermint
+
+cd ~/penumbra && cargo run --quiet --release --bin pcli keys generate
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs penumbra:    \e[1m\e[33mjournalctl -u penumbra -f -o cat\e[0m"
+echo -e "To check logs tendermint:  \e[1m\e[33mjournalctl -u tendermint -f -o cat\e[0m"
+echo -e "Your Penumbra Address:     \e[1m\e[33mcd ~/penumbra && cargo run --quiet --release --bin pcli view address 0\e[0m"
+
+#=======================================================
+
+break
+;;
+
+"Create Validator")
+echo "Soon..."
+
+break
+;;
+
+#=======================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

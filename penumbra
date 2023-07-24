@@ -9,6 +9,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 PS3='Select an action: '
 options=(
 "Install Node"
+"Diskord Bot Autoinstall"
 "Create Validator"
 "Exit")
 
@@ -19,7 +20,7 @@ do
 case $opt in
 "Install Node")
 
-#=======================================================
+#----------------------------------------------------
 
 if [ -z "$MONIKER" ]; then
   echo -e "      \e[1m\e[35m SET YOUR IDENTITY(nickname):\e[0m"
@@ -30,7 +31,7 @@ if [ -z "$MONIKER" ]; then
   source $HOME/.bash_profile
 fi
 
-#=======================================================
+#----------------------------------------------------
 
 ## Installation
 
@@ -42,7 +43,7 @@ source "$HOME/.cargo/env" && \
 cargo install sccache && \
 sudo apt-get install build-essential cmake clang pkg-config libssl-dev protobuf-compiler git-lfs -y
 
-#=======================================================
+#----------------------------------------------------
 
 # Clone repository and build
 git clone https://github.com/penumbra-zone/penumbra
@@ -51,7 +52,7 @@ cargo build --release --bin pcli
 cargo build --release --bin pd
 cp ~/penumbra/target/release/{pcli,pd} /usr/local/bin
 
-#=======================================================
+#----------------------------------------------------
 
 #INSTALL GO
 if [ "$(go version)" != "go version go1.20.5 linux/amd64" ]; then \
@@ -69,7 +70,7 @@ echo export GOPATH=\"\$HOME/go\" >> ~/.bash_profile
 echo export PATH=\"\$PATH:\$GOPATH/bin\" >> ~/.bash_profile
 source ~/.bash_profile
 
-#=======================================================
+#----------------------------------------------------
 
 # INSTALL TERDENMINT
 cd $HOME
@@ -80,11 +81,11 @@ make install
 cp $(which tendermint) /usr/local/bin/ && cd $HOME
 tendermint version
 
-#=======================================================
+#----------------------------------------------------
 
 pd testnet join --external-address $(wget -qO- eth0.me):26656 --moniker $MONIKER
 
-#=======================================================
+#----------------------------------------------------
 
 # Create service file for Penumbra
 sudo tee /etc/systemd/system/penumbra.service > /dev/null <<EOF
@@ -93,17 +94,17 @@ Description=Penumbra pd
 Wants=tendermint.service
 
 [Service]
-ExecStart=/usr/local/bin/pd start --home ~/.penumbra/testnet_data/node0/pd
+ExecStart=/usr/local/bin/pd start --home $HOME/.penumbra/testnet_data/node0/pd
 Restart=on-failure
 RestartSec=5
 User=$USER
-Environment=RUST_LOG=info,pd=debug,penumbra=debug,jmt=debug
+Environment=RUST_LOG=info
 
 [Install]
 WantedBy=default.target
 EOF
 
-#=======================================================
+#----------------------------------------------------
 
 # Create service file for Tendermint
 sudo tee /etc/systemd/system/tendermint.service > /dev/null <<EOF
@@ -111,7 +112,7 @@ sudo tee /etc/systemd/system/tendermint.service > /dev/null <<EOF
 Description=Tendermint for Penumbra
 
 [Service]
-ExecStart=/usr/local/bin/tendermint start --home /root/.penumbra/testnet_data/node0/tendermint
+ExecStart=/usr/local/bin/tendermint start --home $HOME/.penumbra/testnet_data/node0/tendermint
 Restart=on-failure
 RestartSec=5
 User=root
@@ -120,7 +121,7 @@ User=root
 WantedBy=default.target
 EOF
 
-#=======================================================
+#----------------------------------------------------
 
 sudo systemctl daemon-reload
 sudo systemctl restart penumbra tendermint
@@ -132,10 +133,27 @@ echo -e "To check logs penumbra:    \e[1m\e[33mjournalctl -u penumbra -f -o cat\
 echo -e "To check logs tendermint:  \e[1m\e[33mjournalctl -u tendermint -f -o cat\e[0m"
 echo -e "Your Penumbra Address:     \e[1m\e[33mcd ~/penumbra && cargo run --quiet --release --bin pcli view address 0\e[0m"
 
+break
+;;
+
 #=======================================================
+
+"Diskord Bot Autoinstall")
+
+# set variables
+PENUMBRA_ADDRESS=$(pcli view address | grep -o '[[:alnum:]]*$' | tr -d '[:space:]')
+echo 'export MESSAGE="$PENUMBRA_ADDRESS"' >> $HOME/config.sh
+echo 'export DISKORD_DIR=df_penumbra' >> $HOME/config.sh
+echo 'export CHAT_ID=915710851917439060' >> $HOME/config.sh
+source $HOME/config.sh
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
 
 break
 ;;
+
+#=======================================================
 
 "Create Validator")
 echo "Soon..."

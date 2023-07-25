@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sed -i -e "s/^indexer *=.*/indexer = \"kv\"/" ~/.nibid/config/config.toml
-systemctl restart nibiid
+systemctl restart nibid
 sleep 60
 
 cd && git clone https://github.com/NibiruChain/cw-nibiru
@@ -34,4 +34,4 @@ nibid tx wasm execute $CONTRACT $TRANSFER --gas-adjustment 1.2 --gas 8000000 --f
 nibid query wasm contract-state smart $CONTRACT "$BALANCE_QUERY" --output json
 
 sed -i -e "s/^indexer *=.*/indexer = \"null\"/" ~/.nibid/config/config.toml
-systemctl restart nibiid
+systemctl restart nibid

@@ -12,6 +12,7 @@ options=(
 "Diskord Bot Autoinstall"
 "Create Validator"
 "Update"
+"Delete"
 "Exit")
 
 #=======================================================
@@ -84,6 +85,7 @@ tendermint version
 
 #----------------------------------------------------
 
+pd testnet unsafe-reset-all
 pd testnet join --external-address $(wget -qO- eth0.me):26656 --moniker $MONIKER
 
 #----------------------------------------------------
@@ -125,6 +127,7 @@ EOF
 #----------------------------------------------------
 
 sudo systemctl daemon-reload
+sudo systemctl enable penumbra tendermint
 sudo systemctl restart penumbra tendermint
 
 cd ~/penumbra && cargo run --quiet --release --bin pcli keys generate
@@ -157,7 +160,31 @@ break
 #=======================================================
 
 "Create Validator")
-echo "Soon..."
+cd ~/penumbra && pcli validator definition template \
+    --tendermint-validator-keyfile ~/.penumbra/testnet_data/node0/tendermint/config/priv_validator_key.json \
+    --file validator.toml
+    
+sed -i "s/^name *=.*/name = \"$MONIKER\"/" ~/penumbra/validator.toml
+sed -i "s/^enabled *=.*/enabled = true/" ~/penumbra/validator.toml
+sed -i "s/^sequence_number *=.*/sequence_number = 1/" ~/penumbra/validator.toml
+
+PENUMBRA_VALIDATOR=$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')
+PENUMBRA_ADDRESS=$(grep -E 'recipient = "(.*)"' validator.toml | awk -F '"' '{print $2}')
+echo "export PENUMBRA_ADDRESS="${PENUMBRA_ADDRESS} >> $HOME/.bash_profile
+echo "export PENUMBRA_VALIDATOR="${PENUMBRA_VALIDATOR} >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+pcli validator definition upload --file ~/penumbra/validator.toml
+
+balance=$(pcli view balance | grep "penumbra" | sed 's/.* \([0-9]*\)penumbra/\1/')
+
+if [ "$balance" -gt 1 ]; then
+delegate_value=$(shuf -i 1-$balance -n 1)
+pcli tx delegate ${delegate_value}penumbra --to $PENUMBRA_VALIDATOR
+echo "Delegated ${delegate_value}penumbra to $PENUMBRA_VALIDATOR"
+else
+echo "Сannot be delegated. Balance ${balance}penumbra"
+fi
 
 break
 ;;
@@ -166,10 +193,31 @@ break
 
 "Update")
 
+sudo systemctl stop penumbra tendermint
 cd ~/penumbra && git fetch && git checkout v0.57.0
 cargo build --release --bin pcli
 cp ~/penumbra/target/release/pcli /usr/local/bin
 cargo run --quiet --release --bin pcli view reset
+cargo run --bin pd --release -- testnet unsafe-reset-all
+cargo run --bin pd --release -- testnet join
+sudo systemctl restart penumbra tendermint
+
+break
+;;
+
+#=======================================================
+
+"Delete")
+
+sudo systemctl stop penumbra tendermint df_penumbra
+sudo systemctl disable penumbra tendermint df_penumbra
+cd $HOME && sudo rm -rf penumbra .penumbra df_penumbra
+rm /etc/systemd/system/penumbra.service
+rm /etc/systemd/system/tendermint.service
+rm -rf ~/.local/share/pcli/
+rm -rf ~/.local/share/penumbra-testnet-archive/
+sudo systemctl daemon-reload
+rm $(which pcli) && rm $(which pd)
 
 break
 ;;

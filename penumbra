@@ -11,6 +11,7 @@ options=(
 "Install Node"
 "Diskord Bot Autoinstall"
 "Create Validator"
+"Update"
 "Exit")
 
 #=======================================================
@@ -157,6 +158,17 @@ break
 
 "Create Validator")
 echo "Soon..."
+
+break
+;;
+
+#=======================================================
+
+"Update")
+
+cd ~/penumbra && git fetch && git checkout v0.57.0
+cargo build --release --bin pcli
+cargo run --quiet --release --bin pcli view reset
 
 break
 ;;

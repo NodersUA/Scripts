@@ -176,6 +176,7 @@ source $HOME/.bash_profile
 
 pcli validator definition upload --file ~/penumbra/validator.toml
 
+echo "Sleep 10 min..."
 sleep 600
 
 balance=$(pcli view balance | grep "penumbra" | sed 's/.* \([0-9]*\)penumbra/\1/')

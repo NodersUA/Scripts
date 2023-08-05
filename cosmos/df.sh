@@ -5,6 +5,10 @@ if [ -d "$DISKORD_DIR" ]; then
     rm -rf "$DISKORD_DIR"
 fi
 
+if [ "$DISCORD_DIR" == "df_cascadia" ]; then
+  TOKEN=$CASCADIA_TOKEN
+fi
+
 if [ -z "$TOKEN" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
@@ -49,13 +53,13 @@ EOF
 tee $HOME/$DISKORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
 
-sleep \$(shuf -i 0-43200 -n 1) # 12 годин рандома
+sleep \$(shuf -i 0-36000 -n 1) # 10 годин рандома
 
 while true
 do
     date
     cd $HOME/$DISKORD_DIR/src/ && python3 main.py
-    sleep 86600 # 24 години рандома
+    sleep 86600 # 24 години сліп
     sleep \$(shuf -i 0-1800 -n 1) # 30 хв рандома
     echo "===================================="
 done

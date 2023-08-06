@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $HOME
-if [ -d "$DISKORD_DIR" ]; then
+if [ -d "$DISCORD_DIR" ]; then
     rm -rf "$DISKORD_DIR"
 fi
 

@@ -5,7 +5,7 @@ if [ -d "$DISCORD_DIR" ]; then
     rm -rf "$DISKORD_DIR"
 fi
 
-if [ "$DISCORD_DIR" == "df_cascadia" ] && [ -d "$CASCADIA_TOKEN" ]; then
+if [ "$DISCORD_DIR" == "df_cascadia" ] && [ -n "$CASCADIA_TOKEN" ]; then
   TOKEN=$CASCADIA_TOKEN
 fi
 

@@ -53,7 +53,7 @@ EOF
 tee $HOME/$DISKORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
 
-sleep \$(shuf -i 0-36000 -n 1) # 10 годин рандома
+sleep \$(shuf -i 0-10000 -n 1) 
 
 while true
 do

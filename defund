@@ -135,7 +135,7 @@ break
 # set variables
 DEFUND_ADDRESS=$(defundd keys show wallet -a)
 echo 'export MESSAGE="!faucet $DEFUND_ADDRESS"' >> $HOME/config.sh
-echo 'export DISKORD_DIR=df_defund' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_defund' >> $HOME/config.sh
 echo 'export CHAT_ID=1038133368841310280' >> $HOME/config.sh
 source $HOME/config.sh
 

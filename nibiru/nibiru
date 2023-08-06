@@ -139,7 +139,7 @@ break
 "Diskord Bot Autoinstall")
 # set variables
 echo 'export MESSAGE="\$request $NIBIRU_ADDRESS"' >> $HOME/config.sh
-echo 'export DISKORD_DIR=df_nibiru' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_nibiru' >> $HOME/config.sh
 echo 'export CHAT_ID=984840062871175219' >> $HOME/config.sh
 source $HOME/config.sh
 

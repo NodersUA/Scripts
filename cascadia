@@ -146,7 +146,7 @@ break
 # set variables
 CASCADIA_ADDRESS=$(cascadiad address-converter $(cascadiad keys show wallet -a) | tail -n 1)
 echo 'export MESSAGE="\$request $CASCADIA_ADDRESS"' >> $HOME/config.sh
-echo 'export DISKORD_DIR=df_cascadia' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_cascadia' >> $HOME/config.sh
 echo 'export CHAT_ID=1093030023012814948' >> $HOME/config.sh
 source $HOME/config.sh
 

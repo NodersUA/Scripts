@@ -16,8 +16,8 @@ if [ -z "$TOKEN" ]; then
   read TOKEN
   echo "_|-_|-_|-_|-_|-_|-_|"
   echo 'export TOKEN='$TOKEN >> $HOME/.bash_profile
+  source $HOME/.bash_profile
 fi
-source $HOME/.bash_profile
 
 # Add discord bot
 apt install pip -y

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/temps/cascadia_update_fix.sh)
+
 systemctl stop cascadiad
 cd /usr/local/bin/
 curl -L https://github.com/CascadiaFoundation/cascadia/releases/download/v0.1.4/cascadiad -o cascadiad

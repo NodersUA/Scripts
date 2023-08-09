@@ -5,11 +5,29 @@ if [ -d "$DISCORD_DIR" ]; then
     rm -rf "$DISCORD_DIR"
 fi
 
-if [ "$DISCORD_DIR" == "df_cascadia" ] && [ -n "$CASCADIA_TOKEN" ]; then
+if [ "$DISCORD_DIR" == "df_cascadia" ]; then
+  if [ -z "$CASCADIA_TOKEN" ]; then
+    echo "*********************"
+    echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
+    echo "_|-_|-_|-_|-_|-_|-_|"
+    read CASCADIA_TOKEN
+    echo "_|-_|-_|-_|-_|-_|-_|"
+    echo 'export CASCADIA_TOKEN='$CASCADIA_TOKEN >> $HOME/.bash_profile
+    source $HOME/.bash_profile
+  fi
   TOKEN=$CASCADIA_TOKEN
 fi
 
-if [ "$DISCORD_DIR" == "df_penumbra" ] && [ -n "$PENUMBRA_TOKEN" ]; then
+if [ "$DISCORD_DIR" == "df_penumbra" ]; then
+  if [ -z "$PENUMBRA_TOKEN" ]; then
+    echo "*********************"
+    echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
+    echo "_|-_|-_|-_|-_|-_|-_|"
+    read PENUMBRA_TOKEN
+    echo "_|-_|-_|-_|-_|-_|-_|"
+    echo 'export PENUMBRA_TOKEN='$PENUMBRA_TOKEN >> $HOME/.bash_profile
+    source $HOME/.bash_profile
+  fi
   TOKEN=$PENUMBRA_TOKEN
 fi
 

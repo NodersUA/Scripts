@@ -9,6 +9,10 @@ if [ "$DISCORD_DIR" == "df_cascadia" ] && [ -n "$CASCADIA_TOKEN" ]; then
   TOKEN=$CASCADIA_TOKEN
 fi
 
+if [ "$DISCORD_DIR" == "df_penumbra" ] && [ -n "$PENUMBRA_TOKEN" ]; then
+  TOKEN=$PENUMBRA_TOKEN
+fi
+
 if [ -z "$TOKEN" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"

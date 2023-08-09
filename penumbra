@@ -147,7 +147,7 @@ break
 # set variables
 PENUMBRA_ADDRESS=$(pcli view address | grep -o '[[:alnum:]]*$' | tr -d '[:space:]')
 echo 'export MESSAGE="$PENUMBRA_ADDRESS"' >> $HOME/config.sh
-echo 'export DISKORD_DIR=df_penumbra' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_penumbra' >> $HOME/config.sh
 echo 'export CHAT_ID=915710851917439060' >> $HOME/config.sh
 source $HOME/config.sh
 

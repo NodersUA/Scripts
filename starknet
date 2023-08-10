@@ -97,7 +97,7 @@ sudo docker run \
   -v $HOME/pathfinder:/usr/share/pathfinder/data \
   eqlabs/pathfinder
 
-#ver=$(sudo docker exec -it pathfinder pathfinder -V)
+ver=$(sudo docker exec pathfinder pathfinder -V)
 
 echo '=============== UPDATE FINISHED ==================='
 echo -e "Congratulations:    \e[1m\e[32mNode Updated to $(sudo docker exec -it pathfinder pathfinder -V)\e[0m"

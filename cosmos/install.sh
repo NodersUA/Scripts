@@ -28,7 +28,7 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="$BINARY_NAME keys add wallet"
+      command="$BINARY_NAME keys add wallet && echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'""
       break
       ;;
     "Recover an old wallet")
@@ -173,8 +173,6 @@ echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
 
 # Execute the saved command
 eval "$command"
-
-echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
 
 ADDRESS=$($BINARY_NAME keys show wallet -a)
 VALOPER=$($BINARY_NAME keys show wallet --bech val -a)

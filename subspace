@@ -154,6 +154,8 @@ break
 echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace) && \
 echo "1" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace)
 
+echo -e "\n\nNode updated to >> $(subspace -V)\n\n"
+
 break
 ;;
 

@@ -3,6 +3,21 @@
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Delete"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===========================================================================
+
 if [ -z "$MONIKER" ]; then
   echo "*********************"
   echo -e "\e[1m\e[34m		Lets's begin\e[0m"
@@ -42,15 +57,16 @@ cpu_version=$(echo 'BEGIN {
 
 if [ "$cpu_version" = "CPU supports x86-64-v3" ]; then
   VER=$(wget -qO- https://api.github.com/repos/subspace/subspace-cli/releases | jq '.[] | select(.prerelease==false) | select(.draft==false) | .html_url' | grep -Eo "v[0-9]+\.[0-9]+\.[0-9]+.*$" | sed 's/.$//' | head -n 1) && \
-  cd /usr/local/bin/ && wget https://github.com/subspace/subspace-cli/releases/download/${VER}/subspace-cli-ubuntu-x86_64-skylake-${VER} -qO subspace
+  cd /usr/local/bin/ && wget https://github.com/subspace/pulsar/releases/download/${VER}/pulsar-ubuntu-x86_64-skylake-${VER} -qO subspace
 else
   VER=$(wget -qO- https://api.github.com/repos/subspace/subspace-cli/releases | jq '.[] | select(.prerelease==false) | select(.draft==false) | .html_url' | grep -Eo "v[0-9]+\.[0-9]+\.[0-9]+.*$" | sed 's/.$//' | head -n 1) && \
-  cd /usr/local/bin/ && wget https://github.com/subspace/subspace-cli/releases/download/${VER}/subspace-cli-ubuntu-x86_64-v2-${VER} -qO subspace
+  cd /usr/local/bin/ && wget https://github.com/subspace/pulsar/releases/download/${VER}/pulsar-ubuntu-x86_64-v2-${VER} -qO subspace
 fi
 
 # Next step..
 sudo chmod +x subspace && cd
-echo -e "\n\nrelease >> ${VER}.\n\n"
+echo -e "\n\nrelease  >> ${VER}."
+echo -e "instaled >> $(subspace -V)\n\n"
 
 #-----------------------------------------------
 # Automation of the subspace init command
@@ -80,7 +96,7 @@ send "\r"
 expect "Specify a plot size (defaults to '2.0 GB', press enter to use the default):"
 send "100 GB\r"
 
-expect "Defaults to 'Gemini3e', press enter to use the default:"
+expect "Defaults to 'Gemini3f', press enter to use the default:"
 send "\r"
 
 expect eof
@@ -127,3 +143,45 @@ rm ~/subspace_init.expect
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e 'To check logs:        \e[1m\e[33msudo journalctl -fu subspaced --no-hostname -o cat\e[0m'
+
+break
+;;
+
+#===========================================================================
+
+"Update")
+
+echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace) && \
+echo "1" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace)
+
+break
+;;
+
+#===========================================================================
+
+"Delete")
+
+sudo systemctl stop subspaced && \
+sudo systemctl disable subspaced
+
+rm -Rvf $HOME/.local/share/subspace* \
+$HOME/.local/share/pulsar \
+$HOME/.config/subspace* \
+$HOME/.config/pulsar \
+/usr/local/bin/subspace
+
+sudo rm -v /etc/systemd/system/subspaced.service && \
+sudo systemctl daemon-reload
+
+break
+;;
+
+#===========================================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

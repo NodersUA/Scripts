@@ -103,7 +103,7 @@ cp $HOME/.defund/data/priv_validator_state.json $HOME/.defund/priv_validator_sta
 #curl "https://snapshots2-testnet.nodejumper.io/defund-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.defund"
 
 rm -rf $HOME/.defund/data
-curl -L https://services.bccnodes.com/testnets/defund/defund.tar.lz4| tar -Ilz4 -xf - -C $HOME/.defund
+curl -L https://snapshots-testnet.stake-town.com/defund/orbit-alpha-1_latest.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.defund
 
 mv $HOME/.defund/priv_validator_state.json.backup $HOME/.defund/data/priv_validator_state.json 
 sudo systemctl restart defundd

@@ -97,9 +97,14 @@ sudo apt install lz4 -y
 sudo systemctl stop ar_defund
 sudo systemctl stop defundd
 cp $HOME/.defund/data/priv_validator_state.json $HOME/.defund/priv_validator_state.json.backup 
-defundd tendermint unsafe-reset-all --home $HOME/.defund --keep-addr-book 
-SNAP_NAME=$(curl -s https://snapshots2-testnet.nodejumper.io/defund-testnet/info.json | jq -r .fileName)
-curl "https://snapshots2-testnet.nodejumper.io/defund-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.defund"
+
+#defundd tendermint unsafe-reset-all --home $HOME/.defund --keep-addr-book 
+#SNAP_NAME=$(curl -s https://snapshots2-testnet.nodejumper.io/defund-testnet/info.json | jq -r .fileName)
+#curl "https://snapshots2-testnet.nodejumper.io/defund-testnet/${SNAP_NAME}" | lz4 -dc - | tar -xf - -C "$HOME/.defund"
+
+rm -rf $HOME/.defund/data
+curl -L https://services.bccnodes.com/testnets/defund/defund.tar.lz4| tar -Ilz4 -xf - -C $HOME/.defund
+
 mv $HOME/.defund/priv_validator_state.json.backup $HOME/.defund/data/priv_validator_state.json 
 sudo systemctl restart defundd
 

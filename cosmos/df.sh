@@ -75,7 +75,7 @@ EOF
 tee $HOME/$DISCORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
 
-sleep \$(shuf -i 0-10000 -n 1) 
+sleep \$(shuf -i 0-30000 -n 1)
 
 while true
 do

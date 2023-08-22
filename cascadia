@@ -102,8 +102,10 @@ break
 
 "Synchronization via SnapShot")
 # install dependencies, if needed
-# sudo apt update
-# sudo apt install lz4 -y
+if ! dpkg -s lz4 &> /dev/null; then
+sudo apt update && apt upgrade -y
+apt install lz4 -y
+fi
 
 sudo systemctl stop ar_cascadia
 sudo systemctl stop cascadiad

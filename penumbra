@@ -182,9 +182,9 @@ sleep 600
 balance=$(pcli view balance | grep "penumbra" | sed 's/.* \([0-9]*\)penumbra/\1/')
 
 if [ "$balance" -gt 1 ]; then
-delegate_value=$(shuf -i 1-$balance -n 1)
-pcli tx delegate ${delegate_value}penumbra --to $PENUMBRA_VALIDATOR
-echo "Delegated ${delegate_value}penumbra to $PENUMBRA_VALIDATOR"
+#delegate_value=$(shuf -i 1-$balance -n 1)
+pcli tx delegate ${balance}penumbra --to $PENUMBRA_VALIDATOR
+echo "Delegated ${balance}penumbra to $PENUMBRA_VALIDATOR"
 else
 echo "Сannot be delegated. Balance ${balance}penumbra"
 fi

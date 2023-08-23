@@ -65,8 +65,7 @@ fi
 
 # Next step..
 sudo chmod +x subspace && cd
-echo -e "\n\nrelease  >> ${VER}."
-echo -e "instaled >> $(subspace -V)\n\n"
+echo -e "\n\nrelease  >> ${VER}." && echo -e "instaled >> $(subspace -V)\n\n"
 
 #-----------------------------------------------
 # Automation of the subspace init command
@@ -151,8 +150,93 @@ break
 
 "Update")
 
-echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace) && \
-echo "1" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace)
+cd $HOME && current_version=$(subspace -V)
+
+if [ "$current_version" != "subspace 0.6.2" ]; then
+tee $HOME/subspace_wipe.sh > /dev/null <<EOF
+#!/bin/bash
+automate_subspace_wipe() {
+    echo "y"
+    sleep 1
+    echo "n"
+    sleep 1
+    echo "y"
+    sleep 1
+    echo "y"
+}
+automate_subspace_wipe | subspace wipe
+EOF
+chmod +x $HOME/subspace_wipe.sh
+./subspace_wipe.sh
+rm ~/subspace_wipe.sh
+fi
+
+cpu_version=$(echo 'BEGIN {
+    while (!/flags/) if (getline < "/proc/cpuinfo" != 1) exit 1
+    if (/lm/&&/cmov/&&/cx8/&&/fpu/&&/fxsr/&&/mmx/&&/syscall/&&/sse2/) level = 1
+    if (level == 1 && /cx16/&&/lahf/&&/popcnt/&&/sse4_1/&&/sse4_2/&&/ssse3/) level = 2
+    if (level == 2 && /avx/&&/avx2/&&/bmi1/&&/bmi2/&&/f16c/&&/fma/&&/abm/&&/movbe/&&/xsave/) level = 3
+    if (level == 3 && /avx512f/&&/avx512bw/&&/avx512cd/&&/avx512dq/&&/avx512vl/) level = 4
+    if (level > 0) { print "CPU supports x86-64-v" level; exit level + 1 }
+    exit 1
+}' | awk -f -)
+
+if [ "$cpu_version" = "CPU supports x86-64-v3" ]; then
+  VER=$(wget -qO- https://api.github.com/repos/subspace/subspace-cli/releases | jq '.[] | select(.prerelease==false) | select(.draft==false) | .html_url' | grep -Eo "v[0-9]+\.[0-9]+\.[0-9]+.*$" | sed 's/.$//' | head -n 1) && \
+  cd /usr/local/bin/ && wget https://github.com/subspace/pulsar/releases/download/${VER}/pulsar-ubuntu-x86_64-skylake-${VER} -qO subspace
+else
+  VER=$(wget -qO- https://api.github.com/repos/subspace/subspace-cli/releases | jq '.[] | select(.prerelease==false) | select(.draft==false) | .html_url' | grep -Eo "v[0-9]+\.[0-9]+\.[0-9]+.*$" | sed 's/.$//' | head -n 1) && \
+  cd /usr/local/bin/ && wget https://github.com/subspace/pulsar/releases/download/${VER}/pulsar-ubuntu-x86_64-v2-${VER} -qO subspace
+fi
+
+# Next step..
+sudo chmod +x subspace && cd
+echo -e "\n\nrelease  >> ${VER}." && echo -e "instaled >> $(subspace -V)\n\n"
+
+#-----------------------------------------------
+# Automation of the subspace init command
+sudo tee ~/subspace_init.expect > /dev/null <<EOF
+#!/usr/bin/expect -f
+
+spawn bash -c "source ~/.bash_profile; env"
+expect eof
+
+spawn subspace init
+
+expect "Do you have an existing farmer/reward address? \[y/n\]:"
+send "y\r"
+
+expect "Enter your farmer/reward address:"
+send "$SUBSPACE_ADDRESS\r"
+
+expect "Enter your node name to be identified on the network (defaults to 'root', press enter to use the default):"
+send "$MONIKER\r"
+
+expect "Specify a path for storing plot files (press enter to use the default: '/root/.local/share/subspace-cli/plots'):"
+send "\r"
+
+expect "Specify a path for storing node files (press enter to use the default: '/root/.local/share/subspace-cli/node'):"
+send "\r"
+
+expect "Specify a plot size (defaults to '2.0 GB', press enter to use the default):"
+send "100 GB\r"
+
+expect "Defaults to 'Gemini3f', press enter to use the default:"
+send "\r"
+
+expect eof
+
+EOF
+
+chmod +x subspace_init.expect
+expect subspace_init.expect
+#-----------------------------------------------
+
+sudo systemctl restart subspaced
+rm ~/subspace_init.expect
+
+# echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace) && \
+# echo "1" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/subspace)
 
 echo -e "\n\nNode updated to >> $(subspace -V)\n\n"
 

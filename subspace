@@ -150,6 +150,7 @@ break
 
 "Update")
 
+sudo systemctl stop subspaced
 cd $HOME && current_version=$(subspace -V)
 
 if [ "$current_version" != "subspace 0.6.2" ]; then

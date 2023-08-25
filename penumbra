@@ -189,7 +189,7 @@ delegate_value=$((balance - 20))
 else
 delegate_value=$((balance - 100))
 fi
-#pcli tx delegate ${delegate_value}penumbra --to $PENUMBRA_VALIDATOR
+pcli tx delegate ${delegate_value}penumbra --to $PENUMBRA_VALIDATOR
 echo "Delegated ${delegate_value}penumbra to $PENUMBRA_VALIDATOR"
 else
 echo "Сannot be delegated. Balance ${balance}penumbra"

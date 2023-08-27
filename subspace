@@ -153,7 +153,7 @@ break
 sudo systemctl stop subspaced
 cd $HOME && current_version=$(subspace -V)
 
-if [ "$current_version" != "subspace 0.6.2" ]; then
+if [ "$current_version" == "subspace 0.6.0" ]; then
 tee $HOME/subspace_wipe.sh > /dev/null <<EOF
 #!/bin/bash
 automate_subspace_wipe() {

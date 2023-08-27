@@ -3,21 +3,6 @@
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
-# Menu
-PS3='Select an action: '
-options=(
-"Install Node"
-"Update"
-"Delete"
-"Exit")
-
-select opt in "${options[@]}"
-do
-case $opt in
-"Install Node")
-
-#===========================================================================
-
 if [ -z "$MONIKER" ]; then
   echo "*********************"
   echo -e "\e[1m\e[34m		Lets's begin\e[0m"
@@ -37,6 +22,21 @@ if [ -z "$SUBSPACE_ADDRESS" ]; then
   echo 'export SUBSPACE_ADDRESS='$SUBSPACE_ADDRESS >> $HOME/.bash_profile
   source ~/.bash_profile
 fi
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Delete"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===========================================================================
 
 # Update the repositories
 apt update && apt upgrade -y

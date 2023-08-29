@@ -28,7 +28,7 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="$BINARY_NAME keys add wallet && echo -e "      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+      command="$BINARY_NAME keys add wallet && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
       break
       ;;
     "Recover an old wallet")

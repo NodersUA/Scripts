@@ -58,7 +58,7 @@ EOF
 
 # Start the node
 systemctl daemon-reload
-systemctl enable nibid
+systemctl enable gear-node
 systemctl restart gear-node && journalctl -u gear-node -f -o cat
 
 break

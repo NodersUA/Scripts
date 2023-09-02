@@ -30,9 +30,7 @@ apt update && apt upgrade -y
 
 ufw allow 30333
 
-cd $HOME && mkdir -p gear && cd $HOME/gear && \
-curl https://get.gear.rs/gear-v0.3.1-x86_64-unknown-linux-gnu.tar.xz | sudo tar -xJC /usr/bin && \
-cd $HOME && rm -rf gear
+curl https://get.gear.rs/gear-v0.3.1-x86_64-unknown-linux-gnu.tar.xz | sudo tar -xJC /usr/bin
 
 # Create service file
 sudo tee /etc/systemd/system/gear-node.service > /dev/null <<EOF

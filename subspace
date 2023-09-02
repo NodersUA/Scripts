@@ -23,6 +23,11 @@ if [ -z "$SUBSPACE_ADDRESS" ]; then
   source ~/.bash_profile
 fi
 
+echo "*********************"
+echo -e "\e[1m\e[32m	Enter your PLOT_SIZE in GB:\e[0m"
+echo "*********************"
+read PLOT_SIZE
+
 # Menu
 PS3='Select an action: '
 options=(
@@ -93,7 +98,7 @@ expect "Specify a path for storing node files (press enter to use the default: '
 send "\r"
 
 expect "Specify a plot size (defaults to '2.0 GB', press enter to use the default):"
-send "100 GB\r"
+send "$PLOT_SIZE GB\r"
 
 expect "Defaults to 'Gemini3f', press enter to use the default:"
 send "\r"
@@ -220,7 +225,7 @@ expect "Specify a path for storing node files (press enter to use the default: '
 send "\r"
 
 expect "Specify a plot size (defaults to '2.0 GB', press enter to use the default):"
-send "100 GB\r"
+send "$PLOT_SIZE GB\r"
 
 expect "Defaults to 'Gemini3f', press enter to use the default:"
 send "\r"

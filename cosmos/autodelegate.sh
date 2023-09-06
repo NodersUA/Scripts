@@ -58,7 +58,7 @@ start_balance=\$(get_balance) && sleep 1
 
 if [ "\$status" == "BOND_STATUS_BONDED" ]; then
 echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
-echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --fees ${fees}${CHAIN_DENOM} --gas=500000 --commission -y)"
+echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} --commission -y)"
 fi
 
 sleep 3
@@ -66,7 +66,7 @@ balance=\$(get_balance) && sleep 1
 delegate=\$((balance - min_balance))
 if [[ \$delegate > 0 && -n  "\$delegate" ]]; then
 echo -e "\${GREEN}>>> Delegate \${delegate}${CHAIN_DENOM} \${ENDCOLOR}"
-execute_with_sequence_check "${BINARY_NAME} tx staking delegate \${valoper} \${delegate}${CHAIN_DENOM} --from wallet --fees ${fees}${CHAIN_DENOM} --gas=500000"
+execute_with_sequence_check "${BINARY_NAME} tx staking delegate \${valoper} \${delegate}${CHAIN_DENOM} --from wallet --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM}"
 else
 echo -e "\${GREEN}>>> Balance [ \${balance} ] < min_balance [ \${min_balance} ] \${ENDCOLOR}"
 fi

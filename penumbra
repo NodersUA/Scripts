@@ -157,8 +157,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable penumbra tendermint
 sudo systemctl restart penumbra tendermint
 
-cd ~/penumbra && cargo run --quiet --release --bin pcli keys generate
-
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs penumbra:    \e[1m\e[33mjournalctl -u penumbra -f -o cat\e[0m"
 echo -e "To check logs tendermint:  \e[1m\e[33mjournalctl -u tendermint -f -o cat\e[0m"

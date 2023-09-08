@@ -109,12 +109,13 @@ tendermint version
 
 # Execute the saved command
 eval "$command"
-pcli view address 0
 
 #----------------------------------------------------
 
 pd testnet unsafe-reset-all
 pd testnet join --external-address $(wget -qO- eth0.me):26656 --moniker $MONIKER
+
+pcli view address 0
 
 #----------------------------------------------------
 

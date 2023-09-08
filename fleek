@@ -3,6 +3,21 @@
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===========================================================================
+
+
 if [ -z "$MONIKER" ]; then
   echo -e "      \e[1m\e[35m SET YOUR IDENTITY(nickname):\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
@@ -58,3 +73,31 @@ sudo journalctl -u fleekd -f -o cat
 # 6. Backup:
 echo -e "      \e[1m\e[31m Please SAVE your keystore!!!  \e[0m"
 echo -e "$HOME/.ursa/keystore/"
+
+break
+;;
+
+#===========================================================================
+
+"Delete")
+
+sudo systemctl stop fleekd && \
+sudo systemctl disable fleekd && \
+rm /etc/systemd/system/fleekd.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf ursa .ursa && \
+rm $(which fleekd)
+
+break
+;;
+
+#===========================================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

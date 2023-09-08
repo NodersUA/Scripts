@@ -130,17 +130,17 @@ break
 #================================================================
 
 "Delete Node")
-sudo systemctl stop nibid ad_nibiru ar_nibiru df_nibiru && \
-sudo systemctl disable nibid ad_nibiru ar_nibiru df_nibiru && \
-rm /etc/systemd/system/nibid.service && \
-rm /etc/systemd/system/ad_nibiru.service && \
-rm /etc/systemd/system/ar_nibiru.service && \
-rm /etc/systemd/system/df_nibiru.service && \
-sudo systemctl daemon-reload && \
-cd $HOME && \
-rm -rf nibid && \
-rm -rf .nibid && \
-rm -rf df_nibiru && \
+sudo systemctl stop nibid ad_nibiru ar_nibiru df_nibiru
+sudo systemctl disable nibid ad_nibiru ar_nibiru df_nibiru
+rm /etc/systemd/system/nibid.service
+rm /etc/systemd/system/ad_nibiru.service
+rm /etc/systemd/system/ar_nibiru.service
+rm /etc/systemd/system/df_nibiru.service
+sudo systemctl daemon-reload
+cd $HOME
+rm -rf nibid
+rm -rf .nibid
+rm -rf df_nibiru
 rm -rf $(which nibid)
 
 break

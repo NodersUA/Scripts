@@ -35,6 +35,28 @@ fi
 
 #----------------------------------------------------
 
+PS3='Select an action: '
+options=("Create a new wallet" "Recover an old wallet" "Exit")
+select opt in "${options[@]}"
+do
+  case $opt in
+    "Create a new wallet")
+      command="cargo run --quiet --release --bin pcli keys generate && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+      break
+      ;;
+    "Recover an old wallet")
+      command="pcli keys import phrase"
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    *) echo "Invalid option. Please try again.";;
+  esac
+done
+
+#----------------------------------------------------
+
 ## Installation
 
 # Update, upgrade and install requirements
@@ -82,6 +104,11 @@ git checkout v0.34.23
 make install
 cp $(which tendermint) /usr/local/bin/ && cd $HOME
 tendermint version
+
+#----------------------------------------------------
+
+# Execute the saved command
+eval "$command"
 
 #----------------------------------------------------
 

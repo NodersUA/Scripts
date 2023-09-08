@@ -109,6 +109,7 @@ tendermint version
 
 # Execute the saved command
 eval "$command"
+pcli view address 0
 
 #----------------------------------------------------
 

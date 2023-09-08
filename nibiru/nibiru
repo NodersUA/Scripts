@@ -138,7 +138,7 @@ rm /etc/systemd/system/ar_nibiru.service
 rm /etc/systemd/system/df_nibiru.service
 sudo systemctl daemon-reload
 cd $HOME
-rm -rf nibid
+rm -rf nibiru
 rm -rf .nibid
 rm -rf df_nibiru
 rm -rf $(which nibid)

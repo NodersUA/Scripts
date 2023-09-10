@@ -65,7 +65,7 @@ sudo apt-get upgrade -y && \
 sudo curl https://sh.rustup.rs -sSf | sh -s -- -y && \
 source "$HOME/.cargo/env" && \
 cargo install sccache && \
-sudo apt-get install build-essential cmake clang pkg-config libssl-dev protobuf-compiler git-lfs -y
+sudo apt-get install build-essential cmake clang pkg-config libssl-dev protobuf-compiler git-lfs g++ -y
 
 #----------------------------------------------------
 
@@ -239,7 +239,7 @@ cp ~/penumbra/target/release/pd /usr/local/bin
 cargo run --quiet --release --bin pcli view reset
 cargo run --bin pd --release -- testnet unsafe-reset-all
 cargo run --bin pd --release -- testnet join
-mv ~/penumbra/validator.toml ~/penumbra/validator58.toml
+# mv ~/penumbra/validator.toml ~/penumbra/validator58.toml
 sudo systemctl restart penumbra tendermint
 
 break

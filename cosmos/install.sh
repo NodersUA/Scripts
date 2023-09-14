@@ -126,6 +126,14 @@ sed -i -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/
 
 sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
+if [ "$NODE_NAME" == "NIBIRU" ]; then
+config_file="$HOME/.nibid/config/config.toml"
+sed -i "s|enable =.*|enable = true|g" "$config_file"
+sed -i "s|rpc_servers =.*|rpc_servers = \"$(curl -s https://networks.itn2.nibiru.fi/$NODE_CHAIN_ID/rpc_servers)\"|g" "$config_file"
+sed -i "s|trust_height =.*|trust_height = \"$(curl -s https://networks.itn2.nibiru.fi/$NODE_CHAIN_ID/trust_height)\"|g" "$config_file"
+sed -i "s|trust_hash =.*|trust_hash = \"$(curl -s https://networks.itn2.nibiru.fi/$NODE_CHAIN_ID/trust_hash)\"|g" "$config_file"
+fi
+
 #==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1

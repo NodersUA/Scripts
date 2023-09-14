@@ -172,7 +172,7 @@ source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m'
+echo -e "To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
 echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
 
 #==================================================================================================

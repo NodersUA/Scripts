@@ -71,7 +71,7 @@ case $opt in
 # import code from cosmos/install.sh
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
 
-curl -X POST -d '{"address": "'"$(nibid keys show wallet -a)"'", "coins": ["110000000unibi","100000000unusd","100000000uusdt"]}' "https://faucet.itn-2.nibiru.fi/"
+# curl -X POST -d '{"address": "'"$(nibid keys show wallet -a)"'", "coins": ["110000000unibi","100000000unusd","100000000uusdt"]}' "https://faucet.itn-2.nibiru.fi/"
 
 break
 ;;

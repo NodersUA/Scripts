@@ -7,7 +7,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 NODE_NAME="NIBIRU"
 NODE_CHAIN_ID="nibiru-itn-2"
 NODE_PORT="11"
-BINARY_VERSION_TAG="v0.21.9"
+BINARY_VERSION_TAG="v0.21.10"
 CHAIN_DENOM="unibi"
 BINARY_NAME="nibid"
 DIRECTORY="nibiru"

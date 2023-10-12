@@ -79,7 +79,7 @@ break
 "Update")
 
 # Get last version
-# sudo docker pull eqlabs/pathfinder
+sudo docker pull eqlabs/pathfinder
 
 # This stops the running instance
 sudo docker stop pathfinder

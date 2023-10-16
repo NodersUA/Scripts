@@ -8,7 +8,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 NODE_NAME="CASCADIA"
 NODE_CHAIN_ID="cascadia_6102-1"
 NODE_PORT="18"
-BINARY_VERSION_TAG="v0.1.6"
+BINARY_VERSION_TAG="0.1.7"
 CHAIN_DENOM="aCC"
 BINARY_NAME="cascadiad"
 DIRECTORY="cascadia"

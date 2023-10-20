@@ -1,0 +1,103 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+#=======================================================
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete"
+"Exit")
+
+#=======================================================
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+adduser lgtn
+usermod -aG sudo lgtn
+su lgtn
+cd /home/lgtn
+
+sudo apt-get update && \
+sudo apt-get upgrade -y && \
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# press 1) Proceed with installation (default)
+
+source "$HOME/.cargo/env"
+
+rustup default stable-x86_64-unknown-linux-gnu && \
+sudo apt-get install build-essential -y && \
+sudo apt-get install cmake clang pkg-config libssl-dev gcc-multilib -y && \
+sudo apt-get install protobuf-compiler
+
+git clone -b testnet-alpha-1 https://github.com/fleek-network/lightning.git ~/fleek-network/lightning && \
+cd ~/fleek-network/lightning && \
+cargo clean && cargo update && cargo build && \
+sudo ln -s ~/fleek-network/lightning/target/debug/lightning-node /usr/local/bin/lgtn
+
+lgtn keys generate
+
+sed -i "s|~/.lightning|/home/lgtn/.lightning|g" "/home/lgtn/.lightning/config.toml"
+
+sudo tee /etc/systemd/system/lightning.service > /dev/null <<EOF
+[Unit]
+Description=Fleek Network Node lightning service
+
+[Service]
+User=lgtn
+Type=simple
+MemoryHigh=32G
+RestartSec=15s
+Restart=always
+ExecStart=lgtn -c /home/lgtn/.lightning/config.toml run
+StandardOutput=append:/var/log/lightning/output.log
+StandardError=append:/var/log/lightning/diagnostic.log
+Environment=TMPDIR=/var/tmp
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo chmod 644 /etc/systemd/system/lightning.service
+
+curl https://get.fleek.network/node_details | bash
+
+sudo systemctl daemon-reload && \
+sudo systemctl enable lightning
+
+sudo mkdir -p /var/log/lightning
+sudo touch /var/log/lightning/output.log
+sudo touch /var/log/lightning/diagnostic.log
+sudo systemctl restart lightning.service
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs output:      \e[1m\e[33mtail -fn100 /var/log/lightning/output.log\e[0m"
+echo -e "To check logs diagnostic:  \e[1m\e[33mtail -fn100 /var/log/lightning/diagnostic.log\e[0m"
+
+break
+;;
+
+#=======================================================
+
+"Delete")
+
+echo "Sonn..."
+
+break
+;;
+
+#=======================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

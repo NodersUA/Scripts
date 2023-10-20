@@ -66,8 +66,6 @@ EOF
 
 sudo chmod 644 /etc/systemd/system/lightning.service
 
-#curl https://get.fleek.network/node_details | bash
-
 sudo systemctl daemon-reload && \
 sudo systemctl enable lightning
 
@@ -97,6 +95,8 @@ You can get the details quickly by running the node details script in the termin
 EOF
 
 cat /home/lgtn/fleek-network/stake-instuction.txt | while IFS= read -r line; do echo -e "\e[34m$line\e[0m"; done
+
+curl https://get.fleek.network/node_details | bash
 
 echo -e "To check node details:  \e[1m\e[33mcurl https://get.fleek.network/node_details | bash\e[0m"
 echo -e "To check IP:            \e[1m\e[33mwget -qO- eth0.me\e[0m"

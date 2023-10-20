@@ -19,10 +19,10 @@ do
 case $opt in
 "Install Node")
 
-adduser lgtn
-usermod -aG sudo lgtn
-su lgtn
-cd /home/lgtn
+#adduser lgtn
+#usermod -aG sudo lgtn
+#su lgtn
+#cd /home/lgtn
 
 sudo apt-get update && \
 sudo apt-get upgrade -y && \

@@ -66,7 +66,7 @@ EOF
 
 sudo chmod 644 /etc/systemd/system/lightning.service
 
-curl https://get.fleek.network/node_details | bash
+#curl https://get.fleek.network/node_details | bash
 
 sudo systemctl daemon-reload && \
 sudo systemctl enable lightning
@@ -79,6 +79,27 @@ sudo systemctl restart lightning.service
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs output:      \e[1m\e[33mtail -fn100 /var/log/lightning/output.log\e[0m"
 echo -e "To check logs diagnostic:  \e[1m\e[33mtail -fn100 /var/log/lightning/diagnostic.log\e[0m"
+
+sudo tee /home/lgtn/fleek-network/stake-instuction.txt > /dev/null <<EOF
+Open the Metamask settings, located in the drop-down (top-right menu options). Set the following property values:
+Network Name: Fleek Network Testnet
+RPC URL: https://rpc.testnet.fleek.network/rpc/v0
+Chain ID: 59330
+Currency symbol: tFLK
+Before proceeding, make sure to have the Fleek Network selected as the metamask network. Once confirmed, visit the Faucet website
+In the Faucet website, you have to click the Connect Wallet
+Once Connect Wallet is ready, proceed to Mint tFLK and wait until the balance of the account in your Metamask increases. You need to have tFLK before proceeding. Be patient.
+Once tFLK balance is available, click in the Stake button. You'll be required to provided the following details from your node:
+Node Public Key
+Consensus Public Key
+Server IP Address
+You can get the details quickly by running the node details script in the terminal connected to your machine or server where the node is set up and running, as follows:
+EOF
+
+cat /home/lgtn/fleek-network/stake-instuction.txt | while IFS= read -r line; do echo -e "\e[34m$line\e[0m"; done
+
+echo -e "To check node details:  \e[1m\e[33mcurl https://get.fleek.network/node_details | bash\e[0m"
+echo -e "To check IP:            \e[1m\e[33mwget -qO- eth0.me\e[0m"
 
 break
 ;;

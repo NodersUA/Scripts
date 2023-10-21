@@ -24,6 +24,17 @@ case $opt in
 #su lgtn
 #cd /home/lgtn
 
+sudo ufw allow 4300/udp
+sudo ufw allow 4210/tcp
+sudo ufw allow 4310/udp
+sudo ufw allow 4311/udp
+sudo ufw allow 4220/tcp
+sudo ufw allow 4221/tcp
+sudo ufw allow 4320/udp
+sudo ufw allow 4321/udp
+sudo ufw allow 4230/tcp
+sudo ufw allow 4340/udp
+
 sudo apt-get update && \
 sudo apt-get upgrade -y && \
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh

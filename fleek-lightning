@@ -102,7 +102,7 @@ curl https://get.fleek.network/node_details | bash
 
 echo -e "To check node details:  \e[1m\e[33mcurl https://get.fleek.network/node_details | bash\e[0m"
 echo -e "To check IP:            \e[1m\e[33mwget -qO- eth0.me\e[0m"
-echo -e "To check IP:            \e[1m\e[33mcurl -sS https://get.fleek.network/healthcheck | bash\e[0m"
+echo -e "Check node health:      \e[1m\e[33mcurl -sS https://get.fleek.network/healthcheck | bash\e[0m"
 
 break
 ;;

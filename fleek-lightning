@@ -66,13 +66,13 @@ EOF
 
 sudo chmod 644 /etc/systemd/system/lightning.service
 
-sudo systemctl daemon-reload && \
-sudo systemctl enable lightning
+#sudo systemctl daemon-reload && \
+#sudo systemctl enable lightning
 
-sudo mkdir -p /var/log/lightning
-sudo touch /var/log/lightning/output.log
-sudo touch /var/log/lightning/diagnostic.log
-sudo systemctl restart lightning.service
+#sudo mkdir -p /var/log/lightning
+#sudo touch /var/log/lightning/output.log
+#sudo touch /var/log/lightning/diagnostic.log
+#sudo systemctl restart lightning.service
 
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs output:      \e[1m\e[33mtail -fn100 /var/log/lightning/output.log\e[0m"

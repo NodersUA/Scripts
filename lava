@@ -1,0 +1,189 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="LAVA"
+NODE_CHAIN_ID="lava-testnet-2"
+NODE_PORT="33"
+BINARY_VERSION_TAG="v0.25.2"
+CHAIN_DENOM="ulava"
+BINARY_NAME="lavad"
+DIRECTORY="lava"
+HIDDEN_DIRECTORY=".lava"
+NODE_URL="https://github.com/lavanet/lava.git"
+GENESIS_URL="http://snapshots.stakevillage.net/snapshots/lava-testnet-2/genesis.json"
+MINIMUM_GAS_PRICES="0.0001ulava"
+PEERS=""
+SEEDS="3a445bfdbe2d0c8ee82461633aa3af31bc2b4dc0@testnet2-seed-node.lavanet.xyz:26656,e593c7a9ca61f5616119d6beb5bd8ef5dd28d62d@testnet2-seed-node2.lavanet.xyz:26656"
+pruning="custom"
+pruning_keep_recent="100"
+pruning_interval="19"
+snapshot_interval="0"
+indexer="null"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Autodelegate"
+"Autorestart"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+break
+;;
+
+#================================================================
+
+"Synchronization via StateSync")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"UPDATE")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Synchronization via SnapShot")
+# install dependencies, if needed
+if ! dpkg -s lz4 &> /dev/null; then
+sudo apt update && apt upgrade -y
+apt install lz4 -y
+fi
+
+sudo systemctl stop ar_lava
+sudo systemctl stop lavad
+
+# cp $HOME/.lava/data/priv_validator_state.json $HOME/.lava/priv_validator_state.json.backup
+rm -rf $HOME/.lava/data 
+wget -O snapshot_latest.tar.lz4 http://snapshots.stakevillage.net/snapshots/lava-testnet-2/snapshot_latest.tar.lz4
+tar -Ilz4 -xf snapshot_latest.tar.lz4 -C $HOME/.lava
+rm snapshot_latest.tar.lz4
+# mv $HOME/.lava/priv_validator_state.json.backup $HOME/.lava/data/priv_validator_state.json
+
+sudo systemctl restart lavad
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u lavad -f -o cat\e[0m'
+
+sleep 60
+sudo systemctl enable ar_lava
+sudo systemctl restart ar_lava
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop lavad ar_lavad df_lavad && \
+sudo systemctl disable lavad ar_lavad df_lavad && \
+rm /etc/systemd/system/lavad.service && \
+rm /etc/systemd/system/ar_lavad.service && \
+rm /etc/systemd/system/df_lavad.service && \
+sudo systemctl daemon-reload && \
+cd $HOME && \
+rm -rf $DIRECTORY && \
+rm -rf df_${DIRECTORY} && \
+rm -rf $HIDDEN_DIRECTORY && \
+rm -rf $(which $BINARY_NAME)
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+echo 'export MESSAGE="\$request $LAVA_ADDRESS"' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_lava' >> $HOME/config.sh
+echo 'export CHAT_ID=1059851367717556314' >> $HOME/config.sh
+source $HOME/config.sh
+
+# import code from file
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+
+break
+;;
+
+#================================================================
+
+"Autodelegate")
+ADDRESS=$(lavad keys show wallet -a)
+VALOPER=$(lavad keys show wallet --bech val -a)
+echo "export address="${ADDRESS} >> $HOME/config.sh
+echo "export valoper="${VALOPER} >> $HOME/config.sh
+echo 'export fees=3000000' >> $HOME/config.sh
+echo 'export sleep_timeout=100000' >> $HOME/config.sh
+echo 'export min_balance=5000000000000000000' >> $HOME/config.sh
+source $HOME/config.sh
+
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
+
+break
+;;
+
+#================================================================
+
+"Autorestart")
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
+
+systemctl daemon-reload
+systemctl enable ar_${DIRECTORY}.service
+systemctl restart ar_${DIRECTORY}.service
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

@@ -73,7 +73,7 @@ git clone $NODE_URL && cd $DIRECTORY
 git fetch --all
 git checkout $BINARY_VERSION_TAG
 if [ $NODE_NAME=="EMPOWER" ]; then cd chain; fi
-make install
+if [ $BINARY_NAME=="lavad" ]; then make install-all; else make install; fi
 TEMP=$(which $BINARY_NAME)
 sudo cp $TEMP /usr/local/bin/ && cd $HOME
 $BINARY_NAME version --long | grep -e version -e commit

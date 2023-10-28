@@ -71,10 +71,6 @@ sudo cp $(which axelard) /usr/local/bin/m_axelar
 
 cd $HOME
 
-cp -r ~/.axelar/ ~/.axelar_testnet/
-cp -r ~/.axelar/ ~/.axelar_mainnet/
-rm -rf ~/.axelar/
-
 #----------------------------------------------------
 
 # Initialize the node
@@ -274,3 +270,7 @@ m_axelar keys add wallet --recover --home $HOME/.axelar_mainnet
 AXELAR_MAINNET_ADDRESS=$(m_axelar keys show wallet -a --home $HOME/.axelar_mainnet)
 echo "export AXELAR_MAINNET_ADDRESS="${AXELAR_MAINNET_ADDRESS} >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
+#----------------------------------------------------
+
+rm -rf ~/.axelar

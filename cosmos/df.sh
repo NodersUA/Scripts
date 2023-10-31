@@ -72,10 +72,18 @@ read_delay: 0.1
 typing_delay_per_character: 2
 EOF
 
+
+if [ "$DISCORD_DIR" == "df_penumbra" ]; then
+sl=$(shuf -i 0-10000 -n 1)
+echo "Sleep $sl sec..."
+else
+sl=$(shuf -i 0-40000 -n 1)
+fi
+
 tee $HOME/$DISCORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
 
-sleep \$(shuf -i 0-40000 -n 1)
+sleep $sl
 
 while true
 do
@@ -108,3 +116,7 @@ EOF
 systemctl daemon-reload
 systemctl enable $DISCORD_DIR
 systemctl restart $DISCORD_DIR
+
+if [ "$DISCORD_DIR" == "df_penumbra" ]; then
+sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
+fi

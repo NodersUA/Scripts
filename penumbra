@@ -249,6 +249,7 @@ rm /root/.local/share/pcli/custody.json
 pcli init soft-kms import-phrase
 
 sudo systemctl restart penumbra cometbft
+pcli view address 0
 
 break
 ;;

@@ -41,11 +41,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="pcli keys generate && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+      command="pcli init soft-kms generate && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
       break
       ;;
     "Recover an old wallet")
-      command="pcli keys import phrase"
+      command="pcli init soft-kms import-phrase"
       break
       ;;
     "Exit")

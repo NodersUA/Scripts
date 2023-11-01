@@ -86,7 +86,7 @@ sudo docker stop pathfinder
 # This removes the current instance (using the old version of pathfinder)
 sudo docker rm pathfinder
 
-sudo rm -rf ~/pathfinder/*
+# sudo rm -rf ~/pathfinder/*
 
 # This command re-creates the container instance with the latest version
 sudo docker run \

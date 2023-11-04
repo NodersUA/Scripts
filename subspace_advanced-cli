@@ -44,7 +44,7 @@ case $opt in
 #===============================================================
 
 # Update the repositories
-apt update && apt upgrade -y
+# apt update && apt upgrade -y
 
 mkdir $HOME/subspace; \
 cd $HOME/subspace && \

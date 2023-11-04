@@ -84,7 +84,7 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-ExecStart=$(which farmer) farm --reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=$PLOT_SIZE 
+ExecStart=$(which farmer) farm --reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=${PLOT_SIZE}G 
 Restart=always
 RestartSec=10
 LimitNOFILE=1024000

@@ -73,6 +73,10 @@ ExecStart=/usr/local/bin/tangle \
 WantedBy=multi-user.target
 EOF
 
+systemctl daemon-reload
+systemctl enable tangle
+systemctl restart tangle && journalctl -u tangle -f -o cat
+
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs:                \e[1m\e[33msudo journalctl -u tangle -f -o cat\e[0m"
 echo -e "To check node in telemetry:   \e[1m\e[33mhttps://telemetry.polkadot.io/#list/0xea63e6ac7da8699520af7fb540470d63e48eccb33f7273d2e21a935685bf1320\e[0m"

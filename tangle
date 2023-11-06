@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+  source ~/.bash_profile
+fi
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Delete"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===============================================================
+
+# Update the repositories
+apt update && apt upgrade -y
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev libgmp3-dev tar clang bsdmainutils ncdu unzip llvm libudev-dev make protobuf-compiler -y
+
+ufw allow 43333
+ufw allow 9943
+
+cd $HOME
+git clone https://github.com/webb-tools/tangle.git
+cd tangle/
+cargo build --release
+cp target/release/tangle-standalone /usr/local/bin/tangle
+tangle --version
+
+mkdir -p $HOME/.tangle
+wget -O $HOME/.tangle/tangle-standalone.json "https://raw.githubusercontent.com/webb-tools/tangle/main/chainspecs/testnet/tangle-standalone.json"
+chmod 744 ~/.tangle/tangle-standalone.json
+
+sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
+[Unit]
+Description=Tangle Validator Node
+After=network-online.target
+StartLimitIntervalSec=0
+ 
+[Service]
+User=$USER
+Restart=always
+RestartSec=3
+ExecStart=/usr/local/bin/tangle \
+  --base-path $HOME/.tangle/data/ \
+  --name $MONIKER \
+  --chain $HOME/.tangle/tangle-standalone.json \
+  --node-key-file "$HOME/.tangle/node-key" \
+  --port 43333 \
+  --rpc-port 9943 \
+  --validator \
+  --no-mdns \
+  --auto-insert-keys \
+  --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"
+ 
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs:                \e[1m\e[33msudo journalctl -u tangle -f -o cat\e[0m"
+echo -e "To check node in telemetry:   \e[1m\e[33mhttps://telemetry.polkadot.io/#list/0xea63e6ac7da8699520af7fb540470d63e48eccb33f7273d2e21a935685bf1320\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

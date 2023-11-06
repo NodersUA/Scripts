@@ -75,7 +75,7 @@ EOF
 
 systemctl daemon-reload
 systemctl enable tangle
-systemctl restart tangle && journalctl -u tangle -f -o cat
+systemctl restart tangle
 
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs:                \e[1m\e[33msudo journalctl -u tangle -f -o cat\e[0m"

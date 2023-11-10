@@ -40,8 +40,8 @@ rustup target add wasm32-unknown-unknown --toolchain nightly ;
 fi
 rustc --version
 
-ufw allow 44333
-ufw allow 9944
+ufw allow 45333
+ufw allow 9945
 
 cd $HOME
 git clone https://github.com/availproject/avail
@@ -64,8 +64,8 @@ RestartSec=120
 ExecStart=$(which avail) \
   --base-path $HOME/.avail/data/ \
   --node-key-file "$HOME/.avail/node-key" \
-  --port 44333 \
-  --rpc-port 9944 \
+  --port 45333 \
+  --rpc-port 9945 \
   --chain goldberg \
   --validator \
   --name $MONIKER \

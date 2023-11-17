@@ -235,21 +235,22 @@ break
 # cd ~/penumbra && pcli validator definition fetch --file validator.toml
 sudo systemctl stop penumbra cometbft
 
-cd ~/penumbra && git fetch && git checkout v0.63.0
-rustup update
-cargo build --release --bin pcli
-cp ~/penumbra/target/release/pcli /usr/local/bin
-cargo build --release --bin pd
-cp ~/penumbra/target/release/pd /usr/local/bin
+cd ~/penumbra 
+#git fetch && git checkout v0.63.0
+#rustup update
+#cargo build --release --bin pcli
+#cp ~/penumbra/target/release/pcli /usr/local/bin
+#cargo build --release --bin pd
+#cp ~/penumbra/target/release/pd /usr/local/bin
 cargo run --quiet --release --bin pcli view reset
 cargo run --bin pd --release -- testnet unsafe-reset-all
 cargo run --bin pd --release -- testnet join
 
-rm /root/.local/share/pcli/custody.json
-pcli init soft-kms import-phrase
+#rm /root/.local/share/pcli/custody.json
+#pcli init soft-kms import-phrase
 
 sudo systemctl restart penumbra cometbft
-pcli view address 0
+#pcli view address 0
 
 break
 ;;

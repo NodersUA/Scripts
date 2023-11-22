@@ -8,7 +8,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 NODE_NAME="CASCADIA"
 NODE_CHAIN_ID="cascadia_6102-1"
 NODE_PORT="18"
-BINARY_VERSION_TAG="v0.1.7"
+BINARY_VERSION_TAG="v0.1.8"
 CHAIN_DENOM="aCC"
 BINARY_NAME="cascadiad"
 DIRECTORY="cascadia"
@@ -84,6 +84,13 @@ break
 
 "UPDATE")
 systemctl stop cascadiad
+
+cd ~/.cascadiad/config
+sed -i "s/^timeout_propose =.*/timeout_propose = \"2.7s\"/" config.toml
+sed -i "s/^timeout_prevote =.*/timeout_prevote = \"0.9s\"/" config.toml
+sed -i "s/^timeout_precommit =.*/timeout_precommit = \"0.9s\"/" config.toml
+sed -i "s/^timeout_commit =.*/timeout_commit = \"3.6s\"/" config.toml
+
 cd /usr/local/bin/
 curl -L https://github.com/CascadiaFoundation/cascadia/releases/download/$BINARY_VERSION_TAG/cascadiad -o cascadiad
 chmod +x cascadiad && cd

@@ -136,6 +136,13 @@ sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/conf
 #==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
+
+if [ "$NODE_NAME" == "CASCADIA" ]; then
+ExecStart="/usr/local/bin/cascadiad start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --chain-id $CASCADIA_CHAIN_ID"
+else
+ExecStart="/usr/local/bin/cascadiad start"
+fi
+
 # Create service file (One command)
 sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
 [Unit]
@@ -146,7 +153,7 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=$HOME/go/bin
-ExecStart=/usr/local/bin/$BINARY_NAME start
+ExecStart=$ExecStart
 Restart=on-failure
 StartLimitInterval=0
 RestartSec=3

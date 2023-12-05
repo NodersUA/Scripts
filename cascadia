@@ -143,17 +143,20 @@ break
 #================================================================
 
 "Delete Node")
-sudo systemctl stop cascadiad ar_cascadia #df_cascadia
-sudo systemctl disable cascadiad ar_cascadia #df_cascadia
+sudo systemctl stop cascadiad ar_cascadia ad_cascadia #df_cascadia
+sudo systemctl disable cascadiad ar_cascadia ad_cascadia #df_cascadia
 rm /etc/systemd/system/cascadiad.service
 rm /etc/systemd/system/ar_cascadia.service
+rm /etc/systemd/system/ad_cascadia.service
 #rm /etc/systemd/system/df_cascadia.service
 sudo systemctl daemon-reload
 cd $HOME
 rm -rf $DIRECTORY
 #rm -rf df_${DIRECTORY}
 rm -rf $HIDDEN_DIRECTORY
-rm -rf $(which $BINARY_NAME)
+rm -f $(which $BINARY_NAME)
+rm -f /root/scripts/ad_${DIRECTORY}.sh
+rm -f /root/scripts/ar_${DIRECTORY}.sh
 
 break
 ;;

@@ -33,7 +33,7 @@ EOF
 # set run script rights
 chmod +x $HOME/scripts/ar_${DIRECTORY}.sh
 # avoid error <BINARY_NAME> command not found
-sudo cp $HOME/go/bin/$BINARY_NAME /usr/local/bin/
+# sudo cp $HOME/go/bin/$BINARY_NAME /usr/local/bin/
 
 # Create <DIRECTORY>_autorestart service file (One command)
 sudo tee /etc/systemd/system/ar_${DIRECTORY}.service > /dev/null <<EOF

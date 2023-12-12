@@ -27,7 +27,7 @@ valoper=$valoper
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
 get_timeout() {
-  if [ "\$status" == "BOND_STATUS_BONDED" ]; then
+  if [ "\$status" = "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
     sleep_timeout=\$(echo "scale=10; $fees * 2 / (\$per_sec * \$procent)" | bc)

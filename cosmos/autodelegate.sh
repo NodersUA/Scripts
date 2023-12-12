@@ -63,7 +63,7 @@ fi
 
 sleep 3
 balance=\$(get_balance) && sleep 1
-delegate=\$((balance - min_balance))
+delegate=\$(echo "\$balance - \$min_balance" | bc)
 if [[ \$delegate > 0 && -n  "\$delegate" ]]; then
 echo -e "\${GREEN}>>> Delegate \${delegate}${CHAIN_DENOM} \${ENDCOLOR}"
 execute_with_sequence_check "${BINARY_NAME} tx staking delegate \${valoper} \${delegate}${CHAIN_DENOM} --from wallet --gas $fees --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM}"

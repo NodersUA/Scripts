@@ -114,6 +114,15 @@ echo -e "\e[1m\e[32m	Enter your PLOT_SIZE in GB:\e[0m"
 echo "*********************"
 read PLOT_SIZE
 
+if [ -z "$SUBSPACE_ADDRESS" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your SUBSPACE_ADDRESS:\e[0m"
+  echo "*********************"
+  read SUBSPACE_ADDRESS
+  echo 'export SUBSPACE_ADDRESS='$SUBSPACE_ADDRESS >> $HOME/.bash_profile
+  source ~/.bash_profile
+fi
+
 sudo systemctl stop subspaced subspacefarm
 mkdir $HOME/subspace
 cd $HOME/subspace
@@ -134,8 +143,7 @@ After=network.target
 Type=simple
 User=$USER
 ExecStart=$(which farmer) farm \\
---reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=${PLOT_SIZE}G \\
---farm-during-initial-plotting=true
+--reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=${PLOT_SIZE}G
 Restart=always
 RestartSec=10
 LimitNOFILE=1024000
@@ -156,6 +164,17 @@ break
 #===========================================================================
 
 "Install Operator")
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+  source ~/.bash_profile
+fi
 
 sudo systemctl stop subspaced subspacefarm
 

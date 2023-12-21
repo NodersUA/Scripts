@@ -8,6 +8,7 @@ PS3='Select an action: '
 options=(
 "Install Node"
 "Update"
+"Install Operator"
 "Delete"
 "Exit")
 
@@ -108,6 +109,11 @@ break
 
 "Update")
 
+echo "*********************"
+echo -e "\e[1m\e[32m	Enter your PLOT_SIZE in GB:\e[0m"
+echo "*********************"
+read PLOT_SIZE
+
 sudo systemctl stop subspaced subspacefarm
 mkdir $HOME/subspace
 cd $HOME/subspace
@@ -119,9 +125,71 @@ rm /usr/local/bin/subspace
 sudo mv * /usr/local/bin/
 cd $HOME && \
 rm -Rvf $HOME/subspace
+
+sudo tee <<EOF >/dev/null /etc/systemd/system/subspacefarm.service
+[Unit]
+Description=Subspace Farmer
+After=network.target
+[Service]
+Type=simple
+User=$USER
+ExecStart=$(which farmer) farm \\
+--reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=${PLOT_SIZE}G \\
+--farm-during-initial-plotting=true
+Restart=always
+RestartSec=10
+LimitNOFILE=1024000
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
 sudo systemctl restart subspacefarm subspaced
 
 echo '=============== UPDATE FINISHED ==================='
+echo -e "To check node logs:      \e[1m\e[33msudo journalctl -fu subspaced --no-hostname -o cat\e[0m"
+echo -e "To check farmer logs:    \e[1m\e[33msudo journalctl -fn1000 -u subspacefarm --no-hostname -o cat\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Install Operator")
+
+sudo systemctl stop subspaced subspacefarm
+
+rm -rf $HOME/.local/share/subspace-node/chains/subspace_gemini_3g/paritydb/full
+
+sudo tee <<EOF >/dev/null /etc/systemd/system/subspaced.service
+[Unit]
+Description=Subspace Node
+After=network.target
+[Service]
+Type=simple
+User=$USER
+ExecStart=$(which subspace) \\
+--chain="gemini-3g" \\
+--blocks-pruning="256" \\
+--state-pruning="archive-canonical" \\
+--no-private-ipv4 \\
+--validator \\
+--name="$MONIKER" \\
+-- \\
+--domain-id 1 \\
+--keystore-path $HOME/.local/share/subspace-node/chains/subspace_gemini_3g/keystore/ \\
+--listen-addr /ip4/0.0.0.0/tcp/40333
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=1024000
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl restart subspacefarm subspaced
+
+echo '=============== OPERATOR INSTALLED ==================='
 echo -e "To check node logs:      \e[1m\e[33msudo journalctl -fu subspaced --no-hostname -o cat\e[0m"
 echo -e "To check farmer logs:    \e[1m\e[33msudo journalctl -fn1000 -u subspacefarm --no-hostname -o cat\e[0m"
 

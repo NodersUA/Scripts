@@ -82,18 +82,12 @@ break
 #================================================================
 
 "UPDATE")
-#systemctl stop cascadiad
 
-#cd ~/.cascadiad/config
-#sed -i "s/^timeout_propose =.*/timeout_propose = \"2.7s\"/" config.toml
-#sed -i "s/^timeout_prevote =.*/timeout_prevote = \"0.9s\"/" config.toml
-#sed -i "s/^timeout_precommit =.*/timeout_precommit = \"0.9s\"/" config.toml
-#sed -i "s/^timeout_commit =.*/timeout_commit = \"3.6s\"/" config.toml
-
-#cd /usr/local/bin/
-#curl -L https://github.com/CascadiaFoundation/cascadia/releases/download/$BINARY_VERSION_TAG/cascadiad -o cascadiad
-#chmod +x cascadiad && cd
-#systemctl restart cascadiad
+systemctl stop cascadiad
+cd /usr/local/bin/
+curl -L https://github.com/CascadiaFoundation/cascadia/releases/download/$BINARY_VERSION_TAG/cascadiad -o cascadiad
+chmod +x cascadiad && cd
+systemctl restart cascadiad
 ver=$(cascadiad version)
 
 echo '=============== UPDATE FINISHED ==================='

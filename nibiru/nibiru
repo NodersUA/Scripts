@@ -144,6 +144,8 @@ rm -rf nibiru
 rm -rf .nibid
 rm -rf df_nibiru
 rm -rf $(which nibid)
+rm scripts/ad_nibiru.sh
+rm scripts/ar_nibiru.sh
 
 break
 ;;

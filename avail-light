@@ -89,6 +89,24 @@ break
 
 #===========================================================================
 
+"Update")
+
+sudo systemctl stop avail_light
+cd ~/avail-light && git fetch
+git checkout v1.7.4
+cargo build --release
+cp target/release/avail-light /usr/local/bin/avail_light
+avail_light --version
+sudo systemctl restart avail_light
+
+echo '=============== UPDATE FINISHED ==================='
+echo -e "To check logs:           \e[1m\e[33msudo journalctl -u avail_light -f -o cat\e[0m"
+
+break
+;;
+
+#===========================================================================
+
 "Exit")
 exit
 ;;

@@ -66,7 +66,7 @@ ExecStart=$(which avail) \
   --base-path $HOME/.avail/data/ \
   --node-key-file "$HOME/.avail/node-key" \
   --port 45333 \
-  --rpc-port 9945 \
+  --rpc-port 9946 \
   --chain goldberg \
   --validator \
   --name $MONIKER \

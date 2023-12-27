@@ -46,6 +46,7 @@ ufw allow 9945
 cd $HOME
 git clone https://github.com/availproject/avail
 cd avail/
+git checkout v1.8.0.4
 cargo build --release -p data-avail
 cp target/release/data-avail /usr/local/bin/avail
 avail --version
@@ -82,6 +83,24 @@ systemctl restart availd
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs:                \e[1m\e[33msudo journalctl -u availd -f -o cat\e[0m"
 echo -e "To check node in telemetry:   \e[1m\e[33mhttps://telemetry.avail.tools/#list/0x6f09966420b2608d1947ccfb0f2a362450d1fc7fd902c29b67c906eaa965a7ae\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Update")
+
+systemctl stop availd
+cd ~/avail && git fetch
+git checkout v1.8.0.4
+cargo build --release -p data-avail
+cp target/release/data-avail /usr/local/bin/avail
+avail --version
+systemctl restart availd
+
+echo '=============== UPDATE FINISHED ==================='
+echo -e "To check logs:                \e[1m\e[33msudo journalctl -u availd -f -o cat\e[0m"
 
 break
 ;;

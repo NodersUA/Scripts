@@ -47,8 +47,8 @@ http_server_port = 7000
 
 libp2p_port = "37000"
 
-full_node_rpc = ["http://127.0.0.1:9945"]
-full_node_ws = ["ws://127.0.0.1:9945"]
+full_node_rpc = ["http://127.0.0.1:9946"]
+full_node_ws = ["ws://127.0.0.1:9946"]
 app_id = 0
 confidence = 92.0
 avail_path = "$HOME/.avail-light"

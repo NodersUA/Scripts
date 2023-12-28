@@ -16,9 +16,7 @@ if [ "$DISCORD_DIR" == "df_cascadia" ]; then
     source $HOME/.bash_profile
   fi
   TOKEN=$CASCADIA_TOKEN
-fi
-
-if [ "$DISCORD_DIR" == "df_penumbra" ]; then
+elif [ "$DISCORD_DIR" == "df_penumbra" ]; then
   if [ -z "$PENUMBRA_TOKEN" ]; then
     echo "*********************"
     echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
@@ -29,9 +27,7 @@ if [ "$DISCORD_DIR" == "df_penumbra" ]; then
     source $HOME/.bash_profile
   fi
   TOKEN=$PENUMBRA_TOKEN
-fi
-
-if [ -z "$TOKEN" ]; then
+else [ -z "$TOKEN" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
@@ -117,6 +113,6 @@ systemctl daemon-reload
 systemctl enable $DISCORD_DIR
 systemctl restart $DISCORD_DIR
 
-if [ "$DISCORD_DIR" == "df_penumbra" ]; then
-sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
-fi
+#if [ "$DISCORD_DIR" == "df_penumbra" ]; then
+#sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
+#fi

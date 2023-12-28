@@ -27,14 +27,16 @@ elif [ "$DISCORD_DIR" == "df_penumbra" ]; then
     source $HOME/.bash_profile
   fi
   TOKEN=$PENUMBRA_TOKEN
-else [ -z "$TOKEN" ]; then
-  echo "*********************"
-  echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
-  echo "_|-_|-_|-_|-_|-_|-_|"
-  read TOKEN
-  echo "_|-_|-_|-_|-_|-_|-_|"
-  echo 'export TOKEN='$TOKEN >> $HOME/.bash_profile
-  source $HOME/.bash_profile
+else
+  if [ -z "$TOKEN" ]; then
+    echo "*********************"
+    echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
+    echo "_|-_|-_|-_|-_|-_|-_|"
+    read TOKEN
+    echo "_|-_|-_|-_|-_|-_|-_|"
+    echo 'export TOKEN='$TOKEN >> $HOME/.bash_profile
+    source $HOME/.bash_profile
+  fi
 fi
 
 # Add discord bot

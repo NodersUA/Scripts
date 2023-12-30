@@ -40,11 +40,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="namada wallet address gen --alias wallet && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+      command="namada wallet address gen --alias wallet && namada wallet key list && namada wallet address list && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
       break
       ;;
     "Recover an old wallet")
-      command="namada wallet key derive --alias wallet --hd-path default"
+      command="namada wallet key derive --alias wallet --hd-path default && namada wallet key list && namada wallet address list"
       break
       ;;
     "Exit")
@@ -102,7 +102,8 @@ export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 #----------------------------------------------------
 
 cd $HOME && git clone https://github.com/anoma/namada.git
-cd namada && make install
+cd namada && git checkout v0.28.2
+make install
 cp ~/namada/target/release/namada* /usr/local/bin/
 
 #----------------------------------------------------

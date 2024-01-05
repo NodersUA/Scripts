@@ -1,46 +1,14 @@
 #!/bin/bash
 
-chmod +x /usr/local/bin/namada*
+sequence_number=$(awk -F' = ' '/^sequence_number/ {print $2}' ~/penumbra/validator.toml)
+((sequence_number++))
 
-# Set the variables
-echo "export NAMADA_CHAIN_ID=public-testnet-15.0dacadb8d663" >> $HOME/.bash_profile
-echo "export NAMADA_PORT=41" >> $HOME/.bash_profile
-source $HOME/.bash_profile
+sed -i "s/^sequence_number *=.*/sequence_number = $sequence_number/" ~/penumbra/validator.toml
 
-namada client utils join-network --chain-id $NAMADA_CHAIN_ID
+pcli validator definition upload --file ~/penumbra/validator.toml
 
-sed -i.bak -e "s%:26658%:${NAMADA_PORT}658%g;
-s%:26657%:${NAMADA_PORT}657%g;
-s%:26656%:${NAMADA_PORT}656%g;
-s%:26545%:${NAMADA_PORT}545%g;
-s%:8545%:${NAMADA_PORT}545%g;
-s%:26660%:${NAMADA_PORT}660%g" ~/.local/share/namada/$NAMADA_CHAIN_ID/config.toml
+balance=$(pcli view balance | awk '/penumbra/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+penumbra$/) {gsub(/[^0-9]/, "", $i); print $i; exit}}')
+balance=$(echo "${balance}" | sed 's/ //g')
 
-# Open ports
-ufw allow ${NAMADA_PORT}658
-ufw allow ${NAMADA_PORT}657
-ufw allow ${NAMADA_PORT}545
-ufw allow ${NAMADA_PORT}660
+pcli tx delegate ${balance}penumbra --to $PENUMBRA_VALIDATOR
 
-sudo tee /etc/systemd/system/namadad.service > /dev/null <<EOF
-[Unit]
-Description=namada
-After=network-online.target
-[Service]
-User=$USER
-WorkingDirectory=$HOME/.local/share/namada
-Environment=CMT_LOG_LEVEL=p2p:none,pex:error
-Environment=NAMADA_CMT_STDOUT=true
-ExecStart=/usr/local/bin/namada node ledger run 
-StandardOutput=syslog
-StandardError=syslog
-Restart=always
-RestartSec=10
-LimitNOFILE=65535
-[Install]
-WantedBy=multi-user.target
-EOF
-
-sudo systemctl daemon-reload
-sudo systemctl enable namadad
-sudo systemctl restart namadad

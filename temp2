@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PENUMBRA_VALIDATOR=\$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')
-echo "1 - $(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')"
-echo "2 - \$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print \$2}')"
+#PENUMBRA_VALIDATOR=\$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')
+#echo "1 - $(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')"
+#echo "2 - \$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print \$2}')"
 echo "3 - $PENUMBRA_VALIDATOR"
 echo "4 - \$PENUMBRA_VALIDATOR"
 

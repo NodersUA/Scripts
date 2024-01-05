@@ -1,3 +1,6 @@
 #!/bin/bash
 
-pcli query validator list -i | grep \$PENUMBRA_VALIDATOR
+echo "1 - $PENUMBRA_VALIDATOR"
+echo "2 - $PENUMBRA_VALIDATOR"
+
+#pcli query validator list -i | grep \$PENUMBRA_VALIDATOR

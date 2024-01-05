@@ -1,9 +1,9 @@
 #!/bin/bash
-
+source $HOME/.bash_profile
 #PENUMBRA_VALIDATOR=\$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')
 #echo "1 - $(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')"
 #echo "2 - \$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print \$2}')"
 echo "3 - $PENUMBRA_VALIDATOR"
-echo "4 - \$PENUMBRA_VALIDATOR"
+#echo "4 - \$PENUMBRA_VALIDATOR"
 
 #pcli query validator list -i | grep $(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')

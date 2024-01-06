@@ -1,12 +1,5 @@
 #!/bin/bash
 
-sequence_number=$(awk -F' = ' '/^sequence_number/ {print $2}' ~/penumbra/validator.toml)
-((sequence_number++))
-
-sed -i "s/^sequence_number *=.*/sequence_number = $sequence_number/" ~/penumbra/validator.toml
-
-pcli validator definition upload --file ~/penumbra/validator.toml
-
 balance=$(pcli view balance | awk '/penumbra/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+penumbra$/) {gsub(/[^0-9]/, "", $i); print $i; exit}}')
 balance=$(echo "${balance}" | sed 's/ //g')
 

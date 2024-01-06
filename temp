@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/.bash_profile
+
 balance=$(pcli view balance | awk '/penumbra/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+penumbra$/) {gsub(/[^0-9]/, "", $i); print $i; exit}}')
 balance=$(echo "${balance}" | sed 's/ //g')
 

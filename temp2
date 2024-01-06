@@ -1,9 +1,30 @@
 #!/bin/bash
-source $HOME/.bash_profile
-#PENUMBRA_VALIDATOR=\$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')
-#echo "1 - $(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')"
-#echo "2 - \$(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print \$2}')"
-echo "3 - $PENUMBRA_VALIDATOR"
-#echo "4 - \$PENUMBRA_VALIDATOR"
 
-#pcli query validator list -i | grep $(grep -E '^identity_key = "(.*)"' validator.toml | awk -F '"' '{print $2}')
+# Create service file for CometBFT
+sudo tee /etc/systemd/system/cometbft.service > /dev/null <<EOF
+[Unit]
+Description=CometBFT for Penumbra
+
+[Service]
+ExecStart=/usr/local/bin/cometbft start \
+--home $HOME/.penumbra/testnet_data/node0/cometbft \
+--proxy_app tcp://127.0.0.1:42658 \
+--rpc.laddr tcp://127.0.0.1:42657
+Restart=on-failure
+RestartSec=5
+User=root
+LimitNOFILE=65535
+
+[Install]
+WantedBy=default.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl restart cometbft
+
+sequence_number=$(awk -F' = ' '/^sequence_number/ {print $2}' ~/penumbra/validator.toml)
+((sequence_number++))
+
+sed -i "s/^sequence_number *=.*/sequence_number = $sequence_number/" ~/penumbra/validator.toml
+
+pcli validator definition upload --file ~/penumbra/validator.toml

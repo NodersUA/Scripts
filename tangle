@@ -105,6 +105,8 @@ if [ -z "$TANGLE_ADDRESS" ]; then
   echo 'export TANGLE_ADDRESS='$TANGLE_ADDRESS >> $HOME/.bash_profile
   source ~/.bash_profile
 fi
+echo 'export PROJECT="TANGLE"' >> $HOME/config.sh
+echo 'export PROJECT_TOKEN="${TANGLE_TOKEN}"' >> $HOME/config.sh
 echo 'export MESSAGE="!send $TANGLE_ADDRESS"' >> $HOME/config.sh
 echo 'export DISCORD_DIR=df_tangle' >> $HOME/config.sh
 echo 'export CHAT_ID=1183826417625075753' >> $HOME/config.sh

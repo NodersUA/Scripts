@@ -185,6 +185,8 @@ break
 
 # set variables
 PENUMBRA_ADDRESS=$(pcli view address | grep -o '[[:alnum:]]*$' | tr -d '[:space:]')
+echo 'export PROJECT="PENUMBRA"' >> $HOME/config.sh
+echo 'export PROJECT_TOKEN="${PENUMBRA_TOKEN}"' >> $HOME/config.sh
 echo 'export MESSAGE="$PENUMBRA_ADDRESS"' >> $HOME/config.sh
 echo 'export DISCORD_DIR=df_penumbra' >> $HOME/config.sh
 echo 'export CHAT_ID=915710851917439060' >> $HOME/config.sh
@@ -220,15 +222,6 @@ sleep 60
 
 balance=$(pcli view balance | grep "penumbra" | sed 's/.* \([0-9]*\)penumbra/\1/')
 balance=$(echo "${balance}" | sed 's/ //g')
-
-#if [ "$balance" -gt 1 ]; then
-#if [ "$balance" -le 20 ]; then
-#delegate_value=$((balance - 1))
-#elif [ "$balance" -le 100 ]; then
-#delegate_value=$((balance - 20))
-#else
-#delegate_value=$((balance - 100))
-#fi
 
 pcli tx delegate ${balance}penumbra --to $PENUMBRA_VALIDATOR
 echo "Delegated ${balance}penumbra to $PENUMBRA_VALIDATOR"

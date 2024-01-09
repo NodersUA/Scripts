@@ -30,9 +30,9 @@ get_timeout() {
   if [ "\$status" = "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
-    sleep_timeout=\$(echo "scale=10; $fees * 3 / (\$per_sec * \$procent)" | bc)
-    sleep_timeout=$(printf "%.0f" "$sleep_timeout")
-    [ "$sleep_timeout" -lt 20 ] && sleep_timeout=20
+    sleep_timeout=\$(echo "scale=10; $gas * 3 * 7 / (\$per_sec * \$procent)" | bc)
+    sleep_timeout=\$(printf "%.0f" "\$sleep_timeout")
+    [ "\$sleep_timeout" -lt 60 ] && sleep_timeout=60
   else
     sleep_timeout=\$def_sleep_timeout
   fi
@@ -61,9 +61,9 @@ start_balance=\$(get_balance) && sleep 1
 
 if [ "\$status" == "BOND_STATUS_BONDED" ]; then
 echo -e "\${GREEN}>>> Withdraw rewards and commission \${ENDCOLOR}"
-echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $fees --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} --commission -y)"
+echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} --commission -y)"
 echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
-echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $fees --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} -y)"
+echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} -y)"
 fi
 
 sleep 3
@@ -71,7 +71,7 @@ balance=\$(get_balance) && sleep 1
 delegate=\$(echo "\$balance - \$min_balance" | bc)
 if [[ \$delegate > 0 && -n  "\$delegate" ]]; then
 echo -e "\${GREEN}>>> Delegate \${delegate}${CHAIN_DENOM} \${ENDCOLOR}"
-execute_with_sequence_check "${BINARY_NAME} tx staking delegate \${valoper} \${delegate}${CHAIN_DENOM} --from wallet --gas $fees --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM}"
+execute_with_sequence_check "${BINARY_NAME} tx staking delegate \${valoper} \${delegate}${CHAIN_DENOM} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM}"
 else
 echo -e "\${GREEN}>>> Balance [ \${balance} ] < min_balance [ \${min_balance} ] \${ENDCOLOR}"
 fi

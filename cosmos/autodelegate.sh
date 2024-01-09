@@ -30,7 +30,8 @@ get_timeout() {
   if [ "\$status" = "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
-    sleep_timeout=\$(echo "scale=10; $fees * 2 / (\$per_sec * \$procent)" | bc)
+    sleep_timeout=\$(echo "scale=10; $fees * 3 / (\$per_sec * \$procent)" | bc)
+    echo "new sleep_timeout = $sleep_timeout"
   else
     sleep_timeout=\$def_sleep_timeout
   fi
@@ -44,10 +45,11 @@ execute_with_sequence_check() {
   echo "\$(eval \${new_cmd})"
 }
 
-while true; do
 sl=\$(shuf -i 0-43000 -n 1)
 echo "sleep \$sl sec..."
 sleep \$sl
+
+while true; do
 
 status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.status')
 
@@ -57,8 +59,10 @@ voting_power=\$(${BINARY_NAME} q staking validator \${valoper} | grep -oP '(?<=t
 start_balance=\$(get_balance) && sleep 1
 
 if [ "\$status" == "BOND_STATUS_BONDED" ]; then
-echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
+echo -e "\${GREEN}>>> Withdraw rewards and commission \${ENDCOLOR}"
 echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $fees --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} --commission -y)"
+echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
+echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $fees --gas-adjustment=1.4 --gas-prices=7${CHAIN_DENOM} -y)"
 fi
 
 sleep 3

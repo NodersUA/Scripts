@@ -31,7 +31,8 @@ get_timeout() {
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
     sleep_timeout=\$(echo "scale=10; $fees * 3 / (\$per_sec * \$procent)" | bc)
-    echo "new sleep_timeout = $sleep_timeout"
+    sleep_timeout=$(printf "%.0f" "$sleep_timeout")
+    [ "$sleep_timeout" -lt 20 ] && sleep_timeout=20
   else
     sleep_timeout=\$def_sleep_timeout
   fi

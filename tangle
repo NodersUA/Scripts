@@ -48,13 +48,10 @@ ufw allow 9943
 cd $HOME
 git clone https://github.com/webb-tools/tangle.git
 cd tangle/
+git checkout v0.6.1
 cargo build --release
 cp target/release/tangle-standalone /usr/local/bin/tangle
 tangle --version
-
-mkdir -p $HOME/.tangle
-wget -O $HOME/.tangle/tangle-standalone.json "https://raw.githubusercontent.com/webb-tools/tangle/main/chainspecs/testnet/tangle-standalone.json"
-chmod 744 ~/.tangle/tangle-standalone.json
 
 sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
 [Unit]
@@ -69,13 +66,14 @@ RestartSec=3
 ExecStart=/usr/local/bin/tangle \
   --base-path $HOME/.tangle/data/ \
   --name $MONIKER \
-  --chain $HOME/.tangle/tangle-standalone.json \
+  --chain tangle-testnet \
   --node-key-file "$HOME/.tangle/node-key" \
   --port 43333 \
   --rpc-port 9943 \
   --validator \
   --no-mdns \
   --auto-insert-keys \
+  --rpc-cors all \
   --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"
  
 [Install]
@@ -88,7 +86,7 @@ systemctl restart tangle
 
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs:                \e[1m\e[33msudo journalctl -u tangle -f -o cat\e[0m"
-echo -e "To check node in telemetry:   \e[1m\e[33mhttps://telemetry.polkadot.io/#list/0xea63e6ac7da8699520af7fb540470d63e48eccb33f7273d2e21a935685bf1320\e[0m"
+echo -e "To check node in telemetry:   \e[1m\e[33mhttps://telemetry.polkadot.io/#list/0x3d22af97d919611e03bbcbda96f65988758865423e89b2d99547a6bb61452db3\e[0m"
 
 break
 ;;
@@ -126,6 +124,7 @@ sudo systemctl stop tangle
 sudo systemctl disable tangle
 rm -rf ~/tangle ~/.tangle ~/.local/share/tangle/
 rm /etc/systemd/system/tangle.service
+rm /usr/local/bin/tangle
 
 break
 ;;

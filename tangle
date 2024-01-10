@@ -51,7 +51,7 @@ git clone https://github.com/webb-tools/tangle.git
 cd tangle/
 git checkout v0.6.1
 cargo build --release
-cp target/release/tangle-standalone /usr/local/bin/tangle
+cp target/release/tangle /usr/local/bin/
 tangle --version
 
 sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF

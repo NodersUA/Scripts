@@ -24,7 +24,7 @@ cd $HOME
 
 # Settings discord bot
 tee $HOME/$DISCORD_DIR/src/config/accounts.txt > /dev/null <<EOF
-$TOKEN
+$PROJECT_TOKEN
 EOF
 
 # \$request $ADDRESS = MESSAGE

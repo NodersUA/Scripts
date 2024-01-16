@@ -129,7 +129,7 @@ sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/conf
 echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
 
 if [ "$NODE_NAME" == "CASCADIA" ]; then
-ExecStart="/usr/local/bin/cascadiad start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --chain-id $CASCADIA_CHAIN_ID"
+ExecStart="/usr/local/bin/cascadiad start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --chain-id $NODE_CHAIN_ID"
 else
 ExecStart="/usr/local/bin/cascadiad start"
 fi

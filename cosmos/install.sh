@@ -53,16 +53,7 @@ apt install bc curl iptables build-essential git wget jq make gcc nano tmux htop
 
 echo -e "\e[1m\e[32m [[\\\\\***** Installing GO *****/////]] \e[0m" && sleep 1
 #INSTALL GO
-if [ "$(go version)" != "go version go1.21.3 linux/amd64" ]; then \
-ver="1.21.3" && \
-wget "https://go.dev/dl/go$ver.linux-amd64.tar.gz" && \
-sudo rm -rf /usr/local/go && \
-sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
-rm "go$ver.linux-amd64.tar.gz" && \
-echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> $HOME/.bash_profile && \
-source $HOME/.bash_profile ; \
-fi
-go version
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
 
 #==================================================================================================
 

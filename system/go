@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/system/go)
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
 
 ver="1.21.6"
 if [ "$(go version)" != "go version $ver linux/amd64" ]; then \

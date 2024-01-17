@@ -31,13 +31,7 @@ bool LDAPPropExpr::IsNull() const
   return m_ldapExpr.empty();
 }
 
-LDAPPropExpr& LDAPPropExpr::operator=(const LDAPPropExpr& expr)
-{
-  if (this != &expr) {
-    m_ldapExpr = expr.m_ldapExpr;
-  }
-  return *this;
-}
+LDAPPropExpr& LDAPPropExpr::operator=(const LDAPPropExpr& expr) = default;
 
 LDAPPropExpr& LDAPPropExpr::operator|=(const LDAPPropExpr& right)
 {

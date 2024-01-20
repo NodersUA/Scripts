@@ -11,7 +11,7 @@ if [ -z "$PROJECT_TOKEN" ]; then
   echo "_|-_|-_|-_|-_|-_|-_|"
   read PROJECT_TOKEN
   echo "_|-_|-_|-_|-_|-_|-_|"
-  echo 'export ${PROJECT}_TOKEN='$PROJECT_TOKEN >> $HOME/.bash_profile
+  echo 'export '$PROJECT'_TOKEN='$PROJECT_TOKEN >> $HOME/.bash_profile
   source $HOME/.bash_profile
 fi
 

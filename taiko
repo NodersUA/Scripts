@@ -82,8 +82,8 @@ cd taiko
 #Copy the sample .env files
 cp .env.sample .env
 
-sed -i "s|^L1_ENDPOINT_HTTP=.*|L1_ENDPOINT_HTTP=$RPC_SEPOLIA|" .env
-sed -i "s|^L1_ENDPOINT_WS=.*|L1_ENDPOINT_WS=$WS_SEPOLIA|" .env
+sed -i "s|^L1_ENDPOINT_HTTP=.*|L1_ENDPOINT_HTTP=$RPC_HOLESKY|" .env
+sed -i "s|^L1_ENDPOINT_WS=.*|L1_ENDPOINT_WS=$WS_HOLESKY|" .env
 sed -i 's/^PORT_GRAFANA=.*/PORT_GRAFANA=4301/' .env
 #sed -i "s|^L1_PROVER_PRIVATE_KEY=.*|L1_PROVER_PRIVATE_KEY=$PROVER_PRIVATE_KEY|" .env
 #sed -i 's/^ENABLE_PROVER=.*/ENABLE_PROVER=true/' .env

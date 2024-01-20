@@ -35,13 +35,13 @@ if [ -z "$RPC_HOLESKY" ]; then
 fi
 
 if [ -z "$WS_HOLESKY" ]; then
-  if [ -z "$WS_SEPOLIA" ]; then
+  if [ -z "$RPC_HOLESKY" ]; then
     echo -e "      \e[1m\e[35m Input WS_HOLESKY:\e[0m"
     echo "_|-_|-_|-_|-_|-_|-_|"
     read WS_HOLESKY
     echo "_|-_|-_|-_|-_|-_|-_|"
   else
-    WS_HOLESKY="${WS_SEPOLIA/sepolia/holesky}"
+    WS_HOLESKY="${RPC_HOLESKY/https/wss}"
   fi
   echo 'export WS_HOLESKY='$WS_HOLESKY >> $HOME/.bash_profile
 fi

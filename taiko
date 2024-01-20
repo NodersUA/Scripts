@@ -62,6 +62,9 @@ source $HOME/.bash_profile
 # Update the repositories
 apt update && apt upgrade -y
 
+#Instal or Update Git
+sudo apt-get install git-all -y
+
 # Install Docker
 if ! [ -x "$(command -v docker)" ]; then
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -71,9 +74,6 @@ docker --version
 else
 echo $(docker --version)
 fi
-
-#Instal or Update Git
-sudo apt-get install git-all
 
 #Clone simple-taiko-node
 git clone https://github.com/taikoxyz/simple-taiko-node.git taiko

@@ -92,6 +92,12 @@ sed -i 's/^PORT_GRAFANA=.*/PORT_GRAFANA=4301/' .env
 
 docker compose up -d
 
+docker rename taiko_taiko_client_proposer_1 taiko-taiko_client_proposer_1
+docker rename taiko_taiko_client_driver_1 taiko-taiko_client_driver_1
+docker rename taiko_l2_execution_engine_1 taiko-l2_execution_engine_1
+docker rename taiko_zkevm_chain_prover_rpcd_1 taiko-zkevm_chain_prover_rpcd_1
+docker rename taiko_taiko_client_prover_relayer_1 taiko-taiko_client_prover_relayer_1
+
 break
 ;;
 

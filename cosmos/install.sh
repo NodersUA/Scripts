@@ -28,7 +28,7 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="$BINARY_NAME keys add wallet && echo -e '      \e[1m\e[31m!!!!!!!!!SAVE!!!!!!!!!!!!!!!!SAVE YOUR MNEMONIC PHRASE!!!!!!!!!SAVE!!!!!!!!!!!!!!!!\e[0m'"
+      command="$BINARY_NAME keys add wallet"
       break
       ;;
     "Recover an old wallet")
@@ -116,13 +116,25 @@ sed -i -e "s/^snapshot-interval *=.*/snapshot-interval = \"$snapshot_interval\"/
 
 sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 
-#if [ "$NODE_NAME" == "NIBIRU" ]; then
-#config_file="$HOME/.nibid/config/config.toml"
-#sed -i "s|enable =.*|enable = true|g" "$config_file"
-#sed -i "s|rpc_servers =.*|rpc_servers = \"$(curl -s https://networks.itn2.nibiru.fi/$NODE_CHAIN_ID/rpc_servers)\"|g" "$config_file"
-#sed -i "s|trust_height =.*|trust_height = \"$(curl -s https://networks.itn2.nibiru.fi/$NODE_CHAIN_ID/trust_height)\"|g" "$config_file"
-#sed -i "s|trust_hash =.*|trust_hash = \"$(curl -s https://networks.itn2.nibiru.fi/$NODE_CHAIN_ID/trust_hash)\"|g" "$config_file"
-#fi
+#==================================================================================================
+
+echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
+
+# Execute the saved command
+eval "$command"
+
+ADDRESS=$($BINARY_NAME keys show wallet -a)
+VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
+echo "export ${NODE_NAME}_ADDRESS="${ADDRESS} >> $HOME/.bash_profile
+echo "export ${NODE_NAME}_VALOPER="${VALOPER} >> $HOME/.bash_profile
+echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
+source $HOME/.bash_profile
+
+if [ "$NODE_NAME" == "BABYLON" ]; then
+sed -i -e "s/^key-name *=.*/key-name = \"wallet\"/" ~/.babylond/config/app.toml
+sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"10s\"/" ~/.babylond/config/config.toml
+babylond create-bls-key $BABYLON_ADDRESS
+fi
 
 #==================================================================================================
 
@@ -131,7 +143,7 @@ echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
 if [ "$NODE_NAME" == "CASCADIA" ]; then
 ExecStart="/usr/local/bin/cascadiad start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --chain-id $NODE_CHAIN_ID"
 else
-ExecStart="/usr/local/bin/cascadiad start"
+ExecStart="/usr/local/bin/$BINARY_NAME start"
 fi
 
 # Create service file (One command)
@@ -172,16 +184,4 @@ echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e "To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
 echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
 
-#==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
-
-# Execute the saved command
-eval "$command"
-
-ADDRESS=$($BINARY_NAME keys show wallet -a)
-VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
-echo "export ${NODE_NAME}_ADDRESS="${ADDRESS} >> $HOME/.bash_profile
-echo "export ${NODE_NAME}_VALOPER="${VALOPER} >> $HOME/.bash_profile
-echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
-source $HOME/.bash_profile

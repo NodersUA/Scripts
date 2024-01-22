@@ -145,7 +145,7 @@ break
 echo 'export PROJECT="BABYLON"' >> $HOME/config.sh
 echo 'export PROJECT_TOKEN="${BABYLON_TOKEN}"' >> $HOME/config.sh
 echo 'export MESSAGE="!faucet $BABYLON_ADDRESS"' >> $HOME/config.sh
-echo 'export DISCORD_DIR=df_${BINARY_NAME}' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_${DIRECTORY}' >> $HOME/config.sh
 echo 'export CHAT_ID=1075371070493831259' >> $HOME/config.sh
 source $HOME/config.sh
 

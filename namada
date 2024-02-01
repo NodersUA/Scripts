@@ -160,6 +160,8 @@ break
 
 "Update")
 
+sudo systemctl restart namadad
+
 echo "export NAMADA_CHAIN_ID=shielded-expedition.b40d8e9055" >> $HOME/.bash_profile
 source $HOME/.bash_profile
 

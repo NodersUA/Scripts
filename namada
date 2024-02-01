@@ -177,7 +177,9 @@ rustc --version # Verify Rust installation by displaying the version
 #----------------------------------------------------
 
 cd $HOME && git clone https://github.com/anoma/namada.git
-cd namada && git pull && git checkout v0.31.0
+cd namada
+git pull
+git checkout v0.31.0
 make install
 cp ~/namada/target/release/namada* /usr/local/bin/
 namada client utils join-network --chain-id $NAMADA_CHAIN_ID

@@ -3,14 +3,13 @@
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
-ver=gemini-3g-2024-jan-29-2
+ver=gemini-3h-2024-feb-01
 
 # Menu
 PS3='Select an action: '
 options=(
 "Install Node"
 "Update"
-"Install Operator"
 "Delete"
 "Exit")
 
@@ -46,8 +45,10 @@ echo -e "\e[1m\e[32m	Enter your PLOT_SIZE in GB:\e[0m"
 echo "*********************"
 read PLOT_SIZE
 
-# Update the repositories
-# apt update && apt upgrade -y
+if ! dpkg -s libgomp1 &> /dev/null; then
+apt update && apt upgrade -y
+sudo apt-get install libgomp1
+fi
 
 mkdir $HOME/subspace; \
 cd $HOME/subspace && \
@@ -66,17 +67,13 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-ExecStart=$(which subspace) \\
---chain="gemini-3g" \\
+ExecStart=$(which subspace) run \\
+--base-path $HOME/.local/share/subspace-node \\
+--chain="gemini-3h" \\
 --blocks-pruning="256" \\
 --state-pruning="archive-canonical" \\
---no-private-ipv4 \\
---validator \\
+--farmer \\
 --name="$MONIKER" \\
--- \\
---domain-id 1 \\
---keystore-path $HOME/.local/share/subspace-node/chains/subspace_gemini_3g/keystore/ \\
---listen-addr /ip4/0.0.0.0/tcp/40333
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=1024000

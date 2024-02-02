@@ -73,7 +73,7 @@ ExecStart=$(which subspace) run \\
 --blocks-pruning="256" \\
 --state-pruning="archive-canonical" \\
 --farmer \\
---name="$MONIKER" \\
+--name="$MONIKER"
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=1024000

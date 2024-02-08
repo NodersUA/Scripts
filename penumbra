@@ -71,7 +71,7 @@ cargo install sccache
 
 # Clone repository and build
 git clone https://github.com/penumbra-zone/penumbra
-cd penumbra && git fetch && git checkout v0.64.1
+cd penumbra && git fetch && git checkout v0.66.0
 cargo build --release --bin pcli
 cargo build --release --bin pd
 cp ~/penumbra/target/release/{pcli,pd} /usr/local/bin
@@ -236,13 +236,12 @@ sudo systemctl stop penumbra cometbft
 
 cd ~/penumbra 
 git reset --hard HEAD
-git fetch && git checkout v0.64.1
-# rustup update
+git fetch && git checkout v0.66.0
 cargo build --release --bin pcli
 cp ~/penumbra/target/release/pcli /usr/local/bin
 cargo build --release --bin pd
 cp ~/penumbra/target/release/pd /usr/local/bin
-#cargo run --quiet --release --bin pcli view reset
+pcli view reset
 cargo run --bin pd --release -- testnet unsafe-reset-all
 cargo run --bin pd --release -- testnet join
 

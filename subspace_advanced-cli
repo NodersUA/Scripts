@@ -123,23 +123,6 @@ rm /usr/local/bin/subspace
 sudo mv * /usr/local/bin/
 cd $HOME && \
 rm -Rvf $HOME/subspace
-
-sudo tee <<EOF >/dev/null /etc/systemd/system/subspacefarm.service
-[Unit]
-Description=Subspace Farmer
-After=network.target
-[Service]
-Type=simple
-User=$USER
-ExecStart=$(which farmer) farm --reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=1400G
-Restart=always
-RestartSec=10
-LimitNOFILE=1024000
-[Install]
-WantedBy=multi-user.target
-EOF
-
-sudo systemctl daemon-reload
 sudo systemctl restart subspacefarm subspaced
 
 echo '=============== UPDATE FINISHED ==================='

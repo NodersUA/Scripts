@@ -77,7 +77,7 @@ cargo install sccache
 
 # Clone repository and build
 git clone https://github.com/penumbra-zone/penumbra
-cd penumbra && git fetch && git checkout v0.67.0
+cd penumbra && git fetch && git checkout v0.67.1
 cargo build --release --bin pcli
 cargo build --release --bin pd
 cp ~/penumbra/target/release/{pcli,pd} /usr/local/bin
@@ -199,8 +199,6 @@ break
 
 "Create Validator")
 
-sleep $sl
-
 cd ~/penumbra && pcli validator definition template \
     --tendermint-validator-keyfile ~/.penumbra/testnet_data/node0/cometbft/config/priv_validator_key.json \
     --file validator.toml
@@ -237,16 +235,17 @@ break
 
 "Update")
 
+sudo systemctl stop penumbra cometbft
 cd ~/penumbra 
 git reset --hard HEAD
-git fetch && git checkout v0.67.0
+git fetch && git checkout v0.67.1
 cargo build --release --bin pcli
 cp ~/penumbra/target/release/pcli /usr/local/bin
 cargo build --release --bin pd
 cp ~/penumbra/target/release/pd /usr/local/bin
 pcli view reset
-cargo run --bin pd --release -- testnet unsafe-reset-all
-cargo run --bin pd --release -- testnet join
+#cargo run --bin pd --release -- testnet unsafe-reset-all
+#cargo run --bin pd --release -- testnet join
 
 sudo systemctl restart penumbra cometbft
 

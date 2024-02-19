@@ -3,7 +3,7 @@
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
-ver=gemini-3h-2024-feb-05
+ver=gemini-3h-2024-feb-15
 
 # Menu
 PS3='Select an action: '
@@ -113,8 +113,6 @@ break
 "Update")
 
 sudo systemctl stop subspaced subspacefarm
-rm -rf /root/.local/share/subspace-farmer/
-rm -rf /root/.local/share/subspace-node/
 mkdir $HOME/subspace
 cd $HOME/subspace
 wget https://github.com/subspace/subspace/releases/download/$ver/subspace-farmer-ubuntu-x86_64-skylake-$ver -O farmer
@@ -126,21 +124,15 @@ sudo mv * /usr/local/bin/
 cd $HOME && \
 rm -Rvf $HOME/subspace
 
-sudo tee <<EOF >/dev/null /etc/systemd/system/subspaced.service
+sudo tee <<EOF >/dev/null /etc/systemd/system/subspacefarm.service
 [Unit]
-Description=Subspace Node
+Description=Subspace Farmer
 After=network.target
 [Service]
 Type=simple
 User=$USER
-ExecStart=$(which subspace) run \\
---base-path $HOME/.local/share/subspace-node \\
---chain="gemini-3h" \\
---blocks-pruning="256" \\
---state-pruning="archive-canonical" \\
---farmer \\
---name="$MONIKER"
-Restart=on-failure
+ExecStart=$(which farmer) farm --reward-address=$SUBSPACE_ADDRESS path=$HOME/.local/share/subspace-farmer,size=1400G
+Restart=always
 RestartSec=10
 LimitNOFILE=1024000
 [Install]

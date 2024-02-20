@@ -13,15 +13,6 @@ options=(
 "Delete"
 "Exit")
 
-#=======================================================
-
-select opt in "${options[@]}"
-do
-case $opt in
-"Install Node")
-
-#----------------------------------------------------
-
 if [ -z "$RPC_HOLESKY" ]; then
   if [ -z "$RPC_SEPOLIA" ]; then
     echo -e "      \e[1m\e[35m Input RPC_HOLESKY:\e[0m"
@@ -46,15 +37,16 @@ if [ -z "$WS_HOLESKY" ]; then
   echo 'export WS_HOLESKY='$WS_HOLESKY >> $HOME/.bash_profile
 fi
 
-#if [ -z "$EVM_ADDRESS" ]; then
-#  echo -e "      \e[1m\e[35m Input EVM_ADDRESS:\e[0m"
-#  echo "_|-_|-_|-_|-_|-_|-_|"
-#  read EVM_ADDRESS
-#  echo "_|-_|-_|-_|-_|-_|-_|"
-#  echo "export EVM_ADDRESS="${EVM_ADDRESS}"" >> $HOME/.bash_profile
-#fi
-
 source $HOME/.bash_profile
+
+#=======================================================
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#----------------------------------------------------
 
 echo "*********************"
 read -p "Enter your private key:" PROPOSER_PRIVATE_KEY
@@ -118,10 +110,14 @@ echo "*********************"
 read -p "Enter your private key:" PROPOSER_PRIVATE_KEY
 
 cd taiko
+git fetch && git pull
+cp .env.sample .env
+sed -i "s|^L1_ENDPOINT_HTTP=.*|L1_ENDPOINT_HTTP=$RPC_HOLESKY|" .env
+sed -i "s|^L1_ENDPOINT_WS=.*|L1_ENDPOINT_WS=$WS_HOLESKY|" .env
+sed -i 's/^PORT_GRAFANA=.*/PORT_GRAFANA=4301/' .env
 sed -i 's/^ENABLE_PROPOSER=.*/ENABLE_PROPOSER=true/' .env
-sed -i "s|^PROVER_ENDPOINTS=.*|PROVER_ENDPOINTS=http://taiko-a6-prover.zkpool.io:9876|" .env
-sed -i "s|^L1_PROPOSER_PRIVATE_KEY=.*|L1_PROPOSER_PRIVATE_KEY=$PROPOSER_PRIVATE_KEY|" .env
-
+sed -i 's/^PROVER_ENDPOINTS=.*/PROVER_ENDPOINTS=http://taiko-a6-prover.zkpool.io:9876/' .env
+sed -i 's/^L1_PROPOSER_PRIVATE_KEY=.*/L1_PROPOSER_PRIVATE_KEY=$PROPOSER_PRIVATE_KEY/' .env
 docker compose up -d
 
 break

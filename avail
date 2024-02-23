@@ -110,6 +110,19 @@ break
 
 #===========================================================================
 
+"Delete")
+
+systemctl stop availd
+systemctl disable availd
+rm /usr/local/bin/avail
+rm /etc/systemd/system/availd.service
+rm -rf avail .avail
+
+break
+;;
+
+#===========================================================================
+
 "Exit")
 exit
 ;;

@@ -110,6 +110,19 @@ break
 
 #===========================================================================
 
+"Delete")
+
+systemctl stop avail_light
+systemctl disable avail_light
+rm /usr/local/bin/avail_light
+rm /etc/systemd/system/avail_light.service
+rm -rf avail-light .avail-light
+
+break
+;;
+
+#===========================================================================
+
 "Exit")
 exit
 ;;

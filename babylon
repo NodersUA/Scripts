@@ -146,6 +146,7 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
+BABYLON_ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
 echo 'export PROJECT="BABYLON"' >> $HOME/config.sh
 echo 'export PROJECT_TOKEN="${BABYLON_TOKEN}"' >> $HOME/config.sh
 echo 'export MESSAGE="!faucet $BABYLON_ADDRESS"' >> $HOME/config.sh

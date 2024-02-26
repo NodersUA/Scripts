@@ -90,13 +90,6 @@ ufw allow ${NODE_PORT}657
 #==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Setup config *****/////]] \e[0m" && sleep 1
-# correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
-$BINARY_NAME config chain-id $NODE_CHAIN_ID
-
-# adjust if necessary keyring-backend в client.toml 
-$BINARY_NAME config keyring-backend test
-
-$BINARY_NAME config node tcp://${external_address}:${NODE_PORT}657
 
 # Set the minimum price for gas
 sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"$MINIMUM_GAS_PRICES\"/;" ~/$HIDDEN_DIRECTORY/config/app.toml
@@ -126,6 +119,12 @@ sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"30s\"/" ~/.babylond/config/
 sed -i -e "s/^network *=.*/network = \"signet\"/" $HOME/.babylond/config/app.toml
 babylond create-bls-key $BABYLON_ADDRESS
 command="$command --keyring-backend test"
+else
+# correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
+$BINARY_NAME config chain-id $NODE_CHAIN_ID
+# adjust if necessary keyring-backend в client.toml 
+$BINARY_NAME config keyring-backend test
+$BINARY_NAME config node tcp://${external_address}:${NODE_PORT}657
 fi
 
 # Execute the saved command

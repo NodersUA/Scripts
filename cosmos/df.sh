@@ -46,13 +46,10 @@ read_delay: 0.1
 typing_delay_per_character: 2
 EOF
 
-
-if [ "$DISCORD_DIR" == "df_penumbra" ]; then
 sl=$(shuf -i 0-10000 -n 1)
 echo "Sleep $sl sec..."
-else
-sl=$(shuf -i 0-40000 -n 1)
-fi
+
+if [ "$DISCORD_DIR" == "df_babylon" ]; then sl1=21600; else sl1=86400; fi
 
 tee $HOME/$DISCORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
@@ -63,7 +60,7 @@ while true
 do
     date
     cd $HOME/$DISCORD_DIR/src/ && python3 main.py
-    sleep 86600 # 24 години сліп
+    sleep $sl1
     sleep \$(shuf -i 0-1800 -n 1) # 30 хв рандома
     echo "===================================="
 done

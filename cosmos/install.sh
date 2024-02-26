@@ -120,6 +120,14 @@ sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/conf
 
 echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
 
+if [ "$NODE_NAME" == "BABYLON" ]; then
+sed -i -e "s/^key-name *=.*/key-name = \"wallet\"/" ~/.babylond/config/app.toml
+sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"30s\"/" ~/.babylond/config/config.toml
+sed -i -e "s/^network *=.*/network = \"signet\"/" $HOME/.babylond/config/app.toml
+babylond create-bls-key $BABYLON_ADDRESS
+command="$command --keyring-backend test"
+fi
+
 # Execute the saved command
 eval "$command"
 
@@ -130,21 +138,9 @@ echo "export ${NODE_NAME}_VALOPER="${VALOPER} >> $HOME/.bash_profile
 echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
-if [ "$NODE_NAME" == "BABYLON" ]; then
-sed -i -e "s/^key-name *=.*/key-name = \"wallet\"/" ~/.babylond/config/app.toml
-sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"10s\"/" ~/.babylond/config/config.toml
-babylond create-bls-key $BABYLON_ADDRESS
-fi
-
 #==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
-
-if [ "$NODE_NAME" == "CASCADIA" ]; then
-ExecStart="/usr/local/bin/cascadiad start --trace --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --chain-id $NODE_CHAIN_ID"
-else
-ExecStart="/usr/local/bin/$BINARY_NAME start"
-fi
 
 # Create service file (One command)
 sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF

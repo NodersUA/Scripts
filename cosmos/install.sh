@@ -130,14 +130,19 @@ fi
 # Execute the saved command
 eval "$command"
 
-if ! [ "$NODE_NAME" == "BABYLON" ]; then
+echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
+
+if [ "$NODE_NAME" == "BABYLON" ]; then
+ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
+VALOPER=$($BINARY_NAME keys show wallet --bech val -a --keyring-backend test)
+else
 ADDRESS=$($BINARY_NAME keys show wallet -a)
 VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
+fi
+
 echo "export ${NODE_NAME}_ADDRESS="${ADDRESS} >> $HOME/.bash_profile
 echo "export ${NODE_NAME}_VALOPER="${VALOPER} >> $HOME/.bash_profile
-echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
 source $HOME/.bash_profile
-fi
 
 #==================================================================================================
 

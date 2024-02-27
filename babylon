@@ -57,6 +57,7 @@ options=(
 "Diskord Bot Autoinstall"
 "Autodelegate"
 "Autorestart"
+"Create validator"
 "Exit")
 select opt in "${options[@]}"
 do
@@ -185,6 +186,74 @@ source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/
 systemctl daemon-reload
 systemctl enable ar_${DIRECTORY}.service
 systemctl restart ar_${DIRECTORY}.service
+
+break
+;;
+
+#================================================================
+
+"Create validator")
+
+cd babylon
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+fi
+
+if [ -z "$WEBSITE" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your WEBSITE:\e[0m"
+  echo "*********************"
+  read WEBSITE
+  echo 'export WEBSITE='$WEBSITE >> $HOME/.bash_profile
+fi
+
+if [ -z "$EMAIL" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your EMAIL:\e[0m"
+  echo "*********************"
+  read EMAIL
+  echo 'export EMAIL='$EMAIL >> $HOME/.bash_profile
+fi
+
+if [ -z "$IDENTITY" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your IDENTITY:\e[0m"
+  echo "*********************"
+  read IDENTITY
+  echo 'export IDENTITY='$IDENTITY >> $HOME/.bash_profile
+fi
+
+source ~/.bash_profile
+
+sudo tee ~/babylon/validator.json > /dev/null <<EOF
+{
+  "pubkey": $(babylond tendermint show-validator),
+  "amount": "1000000ubbn",
+  "moniker": "$MONIKER",
+  "website": "$WEBSITE",
+  "security": "$EMAIL",
+  "identity": "$IDENTITY",
+  "commission-rate": "0.10",
+  "commission-max-rate": "0.20",
+  "commission-max-change-rate": "0.1",
+  "min-self-delegation": "1"
+}
+EOF
+
+sleep $(shuf -i 1-10000 -n 1)
+
+babylond tx checkpointing create-validator ~/babylon/validator.json \
+    --chain-id="$NODE_CHAIN_ID" \
+    --gas="auto" \
+    --gas-adjustment="1.5" \
+    --gas-prices="0.025ubbn" \
+    --from wallet \
+    --keyring-backend test
 
 break
 ;;

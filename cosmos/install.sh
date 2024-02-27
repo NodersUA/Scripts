@@ -117,7 +117,6 @@ if [ "$NODE_NAME" == "BABYLON" ]; then
 sed -i -e "s/^key-name *=.*/key-name = \"wallet\"/" ~/.babylond/config/app.toml
 sed -i -e "s/^timeout_commit *=.*/timeout_commit = \"30s\"/" ~/.babylond/config/config.toml
 sed -i -e "s/^network *=.*/network = \"signet\"/" $HOME/.babylond/config/app.toml
-babylond create-bls-key $BABYLON_ADDRESS
 command="$command --keyring-backend test"
 else
 # correct config (so we can no longer use the chain-id flag for every CLI command in client.toml)
@@ -135,6 +134,7 @@ echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile
 if [ "$NODE_NAME" == "BABYLON" ]; then
 ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
 VALOPER=$($BINARY_NAME keys show wallet --bech val -a --keyring-backend test)
+babylond create-bls-key $ADDRESS
 else
 ADDRESS=$($BINARY_NAME keys show wallet -a)
 VALOPER=$($BINARY_NAME keys show wallet --bech val -a)

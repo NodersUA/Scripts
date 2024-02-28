@@ -120,7 +120,7 @@ break
 
 #===========================================================================
 
-"Update"
+"Update")
 
 sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
 [Unit]

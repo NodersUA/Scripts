@@ -245,7 +245,7 @@ sudo tee ~/babylon/validator.json > /dev/null <<EOF
 }
 EOF
 
-sleep $(shuf -i 1-10000 -n 1)
+#sleep $(shuf -i 1-10000 -n 1)
 
 babylond tx checkpointing create-validator ~/babylon/validator.json \
     --chain-id="$NODE_CHAIN_ID" \

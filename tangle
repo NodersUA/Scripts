@@ -122,6 +122,9 @@ break
 
 "Update")
 
+systemctl stop tangle
+/root/.tangle/data/chains/tangle-testnet/db/full/
+
 sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
 [Unit]
 Description=Tangle Validator Node
@@ -141,7 +144,6 @@ ExecStart=/usr/local/bin/tangle \
   --rpc-port 9943 \
   --validator \
   --no-mdns \
-  --auto-insert-keys \
   --rpc-cors all \
   --pruning archive \
   --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"

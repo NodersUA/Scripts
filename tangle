@@ -123,7 +123,7 @@ break
 "Update")
 
 systemctl stop tangle
-/root/.tangle/data/chains/tangle-testnet/db/full/
+rm -rf /root/.tangle/data/chains/tangle-testnet/db/full/
 
 sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
 [Unit]

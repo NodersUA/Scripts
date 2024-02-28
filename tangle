@@ -125,6 +125,8 @@ break
 systemctl stop tangle
 rm -rf /root/.tangle/data/chains/tangle-testnet/db/full/
 
+source ~/.bash_profile
+
 sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
 [Unit]
 Description=Tangle Validator Node

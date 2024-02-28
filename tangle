@@ -75,6 +75,7 @@ ExecStart=/usr/local/bin/tangle \
   --no-mdns \
   --auto-insert-keys \
   --rpc-cors all \
+  --pruning archive \
   --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"
  
 [Install]
@@ -113,6 +114,44 @@ source $HOME/config.sh
 
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+
+break
+;;
+
+#===========================================================================
+
+"Update"
+
+sudo tee /etc/systemd/system/tangle.service > /dev/null << EOF
+[Unit]
+Description=Tangle Validator Node
+After=network-online.target
+StartLimitIntervalSec=0
+ 
+[Service]
+User=$USER
+Restart=always
+RestartSec=3
+ExecStart=/usr/local/bin/tangle \
+  --base-path $HOME/.tangle/data/ \
+  --name $MONIKER \
+  --chain tangle-testnet \
+  --node-key-file "$HOME/.tangle/node-key" \
+  --port 43333 \
+  --rpc-port 9943 \
+  --validator \
+  --no-mdns \
+  --auto-insert-keys \
+  --rpc-cors all \
+  --pruning archive \
+  --telemetry-url "wss://telemetry.polkadot.io/submit/ 0"
+ 
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl restart tangle
 
 break
 ;;

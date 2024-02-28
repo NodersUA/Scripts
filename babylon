@@ -253,7 +253,7 @@ babylond tx checkpointing create-validator ~/babylon/validator.json \
     --gas-adjustment="1.5" \
     --gas-prices="0.025ubbn" \
     --from wallet \
-    --keyring-backend test
+    --keyring-backend test \
     -y
 
 break

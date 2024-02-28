@@ -248,7 +248,7 @@ EOF
 #sleep $(shuf -i 1-10000 -n 1)
 
 babylond tx checkpointing create-validator ~/babylon/validator.json \
-    --chain-id="$NODE_CHAIN_ID" \
+    --chain-id="bbn-test-3" \
     --gas="auto" \
     --gas-adjustment="1.5" \
     --gas-prices="0.025ubbn" \

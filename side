@@ -222,7 +222,8 @@ fi
 
 source ~/.bash_profile
 
-sleep $(shuf -i 1-10000 -n 1)
+#sleep $(shuf -i 1-10000 -n 1)
+sleep 5
 
 $BINARY_NAME tx staking create-validator \
 --amount 1000000uside \

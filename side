@@ -238,9 +238,8 @@ $BINARY_NAME tx staking create-validator \
 --identity=$IDENTITY \
 --website=$WEBSITE \
 --security-contact=$EMAIL \
---gas 750000 \
---gas-adjustment=1.2 \
---gas-prices=0.0025uside \
+--gas 300000 \
+--fees 7500uside \
 -y
 
 break

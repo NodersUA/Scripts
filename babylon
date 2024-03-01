@@ -177,7 +177,7 @@ if [ -z "$BABYLON_SBTC_ADDRESS" ]; then
 fi
 
 echo 'export PROJECT="BABYLON_SBTC"' >> $HOME/config.sh
-echo 'export PROJECT_TOKEN="${BABYLON_SBTC_TOKEN}"' >> $HOME/config.sh
+echo 'export PROJECT_TOKEN="${BABYLON_TOKEN}"' >> $HOME/config.sh
 echo 'export MESSAGE="!faucet $BABYLON_SBTC_ADDRESS"' >> $HOME/config.sh
 echo 'export DISCORD_DIR=df_babylon_sbtc' >> $HOME/config.sh
 echo 'export CHAT_ID=1212398536256393227' >> $HOME/config.sh

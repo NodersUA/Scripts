@@ -49,7 +49,7 @@ EOF
 sl=$(shuf -i 0-10000 -n 1)
 echo "Sleep $sl sec..."
 
-if [ "$DISCORD_DIR" == "df_babylon" ]; then sl1=21600; else sl1=86400; fi
+if [ "$DISCORD_DIR" == "df_babylon" ] || [ "$DISCORD_DIR" == "df_babylon_sbtc" ]; then sl1=21600; else sl1=86400; fi
 
 tee $HOME/$DISCORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash

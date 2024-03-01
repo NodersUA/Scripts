@@ -1,30 +1,5 @@
 #!/bin/bash
 
-# Create service file for CometBFT
-sudo tee /etc/systemd/system/cometbft.service > /dev/null <<EOF
-[Unit]
-Description=CometBFT for Penumbra
-
-[Service]
-ExecStart=/usr/local/bin/cometbft start \
---home $HOME/.penumbra/testnet_data/node0/cometbft \
---proxy_app tcp://127.0.0.1:42658 \
---rpc.laddr tcp://127.0.0.1:42657
-Restart=on-failure
-RestartSec=5
-User=root
-LimitNOFILE=65535
-
-[Install]
-WantedBy=default.target
-EOF
-
+sed -i 's/size=1400G/size=1200G/' /etc/systemd/system/subspacefarm.service
 sudo systemctl daemon-reload
-sudo systemctl restart cometbft
-
-sequence_number=$(awk -F' = ' '/^sequence_number/ {print $2}' ~/penumbra/validator.toml)
-((sequence_number++))
-
-sed -i "s/^sequence_number *=.*/sequence_number = $sequence_number/" ~/penumbra/validator.toml
-
-pcli validator definition upload --file ~/penumbra/validator.toml
+sudo systemctl restart subspacefarm subspaced

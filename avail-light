@@ -18,6 +18,10 @@ case $opt in
 
 #===============================================================
 
+echo -e "\e[1m\e[32m	Enter your SEED_PHRASE:\e[0m"
+echo "*********************"
+read SEED_PHRASE
+
 # Update the repositories
 sudo apt update
 sudo apt install make clang pkg-config libssl-dev build-essential -y
@@ -36,7 +40,6 @@ rustc --version
 cd $HOME
 git clone https://github.com/availproject/avail-light.git
 cd avail-light
-git checkout v1.7.4
 cargo build --release
 cp target/release/avail-light /usr/local/bin/avail_light
 avail_light --version
@@ -47,17 +50,15 @@ sudo bash -c "cat > $HOME/avail-light/config.yaml" <<EOF
 log_level = "info"
 http_server_host = "127.0.0.1"
 http_server_port = 7000
-
 libp2p_port = "37000"
-
-full_node_rpc = ["http://127.0.0.1:9946"]
-full_node_ws = ["ws://127.0.0.1:9946"]
-app_id = 0
-confidence = 92.0
 avail_path = "$HOME/.avail-light"
 prometheus_port = 9520
-# Set to actual bootstrap peer ID and multiaddress
-bootstraps = [["12D3KooWStAKPADXqJ7cngPYXd2mSANpdgh1xQ34aouufHA2xShz", "/ip4/127.0.0.1/tcp/39000"]]
+EOF
+
+#-----------------------------------------------------
+
+sudo bash -c "cat > $HOME/avail-light/target/release/identity.toml" <<EOF
+avail_secret_seed_phrase = "$SEED_PHRASE"
 EOF
 
 #-----------------------------------------------------
@@ -69,7 +70,9 @@ After=network.target
 StartLimitIntervalSec=0
 [Service] 
 User=$USER 
-ExecStart=$(which avail_light) --network goldberg --config $HOME/avail-light/config.yaml
+ExecStart=$(which avail_light) --network goldberg \
+--identity $HOME/avail-light/target/release/identity.toml \
+--config $HOME/avail-light/config.yaml
 Restart=always 
 RestartSec=120
 [Install] 

@@ -61,12 +61,15 @@ start_balance=\$(get_balance) && sleep 1
 
 if [ "\$status" == "BOND_STATUS_BONDED" ]; then
 echo -e "\${GREEN}>>> Withdraw rewards and commission \${ENDCOLOR}"
-echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission -y)"
+# echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission -y)"
+execute_with_sequence_check "${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission -y)"
+sleep 10
 echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
-echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} -y)"
+#echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} -y)"
+execute_with_sequence_check "${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} -y"
 fi
 
-sleep 3
+sleep 10
 balance=\$(get_balance) && sleep 1
 delegate=\$(echo "\$balance - \$min_balance" | bc)
 if [[ \$delegate > 0 && -n  "\$delegate" ]]; then

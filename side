@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/side)
+
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 

@@ -224,9 +224,9 @@ fi
 
 source ~/.bash_profile
 
-Timesleep=$(shuf -i 1-10000 -n 1)
-echo "Sleep - $Timesleep"
-sleep $Timesleep
+#Timesleep=$(shuf -i 1-10000 -n 1)
+#echo "Sleep - $Timesleep"
+#sleep $Timesleep
 
 $BINARY_NAME tx staking create-validator \
 --amount 1000000uside \

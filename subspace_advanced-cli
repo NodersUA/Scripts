@@ -3,7 +3,7 @@
 # Logo
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
-ver=gemini-3h-2024-feb-19
+ver=gemini-3h-2024-mar-08
 
 # Menu
 PS3='Select an action: '

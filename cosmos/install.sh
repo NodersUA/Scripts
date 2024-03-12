@@ -75,7 +75,7 @@ wget -O $HOME/$HIDDEN_DIRECTORY/config/genesis.json $GENESIS_URL
 #==================================================================================================
 
 echo -e "\e[1m\e[32m [[\\\\\***** Set the ports *****/////]] \e[0m" && sleep 1
-external_address=$(wget -qO- eth0.me)
+external_address=$(curl -s https://checkip.amazonaws.com)
 # config.toml
 sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${NODE_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://${external_address}:${NODE_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${NODE_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${NODE_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${NODE_PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
 sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:${NODE_PORT}656\"/" $HOME/$HIDDEN_DIRECTORY/config/config.toml

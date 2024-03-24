@@ -1,5 +1,51 @@
 #!/bin/bash
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp2)
 
-sed -i 's/size=1400G/size=1200G/' /etc/systemd/system/subspacefarm.service
-sudo systemctl daemon-reload
-sudo systemctl restart subspacefarm subspaced
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+fi
+
+if [ -z "$IDENTITY" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your IDENTITY:\e[0m"
+  echo "*********************"
+  read IDENTITY
+  echo 'export IDENTITY='$IDENTITY >> $HOME/.bash_profile
+fi
+
+if [ -z "$EMAIL" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your EMAIL:\e[0m"
+  echo "*********************"
+  read EMAIL
+  echo 'export EMAIL='$EMAIL >> $HOME/.bash_profile
+fi
+
+source ~/.bash_profile
+
+systemctl stop sided
+systemctl disable sided
+
+sided tendermint unsafe-reset-all --home $HOME/.side --keep-addr-book
+rm /usr/local/bin/sided
+rm -rf /root/.side/config/
+
+cd side
+git fetch
+git checkout v0.7.0-rc2
+make install
+
+sudo cp $(which sided) /usr/local/bin/ && cd $HOME
+
+sided init $MONIKER --chain-id side-testnet-3
+curl -s https://raw.githubusercontent.com/sideprotocol/testnet/main/side-testnet-3/pregenesis.json > ~/.side/config/genesis.json
+
+sided add-genesis-account wallet 100000000uside
+sided gentx wallet 100000000uside --chain-id side-testnet-3 --identity $IDENTITY --keyring-backend test --security-contact=$EMAIL
+

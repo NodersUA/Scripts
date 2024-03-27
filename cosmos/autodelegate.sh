@@ -118,4 +118,4 @@ systemctl enable ad_${DIRECTORY}
 systemctl restart ad_${DIRECTORY}
 
 echo '=============== SETUP FINISHED ==================='
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u ad_${DIRECTORY} -f -o cat\e[0m'
+echo -e "To check logs:        \e[1m\e[33mjournalctl -u ad_${DIRECTORY} -f -o cat\e[0m"

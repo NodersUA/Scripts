@@ -143,10 +143,10 @@ break
 
 "Diskord Bot Autoinstall")
 # set variables
-SIDE_ADDRESS=$($BINARY_NAME keys show wallet -a)
+SIDE_ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
 echo 'export PROJECT="SIDE"' >> $HOME/config.sh
 echo 'export PROJECT_TOKEN="${SIDE_TOKEN}"' >> $HOME/config.sh
-echo 'export MESSAGE="\$request side-testnet-2 $SIDE_ADDRESS"' >> $HOME/config.sh
+echo 'export MESSAGE="\$request side-testnet-3 $SIDE_ADDRESS"' >> $HOME/config.sh
 echo 'export DISCORD_DIR=df_${DIRECTORY}' >> $HOME/config.sh
 echo 'export CHAT_ID=1194166283357392976' >> $HOME/config.sh
 source $HOME/config.sh
@@ -160,8 +160,8 @@ break
 #================================================================
 
 "Autodelegate")
-ADDRESS=$($BINARY_NAME keys show wallet -a)
-VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
+ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
+VALOPER=$($BINARY_NAME keys show wallet --bech val -a --keyring-backend test)
 echo "export address="${ADDRESS} >> $HOME/config.sh
 echo "export valoper="${VALOPER} >> $HOME/config.sh
 echo 'export gas=300000' >> $HOME/config.sh

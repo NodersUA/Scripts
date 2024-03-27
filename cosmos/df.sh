@@ -91,3 +91,6 @@ systemctl restart $DISCORD_DIR
 #if [ "$DISCORD_DIR" == "df_penumbra" ]; then
 #sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
 #fi
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u $DISCORD_DIR -f -o cat\e[0m'

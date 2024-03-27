@@ -41,12 +41,16 @@ get_timeout() {
 execute_with_sequence_check() {
   cmd=\$1
   sequence=\$(${BINARY_NAME} query account \${address} | grep -oP '(?<=sequence: ")[^"]+' | awk '{print \$1}')
-  new_cmd="\$cmd --sequence=\$sequence -y"
+  if [ "$BINARY_NAME" = "sided" ]; then
+    new_cmd="\$cmd --keyring-backend test --sequence=\$sequence -y"
+  else
+    new_cmd="\$cmd --sequence=\$sequence -y"
+  fi
   echo \$new_cmd
   echo "\$(eval \${new_cmd})"
 }
 
-sl=\$(shuf -i 0-43000 -n 1)
+sl=\$(shuf -i 0-10000 -n 1)
 echo "sleep \$sl sec..."
 sleep \$sl
 

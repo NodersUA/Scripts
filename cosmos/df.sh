@@ -5,7 +5,7 @@ if [ -d "$DISCORD_DIR" ]; then
     rm -rf "$DISCORD_DIR"
 fi
 
-if [ -z "$PROJECT_TOKEN" ]; then
+#if [ -z "$PROJECT_TOKEN" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
@@ -13,7 +13,7 @@ if [ -z "$PROJECT_TOKEN" ]; then
   echo "_|-_|-_|-_|-_|-_|-_|"
   echo 'export '$PROJECT'_TOKEN='$PROJECT_TOKEN >> $HOME/.bash_profile
   source $HOME/.bash_profile
-fi
+#fi
 
 # Add discord bot
 apt install pip -y

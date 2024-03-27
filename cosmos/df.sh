@@ -93,4 +93,4 @@ systemctl restart $DISCORD_DIR
 #fi
 
 echo '=============== SETUP FINISHED ==================='
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u $DISCORD_DIR -f -o cat\e[0m'
+echo -e "To check logs:        \e[1m\e[33mjournalctl -u $DISCORD_DIR -f -o cat\e[0m"

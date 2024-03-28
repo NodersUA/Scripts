@@ -8,6 +8,8 @@ fi
 # make sure scripts is in path. If not then make dir
 mkdir -p "~/scripts"
 
+fees=$(echo "$gas * 3 * $(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')" | bc)
+
 #===========================================================================
 
 # write nibiru_autorestart.sh to scripts/
@@ -22,7 +24,7 @@ sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
 valoper=$valoper
-fees=\$(echo "$gas * 3 * $(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')" | bc)
+fees=$fees
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 

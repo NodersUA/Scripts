@@ -165,7 +165,7 @@ VALOPER=$($BINARY_NAME keys show wallet --bech val -a --keyring-backend test)
 echo "export address="${ADDRESS} >> $HOME/config.sh
 echo "export valoper="${VALOPER} >> $HOME/config.sh
 echo 'export gas=300000' >> $HOME/config.sh
-echo 'export sleep_timeout=100' >> $HOME/config.sh
+echo 'export sleep_timeout=1000' >> $HOME/config.sh
 echo 'export min_balance=5000000' >> $HOME/config.sh
 source $HOME/config.sh
 

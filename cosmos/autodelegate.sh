@@ -22,14 +22,13 @@ sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
 valoper=$valoper
-#mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
 fees=\$(echo "$gas * 3 * $(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')" | bc)
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
 get_timeout() {
   echo "get_timeout"
-  echo $status
+  echo \$status
   if [ "\$status" = "BOND_STATUS_BONDED" ]; then
     voting_power=\$(sided q staking validator ${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
     per_sec=\$((delegate / sleep_timeout))

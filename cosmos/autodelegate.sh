@@ -17,21 +17,28 @@ tee ~/scripts/ad_${DIRECTORY}.sh > /dev/null <<EOF
 GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
-next=false
+next=""
 sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
 valoper=$valoper
-#mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
+mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
+fees=$((gas * 3 * mgp))
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
 get_timeout() {
+  echo "get_timeout"
+  echo $status
   if [ "\$status" = "BOND_STATUS_BONDED" ]; then
+    voting_power=\$(sided q staking validator ${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
-    sleep_timeout=\$(echo "scale=10; $gas * 3 * $(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*') / (\$delegate * \$procent)" | bc)
+    echo "per_sec: \$delegate / \$sleep_timeout = \$per_sec"
+    echo "procent: \$per_sec / \$voting_power = \$procent"
+    sleep_timeout=\$(echo "scale=10; $fees / (\$delegate * \$procent)" | bc)
     sleep_timeout=\$(printf "%.0f" "\$sleep_timeout")
+    echo "st: $fees / ( \$delegate * \$procent ) = $sleep_timeout"
     [ "\$sleep_timeout" -lt 60 ] && sleep_timeout=60
   else
     sleep_timeout=100000
@@ -60,7 +67,6 @@ status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '
 
 echo -e "\${GREEN}>>> Date: [ \$(date) ]\${ENDCOLOR}"
 
-voting_power=\$(${BINARY_NAME} q staking validator \${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
 start_balance=\$(get_balance) && sleep 1
 
 if [ "\$status" == "BOND_STATUS_BONDED" ]; then

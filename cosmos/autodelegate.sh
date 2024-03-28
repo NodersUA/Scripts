@@ -18,7 +18,7 @@ GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
 next=false
-def_sleep_timeout=$sleep_timeout
+#def_sleep_timeout=$sleep_timeout
 sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
@@ -30,11 +30,11 @@ get_timeout() {
   if [ "\$status" = "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
-    sleep_timeout=\$(echo "scale=10; $gas * 3 * 7 / (\$per_sec * \$procent)" | bc)
+    sleep_timeout=\$(echo "scale=10; $gas * 3 * $MINIMUM_GAS_PRICES / (\$delegate * \$procent)" | bc)
     sleep_timeout=\$(printf "%.0f" "\$sleep_timeout")
     [ "\$sleep_timeout" -lt 60 ] && sleep_timeout=60
   else
-    sleep_timeout=\$def_sleep_timeout
+    sleep_timeout=100000
   fi
 }
 

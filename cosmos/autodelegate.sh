@@ -23,7 +23,7 @@ min_balance=$min_balance
 address=$address
 valoper=$valoper
 mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
-fees=$((gas * 3 * mgp))
+fees=$(echo "$gas * 3 * $mgp" | bc)
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 

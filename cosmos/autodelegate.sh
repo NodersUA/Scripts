@@ -22,8 +22,8 @@ sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
 valoper=$valoper
-mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
-fees=\$(echo "$gas * 3 * $mgp" | bc)
+#mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
+fees=\$(echo "$gas * 3 * $(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')" | bc)
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 

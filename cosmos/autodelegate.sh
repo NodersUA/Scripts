@@ -50,9 +50,9 @@ execute_with_sequence_check() {
   echo "\$(eval \${new_cmd})"
 }
 
-#sl=\$(shuf -i 0-10000 -n 1)
-#echo "sleep \$sl sec..."
-#sleep \$sl
+sl=\$(shuf -i 0-10000 -n 1)
+echo "sleep \$sl sec..."
+sleep \$sl
 
 while true; do
 

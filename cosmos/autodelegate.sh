@@ -18,11 +18,11 @@ GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
 next=false
-#def_sleep_timeout=$sleep_timeout
 sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
 valoper=$valoper
+mgp=$(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
@@ -30,7 +30,7 @@ get_timeout() {
   if [ "\$status" = "BOND_STATUS_BONDED" ]; then
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
-    sleep_timeout=\$(echo "scale=10; $gas * 3 * $MINIMUM_GAS_PRICES / (\$delegate * \$procent)" | bc)
+    sleep_timeout=\$(echo "scale=10; $gas * 3 * $mgp / (\$delegate * \$procent)" | bc)
     sleep_timeout=\$(printf "%.0f" "\$sleep_timeout")
     [ "\$sleep_timeout" -lt 60 ] && sleep_timeout=60
   else

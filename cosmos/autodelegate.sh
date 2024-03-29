@@ -24,7 +24,6 @@ sleep_timeout=$sleep_timeout
 min_balance=$min_balance
 address=$address
 valoper=$valoper
-fees=$fees
 
 get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
 
@@ -39,7 +38,7 @@ get_timeout() {
     echo "procent: \$per_sec / \$voting_power = \$procent"
     sleep_timeout=\$(echo "scale=10; $fees / (\$delegate * \$procent)" | bc)
     sleep_timeout=\$(printf "%.0f" "\$sleep_timeout")
-    echo "st: $fees / ( \$delegate * \$procent ) = $sleep_timeout"
+    echo "st: $fees / ( \$delegate * \$procent ) = \$sleep_timeout"
     [ "\$sleep_timeout" -lt 60 ] && sleep_timeout=60
   else
     sleep_timeout=100000

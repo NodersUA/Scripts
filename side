@@ -16,7 +16,7 @@ DIRECTORY="side"
 HIDDEN_DIRECTORY=".side"
 NODE_URL="https://github.com/sideprotocol/side.git"
 GENESIS_URL="https://github.com/sideprotocol/testnet/raw/main/side-testnet-3/genesis.json"
-MINIMUM_GAS_PRICES="0.005uside"
+MINIMUM_GAS_PRICES="0.0025uside"
 PEERS=""
 SEEDS="00170c0c23c3e97c740680a7f881511faf68289a@202.182.119.24:26656"
 pruning="custom"
@@ -164,7 +164,7 @@ ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
 VALOPER=$($BINARY_NAME keys show wallet --bech val -a --keyring-backend test)
 echo "export address="${ADDRESS} >> $HOME/config.sh
 echo "export valoper="${VALOPER} >> $HOME/config.sh
-echo 'export gas=300000' >> $HOME/config.sh
+echo 'export gas=200000' >> $HOME/config.sh
 echo 'export sleep_timeout=1000' >> $HOME/config.sh
 echo 'export min_balance=5000000' >> $HOME/config.sh
 source $HOME/config.sh

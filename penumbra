@@ -193,7 +193,7 @@ source $HOME/config.sh
 # import code from file
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
 
-sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
+#sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
 
 break
 ;;

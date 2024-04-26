@@ -255,15 +255,14 @@ fi
 
 cd ~/penumbra 
 git reset --hard HEAD
-git fetch && git checkout v0.71.0
+git fetch && git checkout v0.73.0
 cargo build --release --bin pcli
 cp ~/penumbra/target/release/pcli /usr/local/bin
 cargo build --release --bin pd
 cp ~/penumbra/target/release/pd /usr/local/bin
 pcli view reset
 cargo run --bin pd --release -- testnet unsafe-reset-all
-pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER \
-    --archive-url "https://snapshots.penumbra.zone/testnet/pd-migrated-state-70-71.tar.gz"
+pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER   
 
 sudo systemctl restart penumbra cometbft
 

@@ -46,7 +46,7 @@ read_delay: 0.1
 typing_delay_per_character: 2
 EOF
 
-if [ "$DISCORD_DIR" == "df_side" ]; then sl=1; else sl=$(shuf -i 0-10000 -n 1); fi
+if [ "$DISCORD_DIR" == "df_side" ]; then sl=1; else sl=$(shuf -i 3600-10000 -n 1); fi
 echo "Sleep $sl sec..."
 
 if [ "$DISCORD_DIR" == "df_babylon" ] || [ "$DISCORD_DIR" == "df_babylon_sbtc" ]; then sl1=21600; else sl1=86400; fi

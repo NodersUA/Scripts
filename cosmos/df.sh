@@ -5,7 +5,7 @@ if [ -d "$DISCORD_DIR" ]; then
     rm -rf "$DISCORD_DIR"
 fi
 
-#if [ -z "$PROJECT_TOKEN" ]; then
+if [ -z "$PROJECT_TOKEN" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your Diskord Token:\e[0m"
   echo "_|-_|-_|-_|-_|-_|-_|"
@@ -13,7 +13,7 @@ fi
   echo "_|-_|-_|-_|-_|-_|-_|"
   echo 'export '$PROJECT'_TOKEN='$PROJECT_TOKEN >> $HOME/.bash_profile
   source $HOME/.bash_profile
-#fi
+fi
 
 # Add discord bot
 apt install pip -y
@@ -87,10 +87,6 @@ EOF
 systemctl daemon-reload
 systemctl enable $DISCORD_DIR
 systemctl restart $DISCORD_DIR
-
-if [ "$DISCORD_DIR" == "df_penumbra" ]; then
-sleep $((sl + 600)) && echo "3" | source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/penumbra)
-fi
 
 echo '=============== SETUP FINISHED ==================='
 echo -e "To check logs:        \e[1m\e[33mjournalctl -u $DISCORD_DIR -f -o cat\e[0m"

@@ -64,7 +64,7 @@ EOF
 
 systemctl daemon-reload
 systemctl enable masa
-systemctl restart masa && journalctl -u masa -f -o cat
+systemctl restart masa
 
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs:           \e[1m\e[33msudo journalctl -u masa -f -o cat\e[0m"
@@ -117,7 +117,7 @@ EOF
 
 systemctl daemon-reload
 systemctl enable masa
-systemctl restart masa && journalctl -u masa -f -o cat
+systemctl restart masa
 
 echo '=============== UPDATE FINISHED ==================='
 echo -e "To check logs:           \e[1m\e[33msudo journalctl -u masa -f -o cat\e[0m"

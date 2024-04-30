@@ -1,0 +1,148 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Delete"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===============================================================
+
+apt update && apt upgrade -y
+
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
+
+git clone git@github.com:masa-finance/masa-oracle.git masa
+cd masa
+go build -v -o masa-node ./cmd/masa-node
+sudo cp masa-node /usr/local/bin/
+
+#-----------------------------------------------------
+
+sudo tee $HOME/masa/.env > /dev/null <<EOF
+BOOTNODES=/ip4/35.223.224.220/udp/4001/quic-v1/p2p/16Uiu2HAmPxXXjR1XJEwckh6q1UStheMmGaGe8fyXdeRs3SejadSa
+RPC_URL=https://ethereum-sepolia.publicnode.com
+ENV=test
+FILE_PATH=.
+WRITER_NODE=false
+TWITTER_SCRAPER=false
+WEB_SCRAPER=false
+PORT=8282
+EOF
+
+sudo tee /etc/systemd/system/masa.service > /dev/null <<EOF
+[Unit]
+Description=Masa Node
+After=network.target
+ 
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME/masa/
+ExecStart=/usr/local/bin/masa-node
+Restart=on-failure
+StartLimitInterval=0
+RestartSec=3
+LimitNOFILE=65535
+LimitMEMLOCK=209715200
+ 
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#-----------------------------------------------------
+
+systemctl daemon-reload
+systemctl enable masa
+systemctl restart masa && journalctl -u masa -f -o cat
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs:           \e[1m\e[33msudo journalctl -u masa -f -o cat\e[0m"
+
+break
+;;
+
+#===============================================================
+
+"Update")
+
+systemctl stop masa && rm -rf masa
+
+git clone git@github.com:masa-finance/masa-oracle.git masa
+cd masa
+go build -v -o masa-node ./cmd/masa-node
+sudo cp masa-node /usr/local/bin/
+
+sudo tee $HOME/masa/.env > /dev/null <<EOF
+BOOTNODES=/ip4/35.223.224.220/udp/4001/quic-v1/p2p/16Uiu2HAmPxXXjR1XJEwckh6q1UStheMmGaGe8fyXdeRs3SejadSa
+RPC_URL=https://ethereum-sepolia.publicnode.com
+ENV=test
+FILE_PATH=.
+WRITER_NODE=false
+TWITTER_SCRAPER=false
+WEB_SCRAPER=false
+PORT=8282
+EOF
+
+# Create service file (One command)
+sudo tee /etc/systemd/system/masa.service > /dev/null <<EOF
+[Unit]
+Description=Masa Node
+After=network.target
+ 
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME/masa/
+ExecStart=/usr/local/bin/masa-node
+Restart=on-failure
+StartLimitInterval=0
+RestartSec=3
+LimitNOFILE=65535
+LimitMEMLOCK=209715200
+ 
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable masa
+systemctl restart masa && journalctl -u masa -f -o cat
+
+echo '=============== UPDATE FINISHED ==================='
+echo -e "To check logs:           \e[1m\e[33msudo journalctl -u masa -f -o cat\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Delete")
+
+systemctl stop masa && systemctl disable masa
+rm -rf masa .masa
+rm /etc/systemd/system/masa.service
+rm /usr/local/bin/masa-node
+
+break
+;;
+
+#===========================================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

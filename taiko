@@ -13,6 +13,18 @@ options=(
 "Delete"
 "Exit")
 
+echo "*********************"
+read -p "Enter your private key:" PROPOSER_PRIVATE_KEY
+
+if [ -z "$EVM_ADDRESS" ]; then
+  echo -e "      \e[1m\e[35m SET YOUR EVM_ADDRESS:\e[0m"
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  read EVM_ADDRESS
+  echo "_|-_|-_|-_|-_|-_|-_|"
+  echo "export EVM_ADDRESS="${EVM_ADDRESS}"" >> $HOME/.bash_profile
+  source $HOME/.bash_profile
+fi
+
 if [ -z "$RPC_HOLESKY" ]; then
   if [ -z "$RPC_SEPOLIA" ]; then
     echo -e "      \e[1m\e[35m Input RPC_HOLESKY:\e[0m"
@@ -47,9 +59,6 @@ case $opt in
 "Install Node")
 
 #----------------------------------------------------
-
-echo "*********************"
-read -p "Enter your private key:" PROPOSER_PRIVATE_KEY
 
 # Update the repositories
 apt update && apt upgrade -y
@@ -87,11 +96,13 @@ cp .env.sample .env
 sed -i "s|^L1_ENDPOINT_HTTP=.*|L1_ENDPOINT_HTTP=$RPC_HOLESKY|" .env
 sed -i "s|^L1_ENDPOINT_WS=.*|L1_ENDPOINT_WS=$WS_HOLESKY|" .env
 sed -i 's/^PORT_GRAFANA=.*/PORT_GRAFANA=4301/' .env
+sed -i 's/^PORT_PROMETHEUS=.*/PORT_PROMETHEUS=9043/' .env
 sed -i 's/^ENABLE_PROPOSER=.*/ENABLE_PROPOSER=true/' .env
-sed -i "s|^PROVER_ENDPOINTS=.*|PROVER_ENDPOINTS=http://taiko-a6-prover.zkpool.io:9876|" .env
-sed -i "s|^L1_PROPOSER_PRIVATE_KEY=.*|L1_PROPOSER_PRIVATE_KEY=$PROPOSER_PRIVATE_KEY|" .env
+sed -i "s/^L1_PROPOSER_PRIVATE_KEY=.*/L1_PROPOSER_PRIVATE_KEY=$L1_PROPOSER_PRIVATE_KEY/" .env
+sed -i "s/^L2_SUGGESTED_FEE_RECIPIENT=.*/L2_SUGGESTED_FEE_RECIPIENT=$EVM_ADDRESS/" .env
 
-docker compose up -d
+docker compose --profile l2_execution_engine up -d
+docker compose --profile prover up -d
 
 #docker rename taiko_taiko_client_proposer_1 taiko-taiko_client_proposer-1
 #docker rename taiko_taiko_client_driver_1 taiko-taiko_client_driver-1
@@ -106,19 +117,23 @@ break
 
 "Update")
 
-echo "*********************"
-read -p "Enter your private key:" PROPOSER_PRIVATE_KEY
-
 cd taiko
-git fetch && git pull
+docker compose down -v
+git pull origin main && docker compose pull
 cp .env.sample .env
 sed -i "s|^L1_ENDPOINT_HTTP=.*|L1_ENDPOINT_HTTP=$RPC_HOLESKY|" .env
 sed -i "s|^L1_ENDPOINT_WS=.*|L1_ENDPOINT_WS=$WS_HOLESKY|" .env
 sed -i 's/^PORT_GRAFANA=.*/PORT_GRAFANA=4301/' .env
+sed -i 's/^PORT_PROMETHEUS=.*/PORT_PROMETHEUS=9043/' .env
 sed -i 's/^ENABLE_PROPOSER=.*/ENABLE_PROPOSER=true/' .env
-sed -i "s|^PROVER_ENDPOINTS=.*|PROVER_ENDPOINTS=http://taiko-a6-prover.zkpool.io:9876|" .env
-sed -i "s|^L1_PROPOSER_PRIVATE_KEY=.*|L1_PROPOSER_PRIVATE_KEY=$PROPOSER_PRIVATE_KEY|" .env
-docker compose up -d
+sed -i "s/^L1_PROPOSER_PRIVATE_KEY=.*/L1_PROPOSER_PRIVATE_KEY=$L1_PROPOSER_PRIVATE_KEY/" .env
+sed -i "s/^L2_SUGGESTED_FEE_RECIPIENT=.*/L2_SUGGESTED_FEE_RECIPIENT=$EVM_ADDRESS/" .env
+
+docker compose --profile l2_execution_engine up -d
+docker compose --profile prover up -d
+
+echo '=============== UPDATE FINISHED ==================='
+echo -e "To check logs taiko:    \e[1m\e[33mcd ~/taiko && docker-compose logs -f --tail 100\e[0m"
 
 break
 ;;

@@ -201,6 +201,8 @@ break
 
 "Create Validator")
 
+sleep $(shuf -i 1-10000 -n 1)
+
 cd ~/penumbra && pcli validator definition template \
     --tendermint-validator-keyfile ~/.penumbra/testnet_data/node0/cometbft/config/priv_validator_key.json \
     --file validator.toml

@@ -114,7 +114,7 @@ eval "$command"
 #----------------------------------------------------
 
 pd testnet unsafe-reset-all
-pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER
+pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER --archive-url "https://snapshots.penumbra.zone/testnet/pd-migrated-state-75-76.tar.gz"
 
 pcli view address 0
 
@@ -263,7 +263,7 @@ cargo build --release --bin pd
 cp ~/penumbra/target/release/pd /usr/local/bin
 pcli view reset
 cargo run --bin pd --release -- testnet unsafe-reset-all
-pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER   
+pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER --archive-url "https://snapshots.penumbra.zone/testnet/pd-migrated-state-75-76.tar.gz"
 
 sudo systemctl restart penumbra cometbft
 

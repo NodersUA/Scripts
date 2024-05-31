@@ -77,7 +77,7 @@ cargo install sccache
 
 # Clone repository and build
 git clone https://github.com/penumbra-zone/penumbra
-cd penumbra && git fetch && git checkout v0.73.0
+cd penumbra && git fetch && git checkout v0.77.0
 cargo build --release --bin pcli
 cargo build --release --bin pd
 cp ~/penumbra/target/release/{pcli,pd} /usr/local/bin
@@ -241,19 +241,6 @@ break
 
 sudo systemctl stop penumbra cometbft
 
-# INSTALL CometBFT
-if [ "$(cometbft version)" != "0.37.5" ]; then
-    rm -rf ~/cometbft/
-    rm /usr/local/bin/cometbft
-    cd $HOME
-    git clone https://github.com/cometbft/cometbft.git
-    cd cometbft
-    git checkout v0.37.5
-    make install
-    cp $(which cometbft) /usr/local/bin/ && cd $HOME
-    cometbft version
-fi
-
 cd ~/penumbra 
 git reset --hard HEAD
 git fetch && git checkout v0.77.0
@@ -261,10 +248,8 @@ cargo build --release --bin pcli
 cp ~/penumbra/target/release/pcli /usr/local/bin
 cargo build --release --bin pd
 cp ~/penumbra/target/release/pd /usr/local/bin
+pd migrate
 pcli view reset
-cargo run --bin pd --release -- testnet unsafe-reset-all
-pd testnet join --external-address $(curl -s https://checkip.amazonaws.com):42656 --moniker $MONIKER --archive-url "https://snapshots.penumbra.zone/testnet/pd-migrated-state-75-76.tar.gz"
-
 sudo systemctl restart penumbra cometbft
 
 break
@@ -274,11 +259,10 @@ break
 
 "Delete")
 
-sudo systemctl stop penumbra tendermint cometbft df_penumbra
-sudo systemctl disable penumbra tendermint cometbft df_penumbra
-cd $HOME && sudo rm -rf penumbra .penumbra df_penumbra tendermint cometbft
+sudo systemctl stop penumbra cometbft df_penumbra
+sudo systemctl disable penumbra cometbft df_penumbra
+cd $HOME && sudo rm -rf penumbra .penumbra df_penumbra cometbft
 rm /etc/systemd/system/penumbra.service
-rm /etc/systemd/system/tendermint.service
 rm /etc/systemd/system/cometbft.service
 rm -rf ~/.local/share/pcli/
 rm -rf ~/.local/share/penumbra-testnet-archive/

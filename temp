@@ -1,9 +1,14 @@
 #!/bin/bash
 
-source ~/.bash_profile
+PUB_KEY_VALUE=$(jq -r '.pub_key.value' ~/.penumbra/testnet_data/node0/cometbft/config/priv_validator_key.json)
 
-balance=$(pcli view balance | awk '/penumbra/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+penumbra$/) {gsub(/[^0-9]/, "", $i); print $i; exit}}')
-balance=$(echo "${balance}" | sed 's/ //g')
+sequence_number=$(awk -F' = ' '/^sequence_number/ {print $2}' ~/penumbra/validator.toml)
+((sequence_number++))
+sed -i "s/^sequence_number *=.*/sequence_number = $sequence_number/" ~/penumbra/validator.toml
 
-pcli tx delegate ${balance}penumbra --to $PENUMBRA_VALIDATOR
+sed -i "s|^value *=.*|value = \"$PUB_KEY_VALUE\"|" ~/penumbra/validator.toml
 
+pcli validator definition upload --file ~/penumbra/validator.toml
+pcli query validator list -i | grep $PENUMBRA_VALIDATOR
+
+pcli view balance

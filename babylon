@@ -52,7 +52,7 @@ options=(
 "Install Node"
 "Synchronization via StateSync"
 "Synchronization via SnapShot"
-"UPDATE"
+"Install Bitcoin Node"
 "Delete Node"
 "Diskord Bot Autoinstall"
 "Autodelegate"
@@ -83,14 +83,68 @@ break
 
 #================================================================
 
-"UPDATE")
+"Install Bitcoin Node")
 
-echo "Soon...."
+# Update the repositories
+apt update && apt upgrade -y
 
-echo '=============== UPDATE FINISHED ==================='
-echo -e "Congratulations:    \e[1m\e[32mNode Updated to ${ver}\e[0m"
-echo -e "To check logs:      \e[1m\e[33msudo journalctl -u cascadiad -f --no-hostname -o cat\e[0m"
-echo -e "To restart:         \e[1m\e[33msudo systemctl restart cascadiad\e[0m"
+# Download Bitcoin Core binary
+mkdir bitcoin && cd bitcoin
+wget https://bitcoincore.org/bin/bitcoin-core-26.0/bitcoin-26.0-x86_64-linux-gnu.tar.gz
+
+# Extract the downloaded archive
+tar -xvf bitcoin-26.0-x86_64-linux-gnu.tar.gz
+cd bitcoin-26.0/bin
+
+# Provide execution permissions to binaries
+chmod +x bitcoind bitcoin-cli
+
+sudo cp bitcoind bitcoin-cli /usr/local/bin/ && cd ~/
+
+# Set the variables
+
+# Come up with the name of your node and replace it instead <your_moniker>
+BTC_STAKER_RPC_USER=${MONIKER}_RPC
+BTC_STAKER_RPC_PASSWORD=87ZfrfV9U8
+
+echo "export BTC_STAKER_RPC_USER=$BTC_STAKER_RPC_USER" >> $HOME/.bash_profile
+echo "export BTC_STAKER_RPC_PASSWORD=$BTC_STAKER_RPC_PASSWORD" >> $HOME/.bash_profile
+source $HOME/.bash_profile
+# check whether the last command was executed
+
+# Create the service file
+sudo tee /etc/systemd/system/bitcoind.service >/dev/null <<EOF
+[Unit]
+Description=bitcoin signet node
+After=network.target
+
+[Service]
+User=$USER
+Type=simple
+ExecStart=/usr/local/bin/bitcoind \
+    -deprecatedrpc=create_bdb \
+    -signet \
+    -server \
+    -txindex \
+    -rpcport=38332 \
+    -rpcuser=$BTC_STAKER_RPC_USER \
+    -rpcpassword=$BTC_STAKER_RPC_PASSWORD
+Restart=on-failure
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start the service
+sudo systemctl daemon-reload
+sudo systemctl enable bitcoind
+sudo systemctl start bitcoind
+
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u bitcoind -f -o cat\e[0m'
 
 break
 ;;

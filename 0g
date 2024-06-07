@@ -88,18 +88,18 @@ sudo apt update && apt upgrade -y
 apt install lz4 -y
 fi
 
-sudo systemctl stop 0gd
+sudo systemctl stop 0gchaind
 
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
 curl https://snapshots-testnet.nodejumper.io/0g-testnet/0g-testnet_latest.tar.lz4 | sudo lz4 -dc - | sudo tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
 
-sudo systemctl restart 0gd
+sudo systemctl restart 0gchaind
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u 0gd -f -o cat\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u 0gchaind -f -o cat\e[0m'
 
 break
 ;;

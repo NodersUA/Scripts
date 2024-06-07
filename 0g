@@ -1,0 +1,241 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="0G"
+NODE_CHAIN_ID="zgtendermint_16600-1"
+NODE_PORT="47"
+BINARY_VERSION_TAG="v0.1.0"
+CHAIN_DENOM="ua0gi"
+BINARY_NAME="0gchaind"
+DIRECTORY="0g-chain"
+HIDDEN_DIRECTORY=".0gchain"
+NODE_URL="https://github.com/0glabs/0g-chain.git"
+GENESIS_URL="https://github.com/0glabs/0g-chain/releases/download/v0.1.0/genesis.json"
+MINIMUM_GAS_PRICES="0ua0gi"
+PEERS=$(curl -s --max-time 3 --retry 2 --retry-connrefused "https://rpc-zero-gravity-testnet.trusted-point.com/peers.txt")
+SEEDS="c4d619f6088cb0b24b4ab43a0510bf9251ab5d7f@54.241.167.190:26656,44d11d4ba92a01b520923f51632d2450984d5886@54.176.175.48:26656,f2693dd86766b5bf8fd6ab87e2e970d564d20aff@54.193.250.204:26656,f878d40c538c8c23653a5b70f615f8dccec6fb9f@18.166.164.232:26656"
+pruning="custom"
+pruning_keep_recent="100"
+pruning_interval="10"
+snapshot_interval="0"
+indexer="kv"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Autodelegate"
+"Autorestart"
+"Create validator"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+break
+;;
+
+#================================================================
+
+"Synchronization via StateSync")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Synchronization via SnapShot")
+# install dependencies, if needed
+if ! dpkg -s lz4 &> /dev/null; then
+sudo apt update && apt upgrade -y
+apt install lz4 -y
+fi
+
+sudo systemctl stop 0gd
+
+cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
+0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
+curl -L https://rpc-zero-gravity-testnet.trusted-point.com/latest_snapshot.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.0gchain
+mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
+
+sudo systemctl 0gd babylond
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u 0gd -f -o cat\e[0m'
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl disable $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+rm /etc/systemd/system/$BINARY_NAME.service
+rm /etc/systemd/system/ad_${BINARY_NAME}.service
+#rm /etc/systemd/system/df_${BINARY_NAME}.service
+sudo systemctl daemon-reload
+cd $HOME
+rm -rf $DIRECTORY
+rm -rf df_${DIRECTORY}
+rm -rf $HIDDEN_DIRECTORY
+rm -f $(which $BINARY_NAME)
+rm -f /root/scripts/ad_${DIRECTORY}.sh
+rm -f /root/scripts/ar_${DIRECTORY}.sh
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+#BABYLON_ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
+#echo 'export PROJECT="BABYLON"' >> $HOME/config.sh
+#echo 'export PROJECT_TOKEN="${BABYLON_TOKEN}"' >> $HOME/config.sh
+#echo 'export MESSAGE="!faucet $BABYLON_ADDRESS"' >> $HOME/config.sh
+#echo 'export DISCORD_DIR=df_${DIRECTORY}' >> $HOME/config.sh
+#echo 'export CHAT_ID=1075371070493831259' >> $HOME/config.sh
+#source $HOME/config.sh
+
+# import code from file
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+
+break
+;;
+
+#================================================================
+
+"Autodelegate")
+ADDRESS=$(0gchaind keys show wallet -a)
+VALOPER=$(0gchaind keys show wallet --bech val -a)
+echo "export address="${ADDRESS} >> $HOME/config.sh
+echo "export valoper="${VALOPER} >> $HOME/config.sh
+echo 'export gas=300000' >> $HOME/config.sh
+echo 'export sleep_timeout=100000' >> $HOME/config.sh
+echo 'export min_balance=2000000000000000000' >> $HOME/config.sh
+source $HOME/config.sh
+
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
+
+break
+;;
+
+#================================================================
+
+"Autorestart")
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
+
+systemctl daemon-reload
+systemctl enable ar_${DIRECTORY}.service
+systemctl restart ar_${DIRECTORY}.service
+
+break
+;;
+
+#================================================================
+
+"Create validator")
+
+cd $DIRECTORY
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+fi
+
+if [ -z "$WEBSITE" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your WEBSITE:\e[0m"
+  echo "*********************"
+  read WEBSITE
+  echo 'export WEBSITE='$WEBSITE >> $HOME/.bash_profile
+fi
+
+if [ -z "$EMAIL" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your EMAIL:\e[0m"
+  echo "*********************"
+  read EMAIL
+  echo 'export EMAIL='$EMAIL >> $HOME/.bash_profile
+fi
+
+if [ -z "$IDENTITY" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your IDENTITY:\e[0m"
+  echo "*********************"
+  read IDENTITY
+  echo 'export IDENTITY='$IDENTITY >> $HOME/.bash_profile
+fi
+
+source ~/.bash_profile
+
+# Change <identity> to your key from keybase
+0gchaind tx staking create-validator \
+--amount 1000000$CHAIN_DENOM \
+--from=wallet \
+--commission-rate "0.1" \
+--commission-max-rate "0.20" \
+--commission-max-change-rate "0.1" \
+--min-self-delegation "1" \
+--pubkey=$(0gchaind tendermint show-validator) \
+--moniker=$MONIKER \
+--chain-id=$OG_CHAIN_ID \
+--identity=$IDENTITY \
+--website=$WEBSITE \
+--gas="auto" \
+--gas-adjustment=1.4 \
+-y
+
+#sleep $(shuf -i 1-10000 -n 1)
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

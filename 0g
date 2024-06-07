@@ -92,10 +92,10 @@ sudo systemctl stop 0gd
 
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
-curl -L https://rpc-zero-gravity-testnet.trusted-point.com/latest_snapshot.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.0gchain
+curl https://snapshots-testnet.nodejumper.io/0g-testnet/0g-testnet_latest.tar.lz4 | sudo lz4 -dc - | sudo tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
 
-sudo systemctl 0gd babylond
+sudo systemctl restart 0gd
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'

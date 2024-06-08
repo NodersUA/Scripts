@@ -4,7 +4,7 @@
 curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 
 # Set parameters
-NODE_NAME="0G"
+NODE_NAME="OG"
 NODE_CHAIN_ID="zgtendermint_16600-1"
 NODE_PORT="47"
 BINARY_VERSION_TAG="v0.1.0"

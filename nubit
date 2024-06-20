@@ -97,7 +97,7 @@ NUBIT_ADDRESS=$($HOME/nubit-node/bin/nkey list --p2p.network nubit-alphatestnet-
 
 echo 'export PROJECT="${NODE_NAME}"' >> $HOME/config.sh
 #echo 'export PROJECT_TOKEN="${NUBIT_TOKEN}"' >> $HOME/config.sh
-echo 'export MESSAGE="!faucet $NUBIT_ADDRESS"' >> $HOME/config.sh
+echo 'export MESSAGE="\$request $NUBIT_ADDRESS"' >> $HOME/config.sh
 echo 'export DISCORD_DIR=df_${DIRECTORY}' >> $HOME/config.sh
 echo 'export CHAT_ID=1244555697530863616' >> $HOME/config.sh
 source $HOME/config.sh

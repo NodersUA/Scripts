@@ -1,0 +1,116 @@
+#!/bin/bash
+
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/nubit)
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="NUBIT"
+NODE_CHAIN_ID="nubit-alphatestnet-1"
+NODE_PORT="48"
+#BINARY_VERSION_TAG="v0.1.0"
+#CHAIN_DENOM="ua0gi"
+BINARY_NAME="nubit"
+DIRECTORY="nubit-node"
+HIDDEN_DIRECTORY=".nubit-light-nubit-alphatestnet-1"
+NODE_URL=""
+GENESIS_URL=""
+MINIMUM_GAS_PRICES="0ua0gi"
+PEERS=""
+SEEDS=""
+pruning="custom"
+pruning_keep_recent="100"
+pruning_interval="10"
+snapshot_interval="0"
+indexer="kv"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl disable $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+rm /etc/systemd/system/$BINARY_NAME.service
+#rm /etc/systemd/system/ad_${BINARY_NAME}.service
+rm /etc/systemd/system/df_${BINARY_NAME}.service
+sudo systemctl daemon-reload
+cd $HOME
+rm -rf $DIRECTORY
+rm -rf df_${DIRECTORY}
+rm -rf $HIDDEN_DIRECTORY
+rm -f $(which $BINARY_NAME)
+rm -f /root/scripts/ad_${DIRECTORY}.sh
+rm -f /root/scripts/ar_${DIRECTORY}.sh
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+
+NUBIT_ADDRESS=$($HOME/nubit-node/bin/nkey list --p2p.network nubit-alphatestnet-1 --node.type light | grep -oP 'address: \K\S+')
+
+echo 'export PROJECT="${NODE_NAME}"' >> $HOME/config.sh
+#echo 'export PROJECT_TOKEN="${NUBIT_TOKEN}"' >> $HOME/config.sh
+echo 'export MESSAGE="!faucet $NUBIT_ADDRESS"' >> $HOME/config.sh
+echo 'export DISCORD_DIR=df_${DIRECTORY}' >> $HOME/config.sh
+echo 'export CHAT_ID=1244555697530863616' >> $HOME/config.sh
+source $HOME/config.sh
+
+# import code from file
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

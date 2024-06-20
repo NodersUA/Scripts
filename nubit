@@ -103,7 +103,7 @@ echo 'export CHAT_ID=1244555697530863616' >> $HOME/config.sh
 source $HOME/config.sh
 
 # import code from file
-#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
 
 break
 ;;

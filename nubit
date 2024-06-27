@@ -71,19 +71,19 @@ break
 #================================================================
 
 "Delete Node")
-sudo systemctl stop $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
-sudo systemctl disable $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl stop $BINARY_NAME #ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl disable $BINARY_NAME #ad_${DIRECTORY} df_${DIRECTORY}
 rm /etc/systemd/system/$BINARY_NAME.service
 #rm /etc/systemd/system/ad_${BINARY_NAME}.service
-rm /etc/systemd/system/df_${BINARY_NAME}.service
+#rm /etc/systemd/system/df_${BINARY_NAME}.service
 sudo systemctl daemon-reload
 cd $HOME
 rm -rf $DIRECTORY
-rm -rf df_${DIRECTORY}
+#rm -rf df_${DIRECTORY}
 rm -rf $HIDDEN_DIRECTORY
 rm -f $(which $BINARY_NAME)
-rm -f /root/scripts/ad_${DIRECTORY}.sh
-rm -f /root/scripts/ar_${DIRECTORY}.sh
+#rm -f /root/scripts/ad_${DIRECTORY}.sh
+#rm -f /root/scripts/ar_${DIRECTORY}.sh
 
 break
 ;;

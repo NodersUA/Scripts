@@ -149,7 +149,11 @@ source $HOME/.bash_profile
 echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
 
 # Create service file (One command)
+if [ "$BINARY_NAME" == "0gchaind" ]; then
+sudo tee /etc/systemd/system/Ogchaind.service > /dev/null <<EOF
+else
 sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
+fi
 [Unit]
 Description=$NODE_NAME Node
 After=network.target

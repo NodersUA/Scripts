@@ -244,6 +244,8 @@ fi
 
 source ~/.bash_profile
 
+sleep $(shuf -i 1-10000 -n 1)
+
 # Change <identity> to your key from keybase
 0gchaind tx staking create-validator \
 --amount 1000000$CHAIN_DENOM \
@@ -261,7 +263,7 @@ source ~/.bash_profile
 --gas-adjustment=1.4 \
 -y
 
-sleep $(shuf -i 1-10000 -n 1)
+
 
 break
 ;;

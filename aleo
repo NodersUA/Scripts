@@ -15,8 +15,8 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     echo "Aborting: run as root user!"
     exit 1
 fi
-echo -e 'Setting up swapfile...\n'
-curl -s https://api.nodes.guru/swap4.sh | bash
+#echo -e 'Setting up swapfile...\n'
+#curl -s https://api.nodes.guru/swap4.sh | bash
 echo "=================================================="
 echo -e 'Installing dependencies...\n' && sleep 1
 apt update
@@ -25,13 +25,16 @@ echo "=================================================="
 echo -e 'Cloning snarkOS...\n' && sleep 1
 rm -rf $HOME/snarkOS $(which snarkos) $(which snarkos) $HOME/.aleo $HOME/aleo
 cd $HOME
-git clone https://github.com/AleoHQ/snarkOS.git --depth 1
-cd snarkOS
+git clone --branch mainnet --single-branch https://github.com/AleoNet/snarkOS.git
+cd snarkOS && git checkout tags/testnet-beta
 echo "=================================================="
 echo -e 'Installing snarkos ...\n' && sleep 1
 bash ./build_ubuntu.sh
 source $HOME/.bashrc
 source $HOME/.cargo/env
+ufw allow 4130/tcp
+ufw allow 3030/tcp
+cargo install --locked --path .
 echo -e 'Generating an Aleo account address ...\n' && sleep 1
 mkdir $HOME/aleo
 echo "==================================================
@@ -68,6 +71,8 @@ WantedBy=multi-user.target
 Storage=persistent
 EOF
 systemctl restart systemd-journald
+
+sleep 60
 echo -e 'Creating a service for Aleo Prover Node...\n' && sleep 1
 echo "[Unit]
 Description=Aleo Prover Node
@@ -86,6 +91,7 @@ WantedBy=multi-user.target
 " > $HOME/aleo-prover.service
  mv $HOME/aleo-prover.service /etc/systemd/system
 
+sleep 60
 echo -e "Installing Aleo Updater\n"
 cd $HOME
 wget -q -O $HOME/aleo_updater_WIP.sh https://api.nodes.guru/aleo3_updater_WIP.sh && chmod +x $HOME/aleo_updater_WIP.sh

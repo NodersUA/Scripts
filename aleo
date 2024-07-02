@@ -110,11 +110,11 @@ WantedBy=multi-user.target
 mv $HOME/aleo_updater.service /etc/systemd/system
 systemctl daemon-reload
 echo -e 'Enabling Aleo Updater services\n' && sleep 1
-systemctl enable aleo-updater
-systemctl restart aleo-updater
+systemctl enable aleo_updater
+systemctl restart aleo_updater
 echo -e '\n\e[42mRuning Aleo Prover Node\e[0m\n' && sleep 1
-systemctl enable aleo-prover
-systemctl restart aleo-prover
+systemctl enable aleo_prover
+systemctl restart aleo_prover
 
 if [[ `service aleo-prover status | grep active` =~ "running" ]]; then
   echo -e "Your Aleo Prover Node \e[32minstalled and works\e[39m!"

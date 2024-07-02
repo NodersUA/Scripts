@@ -51,6 +51,7 @@ mkdir -p /var/aleo/
 cat $HOME/aleo/account_new.txt >>/var/aleo/account_backup.txt
 echo 'export PROVER_PRIVATE_KEY'=$(grep "Private Key" $HOME/aleo/account_new.txt | awk '{print $3}') >> $HOME/.bash_profile
 source $HOME/.bash_profile
+
 echo -e 'Creating a service for Aleo Client Node...\n' && sleep 1
 echo "[Unit]
 Description=Aleo Client Node
@@ -65,8 +66,8 @@ RestartSec=10
 LimitNOFILE=10000
 [Install]
 WantedBy=multi-user.target
-" > $HOME/aleo-client.service
- mv $HOME/aleo-client.service /etc/systemd/system
+" > $HOME/aleo_client.service
+ mv $HOME/aleo_client.service /etc/systemd/system
  tee <<EOF >/dev/null /etc/systemd/journald.conf
 Storage=persistent
 EOF
@@ -88,8 +89,8 @@ RestartSec=10
 LimitNOFILE=10000
 [Install]
 WantedBy=multi-user.target
-" > $HOME/aleo-prover.service
- mv $HOME/aleo-prover.service /etc/systemd/system
+" > $HOME/aleo_prover.service
+ mv $HOME/aleo_prover.service /etc/systemd/system
 
 sleep 60
 echo -e "Installing Aleo Updater\n"
@@ -107,8 +108,8 @@ RestartSec=10
 LimitNOFILE=10000
 [Install]
 WantedBy=multi-user.target
-" > $HOME/aleo-updater.service
-mv $HOME/aleo-updater.service /etc/systemd/system
+" > $HOME/aleo_updater.service
+mv $HOME/aleo_updater.service /etc/systemd/system
 systemctl daemon-reload
 echo -e 'Enabling Aleo Updater services\n' && sleep 1
 systemctl enable aleo-updater

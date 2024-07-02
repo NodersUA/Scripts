@@ -59,8 +59,7 @@ After=network-online.target
 [Service]
 User=$USER
 WorkingDirectory=$HOME/snarkOS
-Environment=PATH=/usr/local/bin:/usr/bin:/bin:$HOME/.cargo/bin
-ExecStart=$HOME/snarkOS/run-client.sh
+ExecStart=$(which cargo) run --release -- start --nodisplay --client --network 1
 Restart=always
 RestartSec=10
 LimitNOFILE=10000
@@ -82,7 +81,6 @@ After=network-online.target
 User=$USER
 WorkingDirectory=$HOME/snarkOS
 Environment="PROVER_PRIVATE_KEY=${PROVER_PRIVATE_KEY}"
-Environment=PATH=/usr/local/bin:/usr/bin:/bin:$HOME/.cargo/bin
 ExecStart=$(which cargo) run --release -- start --prover --nodisplay --network 1 --private-key ${PROVER_PRIVATE_KEY}
 Restart=always
 RestartSec=10

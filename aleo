@@ -116,10 +116,10 @@ echo -e '\n\e[42mRuning Aleo Prover Node\e[0m\n' && sleep 1
 systemctl enable aleo_prover
 systemctl restart aleo_prover
 
-if [[ `service aleo-prover status | grep active` =~ "running" ]]; then
+if [[ `service aleo_prover status | grep active` =~ "running" ]]; then
   echo -e "Your Aleo Prover Node \e[32minstalled and works\e[39m!"
-  echo -e "You can check node status by the command \e[7msystemctl status aleo-prover\e[0m"
-  echo -e "You can check Aleo Prover Node logs by the command \e[7mjournalctl -u aleo-prover -f -o cat\e[0m"
+  echo -e "You can check node status by the command \e[7msystemctl status aleo_prover\e[0m"
+  echo -e "You can check Aleo Prover Node logs by the command \e[7mjournalctl -u aleo_prover -f -o cat\e[0m"
   echo -e "Press \e[7mctrl+c\e[0m for exit from logs"
 else
   echo -e "Your Aleo Prover Node \e[31mwas not installed correctly\e[39m, please reinstall."

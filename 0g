@@ -105,11 +105,11 @@ cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_s
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
 curl https://snapshots-testnet.nodejumper.io/0g-testnet/0g-testnet_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
-sudo systemctl restart 0gchaind
+sudo systemctl restart Ogchaind
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE UPDATE\e[0m'
-echo -e "To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
+echo -e "To check logs:        \e[1m\e[33mjournalctl -u Ogchaind -f -o cat\e[0m"
 
 break
 ;;
@@ -123,16 +123,16 @@ sudo apt update && apt upgrade -y
 apt install lz4 -y
 fi
 
-sudo systemctl stop 0gchaind
+sudo systemctl stop Ogchaind
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
 curl https://snapshots-testnet.nodejumper.io/0g-testnet/0g-testnet_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
-sudo systemctl restart 0gchaind
+sudo systemctl restart Ogchaind
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
-echo -e 'To check logs:        \e[1m\e[33mjournalctl -u 0gchaind -f -o cat\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u Ogchaind -f -o cat\e[0m'
 
 break
 ;;
@@ -140,9 +140,9 @@ break
 #================================================================
 
 "Delete Node")
-sudo systemctl stop $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
-sudo systemctl disable $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
-rm /etc/systemd/system/$BINARY_NAME.service
+sudo systemctl stop Ogchaind_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl disable Ogchaind ad_${DIRECTORY} df_${DIRECTORY}
+rm /etc/systemd/system/Ogchaind.service
 rm /etc/systemd/system/ad_${BINARY_NAME}.service
 #rm /etc/systemd/system/df_${BINARY_NAME}.service
 sudo systemctl daemon-reload

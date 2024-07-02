@@ -175,8 +175,13 @@ EOF
 
 # Start the node
 systemctl daemon-reload
+if [ "$BINARY_NAME" == "0gchaind" ]; then
+systemctl enable Ogchaind
+systemctl restart Ogchaind
+else
 systemctl enable $BINARY_NAME
 systemctl restart $BINARY_NAME
+fi
 
 #==================================================================================================
 

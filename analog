@@ -1,0 +1,93 @@
+#!/bin/bash
+
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/analog)
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Menu
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Delete"
+"Exit")
+
+select opt in "${options[@]}"
+do
+case $opt in
+"Install Node")
+
+#===============================================================
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+  source ~/.bash_profile
+fi
+
+sudo apt update && sudo apt upgrade -y
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev chrony -y
+
+# Install Docker
+if ! [ -x "$(command -v docker)" ]; then
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker $USER
+docker --version
+else
+echo $(docker --version)
+fi
+
+# Install Docker Compose
+if ! [ -x "$(command -v docker-compose)" ]; then
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
+sudo chmod +x /usr/local/bin/docker-compose 
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+else
+echo $(docker-compose --version)
+fi
+
+docker pull analoglabs/timechain
+sudo docker run -d --name analog -p 9950:9950 -p 50303:50303 analoglabs/timechain --base-path /data --unsafe-rpc-external --rpc-methods=Unsafe --name $MONIKER --telemetry-url='wss://telemetry.analog.one/submit 9'
+
+#echo '=============== INSLALL FINISHED ==================='
+#echo -e "To check node logs:      \e[1m\e[33msudo journalctl -fu subspaced --no-hostname -o cat\e[0m"
+#echo -e "To check farmer logs:    \e[1m\e[33msudo journalctl -fu subspacefarm --no-hostname -o cat\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Update")
+
+#echo '=============== UPDATE FINISHED ==================='
+#echo -e "To check node logs:      \e[1m\e[33msudo journalctl -fu subspaced --no-hostname -o cat\e[0m"
+#echo -e "To check farmer logs:    \e[1m\e[33msudo journalctl -fn1000 -u subspacefarm --no-hostname -o cat\e[0m"
+
+break
+;;
+
+#===========================================================================
+
+"Delete")
+
+break
+;;
+
+#===========================================================================
+
+"Exit")
+exit
+;;
+*) echo "Invalid option. Please try again.";;
+esac
+
+done

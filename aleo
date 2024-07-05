@@ -34,6 +34,7 @@ source $HOME/.bashrc
 source $HOME/.cargo/env
 ufw allow 4130/tcp
 ufw allow 3030/tcp
+sudo ufw limit out proto tcp to any port 10333
 cargo install --locked --path .
 echo -e 'Generating an Aleo account address ...\n' && sleep 1
 mkdir $HOME/aleo

@@ -151,9 +151,6 @@ echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
 # Create service file (One command)
 if [ "$BINARY_NAME" == "0gchaind" ]; then
 sudo tee /etc/systemd/system/Ogchaind.service > /dev/null <<EOF
-else
-sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
-fi
 [Unit]
 Description=$NODE_NAME Node
 After=network.target
@@ -172,6 +169,28 @@ LimitMEMLOCK=209715200
 [Install]
 WantedBy=multi-user.target
 EOF
+
+else
+sudo tee /etc/systemd/system/$BINARY_NAME.service > /dev/null <<EOF
+[Unit]
+Description=$NODE_NAME Node
+After=network.target
+ 
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME/go/bin
+ExecStart=/usr/local/bin/$BINARY_NAME start
+Restart=on-failure
+StartLimitInterval=0
+RestartSec=3
+LimitNOFILE=65535
+LimitMEMLOCK=209715200
+ 
+[Install]
+WantedBy=multi-user.target
+EOF
+fi
 
 # Start the node
 systemctl daemon-reload

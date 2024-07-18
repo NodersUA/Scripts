@@ -197,21 +197,17 @@ systemctl daemon-reload
 if [ "$BINARY_NAME" == "0gchaind" ]; then
 systemctl enable Ogchaind
 systemctl restart Ogchaind
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
+echo -e "To check logs:        \e[1m\e[33mjournalctl -u Ogchaind -f -o cat\e[0m"
 else
 systemctl enable $BINARY_NAME
 systemctl restart $BINARY_NAME
-fi
-
-#==================================================================================================
-
-# set up cosmos_autorestart (disabled)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
-
-#==================================================================================================
-
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
 echo -e "To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
+fi
+
 echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
 
 

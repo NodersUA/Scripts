@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+
+sudo apt update
+sudo apt install curl software-properties-common -y
+
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+nvm install 20.0.0
+nvm use 20.0.0
+
+npm i -g rivalz-node-cli
+
+sudo tee /etc/systemd/system/rivalz.service > /dev/null <<EOF
+[Unit]
+Description=rivalz Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=$(which rivalz) run
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start the node
+systemctl daemon-reload
+systemctl enable rivalz
+systemctl restart rivalz
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs rivalz:    \e[1m\e[33mjournalctl -u rivalz -f -o cat\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

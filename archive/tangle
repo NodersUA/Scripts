@@ -165,10 +165,11 @@ break
 
 "Delete")
 
-sudo systemctl stop tangle
-sudo systemctl disable tangle
-rm -rf ~/tangle ~/.tangle ~/.local/share/tangle/
+sudo systemctl stop tangle df_tangle
+sudo systemctl disable tangle df_tangle
+rm -rf ~/tangle ~/.tangle ~/.local/share/tangle/ ~/df_tangle
 rm /etc/systemd/system/tangle.service
+rm /etc/systemd/system/df_tangle.service
 rm /usr/local/bin/tangle
 
 break

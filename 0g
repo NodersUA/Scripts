@@ -140,7 +140,7 @@ break
 #================================================================
 
 "Delete Node")
-sudo systemctl stop Ogchaind_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl stop Ogchaind ad_${DIRECTORY} df_${DIRECTORY}
 sudo systemctl disable Ogchaind ad_${DIRECTORY} df_${DIRECTORY}
 rm /etc/systemd/system/Ogchaind.service
 rm /etc/systemd/system/ad_${BINARY_NAME}.service

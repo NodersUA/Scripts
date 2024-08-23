@@ -5,17 +5,17 @@ sudo tee /root/.kuzco/kuzco-logs-monitor.sh > /dev/null <<EOF
 
 # Функція для перезапуску сервісу kuzco
 restart_kuzco() {
-  echo "$(date): Restarting kuzco..."
+  echo "\$(date): Restarting kuzco..."
   systemctl restart kuzco
   sleep 5
 }
 
 # Функція для оновлення kuzco CLI
 upgrade_kuzco() {
-  echo "$(date): Upgrading kuzco CLI..."
+  echo "\$(date): Upgrading kuzco CLI..."
   kuzco upgrade
   sleep 5
-  echo "$(date): Upgrade completed, restarting kuzco..."
+  echo "\$(date): Upgrade completed, restarting kuzco..."
   restart_kuzco
   sleep 5
 }
@@ -23,13 +23,13 @@ upgrade_kuzco() {
 # Відстежування виводу команди в реальному часі
 kuzco worker logs | while read line
 do
-  echo "$line" | grep "NatsError: consumer not found" &> /dev/null
-  if [[ $? -eq 0 ]]; then
+  echo "\$line" | grep "NatsError: consumer not found" &> /dev/null
+  if [[ \$? -eq 0 ]]; then
     restart_kuzco
   fi
 
-  echo "$line" | grep "Run \`kuzco upgrade\` to update the CLI" &> /dev/null
-  if [[ $? -eq 0 ]]; then
+  echo "\$line" | grep "Run \`kuzco upgrade\` to update the CLI" &> /dev/null
+  if [[ \$? -eq 0 ]]; then
     upgrade_kuzco
   fi
 done

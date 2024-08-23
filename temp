@@ -1,14 +1,56 @@
 #!/bin/bash
 
-PUB_KEY_VALUE=$(jq -r '.pub_key.value' ~/.penumbra/testnet_data/node0/cometbft/config/priv_validator_key.json)
+sudo tee /root/.kuzco/kuzco-logs-monitor.sh > /dev/null <<EOF
+#!/bin/bash
 
-sequence_number=$(awk -F' = ' '/^sequence_number/ {print $2}' ~/penumbra/validator.toml)
-((sequence_number++))
-sed -i "s/^sequence_number *=.*/sequence_number = $sequence_number/" ~/penumbra/validator.toml
+# Функція для перезапуску сервісу kuzco
+restart_kuzco() {
+  echo "$(date): Restarting kuzco..."
+  systemctl restart kuzco
+  sleep 5
+}
 
-sed -i "s|^value *=.*|value = \"$PUB_KEY_VALUE\"|" ~/penumbra/validator.toml
+# Функція для оновлення kuzco CLI
+upgrade_kuzco() {
+  echo "$(date): Upgrading kuzco CLI..."
+  kuzco upgrade
+  sleep 5
+  echo "$(date): Upgrade completed, restarting kuzco..."
+  restart_kuzco
+  sleep 5
+}
 
-pcli validator definition upload --file ~/penumbra/validator.toml
-pcli query validator list -i | grep $PENUMBRA_VALIDATOR
+# Відстежування виводу команди в реальному часі
+kuzco worker logs | while read line
+do
+  echo "$line" | grep "NatsError: consumer not found" &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    restart_kuzco
+  fi
 
-pcli view balance
+  echo "$line" | grep "Run \`kuzco upgrade\` to update the CLI" &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    upgrade_kuzco
+  fi
+done
+EOF
+
+chmod +x /root/.kuzco/kuzco-logs-monitor.sh
+
+sudo tee /etc/systemd/system/ar_kuzco.service > /dev/null <<EOF
+[Unit]
+Description=Monitor kuzco worker logs and restart service on specific errors
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/.kuzco/kuzco-logs-monitor.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable ar_kuzco
+systemctl start ar_kuzco

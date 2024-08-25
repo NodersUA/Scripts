@@ -1,0 +1,169 @@
+#!/bin/bash
+
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/allora)
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="ALLORA"
+NODE_CHAIN_ID="allora-testnet-1"
+NODE_PORT="56"
+BINARY_VERSION_TAG="v0.3.0"
+CHAIN_DENOM="uallo"
+BINARY_NAME="allorad"
+DIRECTORY="allora"
+HIDDEN_DIRECTORY=".allorad"
+NODE_URL="https://github.com/allora-network/allora-chain.git"
+GENESIS_URL="https://raw.githubusercontent.com/allora-network/networks/main/allora-testnet-1/genesis.json"
+MINIMUM_GAS_PRICES="0uallo"
+PEERS="11413d234e449ff3fefbad2df285a9b2b2601e0d@peer-0.testnet-1.testnet.allora.network:32120,89ec173c61da9b32c7344aacfe72cc62e0b743a0@peer-1.testnet-1.testnet.allora.network:32121"
+SEEDS="b825e8d944952e50afe5739fa4afa7cb16f11db9@seed-0-p2p.testnet-1.testnet.allora.network:32110,cc11f2c02f9dea5f3b86eec3e00ae373b7076ea4@seed-1-p2p.testnet-1.testnet.allora.network:32111"
+pruning="custom"
+pruning_keep_recent="1000"
+pruning_interval="10"
+snapshot_interval="1000"
+indexer="null"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Synchronization via StateSync"
+"Synchronization via SnapShot"
+"UPDATE"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Autodelegate"
+"Autorestart"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+break
+;;
+
+#================================================================
+
+"Synchronization via StateSync")
+echo -e "\e[1m\e[32m Soon...\e[0m"
+
+break
+;;
+
+#================================================================
+
+"UPDATE")
+
+echo "Soon...."
+
+echo '=============== UPDATE FINISHED ==================='
+echo -e "Congratulations:    \e[1m\e[32mNode Updated to ${ver}\e[0m"
+echo -e "To check logs:      \e[1m\e[33msudo journalctl -u sided -f --no-hostname -o cat\e[0m"
+echo -e "To restart:         \e[1m\e[33msudo systemctl restart sided\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Synchronization via SnapShot")
+# install dependencies, if needed
+#if ! dpkg -s lz4 &> /dev/null; then
+#sudo apt update && apt upgrade -y
+#apt install lz4 -y
+#fi
+
+#echo '=============== SETUP FINISHED ==================='
+#echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
+#echo -e 'To check logs:        \e[1m\e[33mjournalctl -u sided -f -o cat\e[0m'
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl disable $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+rm /etc/systemd/system/$BINARY_NAME.service
+rm /etc/systemd/system/ad_${BINARY_NAME}.service
+rm /etc/systemd/system/df_${BINARY_NAME}.service
+sudo systemctl daemon-reload
+cd $HOME
+rm -rf $DIRECTORY
+rm -rf df_${DIRECTORY}
+rm -rf $HIDDEN_DIRECTORY
+rm -f $(which $BINARY_NAME)
+rm -f /root/scripts/ad_${DIRECTORY}.sh
+rm -f /root/scripts/ar_${DIRECTORY}.sh
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+
+# import code from file
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+
+break
+;;
+
+#================================================================
+
+"Autodelegate")
+
+
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
+
+break
+;;
+
+#================================================================
+
+"Autorestart")
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
+
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

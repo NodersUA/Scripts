@@ -70,8 +70,6 @@ User=$USER
 ExecStart=$(which subspace) run \\
 --base-path $HOME/.local/share/subspace-node \\
 --chain="gemini-3h" \\
---blocks-pruning="256" \\
---state-pruning="archive-canonical" \\
 --farmer \\
 --name="$MONIKER"
 Restart=on-failure

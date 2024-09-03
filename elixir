@@ -24,6 +24,10 @@ if [ -z "$MONIKER" ]; then
   read MONIKER
   echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
   source ~/.bash_profile
+else
+  echo "*********************"
+  echo -e "\e[1m\e[32m	MONIKER: $MONIKER\e[0m"
+  echo "*********************"
 fi
 
 if [ -z "$EVM_ADDRESS" ]; then
@@ -33,6 +37,10 @@ if [ -z "$EVM_ADDRESS" ]; then
   read EVM_ADDRESS
   echo 'export EVM_ADDRESS='$EVM_ADDRESS >> $HOME/.bash_profile
   source ~/.bash_profile
+else
+  echo "*********************"
+  echo -e "\e[1m\e[32m	EVM_ADDRESS: $EVM_ADDRESS\e[0m"
+  echo "*********************"
 fi
 
 echo -e "\e[1m\e[32m	Enter your Validator Privat key (only new wallet):\e[0m"

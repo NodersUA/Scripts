@@ -8,5 +8,5 @@ rm -rf /root/.ollama
 
 find /tmp/ -type d -name '*ollama*' -exec rm -rf {} \;
 
-sudo systemctl restart subspaced
+sudo systemctl restart subspaced subspacefarm
 

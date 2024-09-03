@@ -86,8 +86,6 @@ sudo cp $(which 0gchaind) /usr/local/bin/ && cd $HOME
 
 wget https://server-5.itrocket.net/testnet/og/genesis.json -O $HOME/.0gchain/config/genesis.json
 
-wget https://github.com/0glabs/0g-chain/releases/download/v0.2.3/genesis.json -O $HOME/.0gchain/config/genesis.json
-
 # Create service file (One command)
 sudo tee /etc/systemd/system/Ogchaind.service > /dev/null <<EOF
 [Unit]

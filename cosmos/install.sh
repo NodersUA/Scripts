@@ -63,7 +63,8 @@ cd $HOME
 git clone $NODE_URL && cd $DIRECTORY
 git fetch --all
 git checkout $BINARY_VERSION_TAG
-if [ $BINARY_NAME == "lavad" ]; then make install-all; else make install; fi
+if [ $BINARY_NAME == "0gchaind" ]; then git submodule update --init; fi
+make install
 TEMP=$(which $BINARY_NAME)
 sudo cp $TEMP /usr/local/bin/ && cd $HOME
 $BINARY_NAME version --long | grep -e version -e commit
@@ -148,7 +149,7 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=$HOME/go/bin
-ExecStart=/usr/local/bin/$BINARY_NAME start
+ExecStart=/usr/local/bin/$BINARY_NAME start --home $HOME/.0gchain --log_output_console
 Restart=on-failure
 StartLimitInterval=0
 RestartSec=3

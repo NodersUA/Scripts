@@ -1,37 +1,12 @@
 #!/bin/bash
 # source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp2)
 
-docker stop worker-basic-eth-pred updater-basic-eth-pred head-basic-eth-pred inference-basic-eth-pred
-docker rm worker-basic-eth-pred updater-basic-eth-pred head-basic-eth-pred inference-basic-eth-pred
-docker rmi basic-coin-prediction-node-inference basic-coin-prediction-node-updater basic-coin-prediction-node-worker
+systemctl stop kuzco ar_kuzco
+systemctl disable kuzco ar_kuzco
+rm -rf /root/.kuzco
+rm -rf /root/.ollama
 
-rm -rf basic-coin-prediction-node
+find /tmp/ -type d -name '*ollama*' -exec rm -rf {} \;
 
-docker stop offchain_node offchain_source
-docker rm offchain_node offchain_source
-docker rmi allora-offchain-source  docker rmi allora-offchain-node-node
-rm -rf allora-offchain-node
-rm -rf allora-chain
-docker rmi allora-offchain-node-source
-docker stop offchain_node offchain_source
-docker container prune
-docker image prune -a
-rm -rf allora-offchain-node
-rm -rf allora-chain
-rm -rf basic-coin
-
-rm /usr/local/bin/allorad
-
-systemctl stop aleo_client
-systemctl stop aleo_prover
-systemctl stop aleo_updater
-
-systemctl disable aleo_client
-systemctl disable aleo_prover
-systemctl disable aleo_updater
-
-rm -rf /root/snarkOS
-rm /etc/systemd/system/aleo_updater.service
-rm /etc/systemd/system/aleo_prover.service
-rm /etc/systemd/system/aleo_client.service
+sudo systemctl restart subspaced
 

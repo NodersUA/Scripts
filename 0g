@@ -130,20 +130,27 @@ fi
 
 sudo systemctl stop Ogchaind
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
-0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
-sudo apt-get install wget lz4 aria2 pv -y
-cd $HOME
-rm -f 0gchain_snapshot.lz4
-if curl -s --head https://vps5.josephtran.xyz/0g/0gchain_snapshot.lz4 | head -n 1 | grep "200" > /dev/null; then
-    echo "Snapshot found, downloading..."
-    aria2c -x 16 -s 16 https://vps5.josephtran.xyz/0g/0gchain_snapshot.lz4 -o 0gchain_snapshot.lz4
-else
-    echo "No snapshot found."
-fi
-lz4 -dc 0gchain_snapshot.lz4 | pv | tar -xf - -C $HOME/.0gchain
+rm -rf $HOME/.0gchain/data 
+curl https://server-5.itrocket.net/testnet/og/og_2024-09-12_1037127_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
-rm -f 0gchain_snapshot.lz4
 sudo systemctl restart Ogchaind
+
+#sudo systemctl stop Ogchaind
+#cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
+#0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
+#sudo apt-get install wget lz4 aria2 pv -y
+#cd $HOME
+#rm -f 0gchain_snapshot.lz4
+#if curl -s --head https://vps5.josephtran.xyz/0g/0gchain_snapshot.lz4 | head -n 1 | grep "200" > /dev/null; then
+#    echo "Snapshot found, downloading..."
+#    aria2c -x 16 -s 16 https://vps5.josephtran.xyz/0g/0gchain_snapshot.lz4 -o 0gchain_snapshot.lz4
+#else
+#    echo "No snapshot found."
+#fi
+#lz4 -dc 0gchain_snapshot.lz4 | pv | tar -xf - -C $HOME/.0gchain
+#mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
+#rm -f 0gchain_snapshot.lz4
+#sudo systemctl restart Ogchaind
 
 echo '=============== SETUP FINISHED ==================='
 echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'

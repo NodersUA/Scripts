@@ -1,5 +1,5 @@
 #!/bin/bash
-# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp2)
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp)
 
 curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.5.0
 cp /root/.local/bin/allorad /usr/local/bin/

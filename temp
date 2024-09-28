@@ -1,56 +1,11 @@
 #!/bin/bash
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp2)
 
-sudo tee /root/.kuzco/kuzco-logs-monitor.sh > /dev/null <<EOF
-#!/bin/bash
+curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.5.0
+cp /root/.local/bin/allorad /usr/local/bin/
 
-# Функція для перезапуску сервісу kuzco
-restart_kuzco() {
-  echo "\$(date): Restarting kuzco..."
-  systemctl restart kuzco
-  sleep 5
-}
-
-# Функція для оновлення kuzco CLI
-upgrade_kuzco() {
-  echo "\$(date): Upgrading kuzco CLI..."
-  kuzco upgrade
-  sleep 5
-  echo "\$(date): Upgrade completed, restarting kuzco..."
-  restart_kuzco
-  sleep 5
-}
-
-# Відстежування виводу команди в реальному часі
-kuzco worker logs | while read line
-do
-  echo "\$line" | grep "NatsError: consumer not found" &> /dev/null
-  if [[ \$? -eq 0 ]]; then
-    restart_kuzco
-  fi
-
-  echo "\$line" | grep "Run \`kuzco upgrade\` to update the CLI" &> /dev/null
-  if [[ \$? -eq 0 ]]; then
-    upgrade_kuzco
-  fi
-done
-EOF
-
-chmod +x /root/.kuzco/kuzco-logs-monitor.sh
-
-sudo tee /etc/systemd/system/ar_kuzco.service > /dev/null <<EOF
-[Unit]
-Description=Monitor kuzco worker logs and restart service on specific errors
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/root/.kuzco/kuzco-logs-monitor.sh
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl daemon-reload
-systemctl enable ar_kuzco
-systemctl start ar_kuzco
+cd allora-huggingface-walkthrough
+docker compose down
+jq '.wallet.nodeRpc = "https://rpc.ankr.com/allora_testnet"' config.json > temp.json && mv temp.json config.json
+./init.config
+docker compose up --build -d

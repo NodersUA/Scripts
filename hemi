@@ -24,9 +24,9 @@ git clone https://github.com/hemilabs/heminetwork.git
 cd heminetwork
 make deps
 make install
-cp ~/heminetwork/bin/popmd /usr/local/bin/ && cd
+cp ~/heminetwork/bin/popmd /usr/local/bin/
 
-cd ~/heminetwork/bin && ./keygen -secp256k1 -json -net="testnet" > ~/heminetwork/bin/popm-address.json
+cd ~/heminetwork/bin && ./keygen -secp256k1 -json -net="testnet" > ~/heminetwork/bin/popm-address.json && cd
 
 sudo tee /root/heminetwork/.env > /dev/null <<EOF
 POPM_BTC_PRIVKEY=$(jq -r '.private_key' ~/heminetwork/bin/popm-address.json)

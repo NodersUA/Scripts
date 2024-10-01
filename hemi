@@ -24,7 +24,7 @@ git clone https://github.com/hemilabs/heminetwork.git
 cd heminetwork
 make deps
 make install
-cp popmd /usr/local/bin/
+cp ~/heminetwork/bin/popmd /usr/local/bin/ && cd
 
 cd ~/heminetwork/bin && ./keygen -secp256k1 -json -net="testnet" > ~/heminetwork/bin/popm-address.json
 

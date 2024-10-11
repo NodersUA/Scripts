@@ -28,11 +28,11 @@ select opt in "${options[@]}"
 do
   case $opt in
     "Create a new wallet")
-      command="$BINARY_NAME keys add wallet"
+      command="$BINARY_NAME keys add wallet --keyring-backend test"
       break
       ;;
     "Recover an old wallet")
-      command="$BINARY_NAME keys add wallet --recover"
+      command="$BINARY_NAME keys add wallet --keyring-backend test --recover"
       break
       ;;
     "Exit")

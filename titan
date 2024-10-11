@@ -212,14 +212,6 @@ if [ -z "$WEBSITE" ]; then
   echo 'export WEBSITE='$WEBSITE >> $HOME/.bash_profile
 fi
 
-if [ -z "$EMAIL" ]; then
-  echo "*********************"
-  echo -e "\e[1m\e[32m	Enter your EMAIL:\e[0m"
-  echo "*********************"
-  read EMAIL
-  echo 'export EMAIL='$EMAIL >> $HOME/.bash_profile
-fi
-
 if [ -z "$IDENTITY" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m	Enter your IDENTITY:\e[0m"
@@ -230,26 +222,23 @@ fi
 
 source ~/.bash_profile
 
-#sleep $(shuf -i 1000-10000 -n 1)
+sudo tee /root/.titan/validator.json > /dev/null <<EOF
+{
+ "pubkey":  $(titand tendermint show-validator),
+ "amount": "1000000uttnt",
+ "moniker": "$MONIKER",
+ "commission-rate": "0.1",
+ "commission-max-rate": "0.2",
+ "commission-max-change-rate": "0.1",
+ "min-self-delegation": "1",
+ "identity": "$IDENTITY",
+ "website": "$WEBSITE",
+ "security": "",
+ "details": ""
+}
+EOF
 
-# Change <identity> to your key from keybase
-$BINARY_NAME tx staking create-validator \
---amount 1000000$CHAIN_DENOM \
---from=wallet \
---chain-id=$NODE_CHAIN_ID \
---commission-rate "0.1" \
---commission-max-rate "0.20" \
---commission-max-change-rate "0.1" \
---min-self-delegation "1" \
---pubkey=$($BINARY_NAME tendermint show-validator) \
---moniker=$MONIKER \
---identity=$IDENTITY \
---website=$WEBSITE \
---gas="auto" \
---gas-adjustment=1.4 \
--y
-
-
+titand tx staking create-validator /root/.titan/validator.json --from wallet --keyring-backend test --fees 500uttnt --chain-id titan-test-3 -y
 
 break
 ;;

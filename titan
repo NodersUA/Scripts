@@ -1,0 +1,262 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+# Set parameters
+NODE_NAME="Titan"
+NODE_CHAIN_ID="titan-test-3"
+NODE_PORT="48"
+BINARY_VERSION_TAG="v2.1.0"
+CHAIN_DENOM="uttnt"
+BINARY_NAME="titand"
+DIRECTORY="titan-chain"
+HIDDEN_DIRECTORY=".titan"
+NODE_URL="https://github.com/Titannet-dao/titan-chain.git"
+GENESIS_URL="https://raw.githubusercontent.com/Titannet-dao/titan-chain/main/genesis/genesis.json"
+MINIMUM_GAS_PRICES="0.0025uttnt"
+PEERS=""
+SEEDS="bb075c8cc4b7032d506008b68d4192298a09aeea@47.76.107.159:26656"
+pruning="custom"
+pruning_keep_recent="1000"
+pruning_interval="10"
+snapshot_interval="10"
+indexer="null"
+# *************************************
+
+# export temp variables
+echo 'export NODE_NAME='$NODE_NAME > $HOME/config.sh
+echo 'export NODE_CHAIN_ID='$NODE_CHAIN_ID >> $HOME/config.sh
+echo 'export NODE_PORT='$NODE_PORT >> $HOME/config.sh
+echo 'export BINARY_VERSION_TAG='$BINARY_VERSION_TAG >> $HOME/config.sh
+echo 'export CHAIN_DENOM='$CHAIN_DENOM >> $HOME/config.sh
+echo 'export BINARY_NAME='$BINARY_NAME >> $HOME/config.sh
+echo 'export DIRECTORY='$DIRECTORY >> $HOME/config.sh
+echo 'export HIDDEN_DIRECTORY='$HIDDEN_DIRECTORY >> $HOME/config.sh
+echo 'export NODE_URL='$NODE_URL >> $HOME/config.sh
+echo 'export GENESIS_URL='$GENESIS_URL >> $HOME/config.sh
+echo 'export MINIMUM_GAS_PRICES='$MINIMUM_GAS_PRICES >> $HOME/config.sh
+echo 'export PEERS='$PEERS >> $HOME/config.sh
+echo 'export SEEDS='$SEEDS >> $HOME/config.sh
+echo 'export pruning='$pruning >> $HOME/config.sh
+echo 'export pruning_keep_recent='$pruning_keep_recent >> $HOME/config.sh
+echo 'export pruning_interval='$pruning_interval >> $HOME/config.sh
+echo 'export snapshot_interval='$snapshot_interval >> $HOME/config.sh
+echo 'export indexer='$indexer >> $HOME/config.sh
+source $HOME/config.sh
+
+# Menu
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update"
+"Synchronization via SnapShot"
+"Delete Node"
+"Diskord Bot Autoinstall"
+"Autodelegate"
+"Autorestart"
+"Create validator"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+
+#================================================================
+
+"Install Node")
+# import code from cosmos/install.sh
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/install.sh)
+
+wget -O $HOME/.titan/config/addrbook.json "https://raw.githubusercontent.com/111STAVR111/props/main/Titan/addrbook.json"
+systemctl restart $BINARY_NAME
+
+break
+;;
+
+#================================================================
+
+"Update")
+systemctl stop $BINARY_NAME
+rm /usr/local/bin/$BINARY_NAME
+cd 0g-chain/
+git reset --hard HEAD
+git fetch && git checkout v0.3.1
+make install
+
+sudo cp $(which $BINARY_NAME) /usr/local/bin/ && cd $HOME
+$BINARY_NAME version --long | grep -e version -e commit
+
+# Start the node
+systemctl daemon-reload
+systemctl enable $BINARY_NAME
+systemctl restart $BINARY_NAME
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE UPDATE\e[0m'
+echo -e "To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Synchronization via SnapShot")
+# install dependencies, if needed
+if ! dpkg -s lz4 &> /dev/null; then
+sudo apt update && apt upgrade -y
+apt install lz4 -y
+fi
+
+sudo systemctl stop titand
+cp $HOME/.titan/data/priv_validator_state.json $HOME/.titan/priv_validator_state.json.backup
+rm -rf $HOME/.titan/data
+curl -o - -L https://titan-t.snapshot.stavr.tech/titan-snap.tar.lz4 | lz4 -c -d - | tar -x -C $HOME/.titan --strip-components 2
+mv $HOME/.titan/priv_validator_state.json.backup $HOME/.titan/data/priv_validator_state.json
+wget -O $HOME/.titan/config/addrbook.json "https://raw.githubusercontent.com/111STAVR111/props/main/Titan/addrbook.json"
+sudo systemctl restart titand
+
+echo '=============== SETUP FINISHED ==================='
+echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL SNAPSHOT INSTALLATION\e[0m'
+echo -e 'To check logs:        \e[1m\e[33mjournalctl -u titand -f -o cat\e[0m'
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+sudo systemctl stop $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+sudo systemctl disable $BINARY_NAME ad_${DIRECTORY} df_${DIRECTORY}
+rm /etc/systemd/system/$BINARY_NAME.service
+rm /etc/systemd/system/ad_${BINARY_NAME}.service
+#rm /etc/systemd/system/df_${BINARY_NAME}.service
+sudo systemctl daemon-reload
+cd $HOME
+rm -rf $DIRECTORY
+rm -rf df_${DIRECTORY}
+rm -rf $HIDDEN_DIRECTORY
+rm -f $(which $BINARY_NAME)
+rm -f /root/scripts/ad_${DIRECTORY}.sh
+rm -f /root/scripts/ar_${DIRECTORY}.sh
+
+break
+;;
+
+#================================================================
+
+"Diskord Bot Autoinstall")
+# set variables
+#BABYLON_ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
+#echo 'export PROJECT="TITAN"' >> $HOME/config.sh
+#echo 'export PROJECT_TOKEN="${TITAN_TOKEN}"' >> $HOME/config.sh
+#echo 'export MESSAGE="\$request $TITAN_ADDRESS"' >> $HOME/config.sh
+#echo 'export DISCORD_DIR=df_${DIRECTORY}' >> $HOME/config.sh
+#echo 'export CHAT_ID=1255514876072427582' >> $HOME/config.sh
+#source $HOME/config.sh
+
+# import code from file
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/df.sh)
+
+break
+;;
+
+#================================================================
+
+"Autodelegate")
+ADDRESS=$($BINARY_NAME keys show wallet -a)
+VALOPER=$($BINARY_NAME keys show wallet --bech val -a)
+echo "export address="${ADDRESS} >> $HOME/config.sh
+echo "export valoper="${VALOPER} >> $HOME/config.sh
+echo 'export gas=300000' >> $HOME/config.sh
+echo 'export sleep_timeout=100000' >> $HOME/config.sh
+echo 'export min_balance=2000000000000000000' >> $HOME/config.sh
+source $HOME/config.sh
+
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)
+
+break
+;;
+
+#================================================================
+
+"Autorestart")
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autorestart.sh)
+
+systemctl daemon-reload
+systemctl enable ar_${DIRECTORY}.service
+systemctl restart ar_${DIRECTORY}.service
+
+break
+;;
+
+#================================================================
+
+"Create validator")
+
+cd $DIRECTORY
+
+if [ -z "$MONIKER" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo "*********************"
+  read MONIKER
+  echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
+fi
+
+if [ -z "$WEBSITE" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your WEBSITE:\e[0m"
+  echo "*********************"
+  read WEBSITE
+  echo 'export WEBSITE='$WEBSITE >> $HOME/.bash_profile
+fi
+
+if [ -z "$EMAIL" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your EMAIL:\e[0m"
+  echo "*********************"
+  read EMAIL
+  echo 'export EMAIL='$EMAIL >> $HOME/.bash_profile
+fi
+
+if [ -z "$IDENTITY" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your IDENTITY:\e[0m"
+  echo "*********************"
+  read IDENTITY
+  echo 'export IDENTITY='$IDENTITY >> $HOME/.bash_profile
+fi
+
+source ~/.bash_profile
+
+#sleep $(shuf -i 1000-10000 -n 1)
+
+# Change <identity> to your key from keybase
+$BINARY_NAME tx staking create-validator \
+--amount 1000000$CHAIN_DENOM \
+--from=wallet \
+--chain-id=$NODE_CHAIN_ID \
+--commission-rate "0.1" \
+--commission-max-rate "0.20" \
+--commission-max-change-rate "0.1" \
+--min-self-delegation "1" \
+--pubkey=$($BINARY_NAME tendermint show-validator) \
+--moniker=$MONIKER \
+--identity=$IDENTITY \
+--website=$WEBSITE \
+--gas="auto" \
+--gas-adjustment=1.4 \
+-y
+
+
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

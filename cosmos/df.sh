@@ -46,10 +46,10 @@ read_delay: 0.1
 typing_delay_per_character: 2
 EOF
 
-if [ "$DISCORD_DIR" == "df_titan" ]; then sl=$(shuf -i 1-3600 -n 1); else sl=$(shuf -i 3600-10000 -n 1); fi
+if [ "$DISCORD_DIR" == "df_titan-chain" ]; then sl=$(shuf -i 1-3600 -n 1); else sl=$(shuf -i 3600-10000 -n 1); fi
 echo "Sleep $sl sec..."
 
-if [ "$DISCORD_DIR" == "df_titan" ]; then sl1=7200; else sl1=86400; fi
+if [ "$DISCORD_DIR" == "df_titan-chain" ]; then sl1=7200; else sl1=86400; fi
 
 tee $HOME/$DISCORD_DIR/db.sh > /dev/null <<EOF
 #!/bin/bash
@@ -61,7 +61,7 @@ do
     date
     cd $HOME/$DISCORD_DIR/src/ && python3 main.py
     sleep $sl1
-    sleep \$(shuf -i 0-1800 -n 1) # 30 хв рандома
+    sleep \$(shuf -i 0-600 -n 1) # 10 хв рандома
     echo "===================================="
 done
 EOF

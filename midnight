@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+
+sudo apt update
+apt install curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev chrony -y
+
+# Install Docker
+if ! [ -x "$(command -v docker)" ]; then
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker $USER
+docker --version
+else
+echo $(docker --version)
+fi
+
+# Install Docker Compose
+if ! [ -x "$(command -v docker-compose)" ]; then
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
+sudo chmod +x /usr/local/bin/docker-compose 
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+else
+echo $(docker-compose --version)
+fi
+
+docker run -d --name midnight-proof-server -p 6300:6300 midnightnetwork/proof-server -- 'midnight-proof-server --network testnet'
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs:    \e[1m\e[33mdocker logs -f midnight-proof-server\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

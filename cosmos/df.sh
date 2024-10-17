@@ -27,7 +27,8 @@ tee $HOME/$DISCORD_DIR/src/config/accounts.txt > /dev/null <<EOF
 $PROJECT_TOKEN
 EOF
 
-# \$request $ADDRESS = MESSAGE
+# 
+MESSAGE="$request $TITAN_ADDRESS" 
 tee $HOME/$DISCORD_DIR/src/config/messages.txt > /dev/null <<EOF
 $MESSAGE
 EOF

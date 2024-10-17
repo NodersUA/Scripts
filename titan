@@ -150,7 +150,7 @@ break
 TITAN_ADDRESS=$($BINARY_NAME keys show wallet -a --keyring-backend test)
 echo 'export PROJECT="TITAN"' >> $HOME/config.sh
 echo "export PROJECT_TOKEN=\"$TITAN_TOKEN\"" >> $HOME/config.sh
-echo "export MESSAGE=\"\$request $TITAN_ADDRESS\"" >> $HOME/config.sh
+echo 'export MESSAGE="\$request '"$TITAN_ADDRESS"'"' >> $HOME/config.sh
 echo "export DISCORD_DIR=df_${DIRECTORY}" >> $HOME/config.sh
 echo 'export CHAT_ID=1255514876072427582' >> $HOME/config.sh
 source $HOME/config.sh

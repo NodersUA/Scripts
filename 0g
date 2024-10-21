@@ -7,7 +7,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 NODE_NAME="OG"
 NODE_CHAIN_ID="zgtendermint_16600-2"
 NODE_PORT="47"
-BINARY_VERSION_TAG="v0.3.1"
+BINARY_VERSION_TAG="v0.4.0"
 CHAIN_DENOM="ua0gi"
 BINARY_NAME="0gchaind"
 DIRECTORY="0g-chain"

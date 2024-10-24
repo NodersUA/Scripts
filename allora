@@ -85,7 +85,12 @@ break
 
 "UPDATE")
 
-echo "Soon...."
+#echo "Soon...."
+
+cd $HOME && cd allora-huggingface-walkthrough
+docker compose down -v
+docker container prune
+docker compose up --build -d
 
 echo '=============== UPDATE FINISHED ==================='
 echo -e "Congratulations:    \e[1m\e[32mNode Updated to ${ver}\e[0m"

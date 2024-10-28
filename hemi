@@ -23,15 +23,18 @@ source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/
 
 git clone https://github.com/hemilabs/heminetwork.git
 cd heminetwork
-make deps
-make install
-cp ~/heminetwork/bin/popmd /usr/local/bin/
+curl -L -O https://github.com/hemilabs/heminetwork/releases/download/v0.5.0/heminetwork_v0.5.0_linux_amd64.tar.gz
+mkdir -p hemi
+tar --strip-components=1 -xzvf heminetwork_v0.5.0_linux_amd64.tar.gz -C hemi
+#make deps
+#make install
+#cp ~/heminetwork/bin/popmd /usr/local/bin/
 
 cd ~/heminetwork/bin && ./keygen -secp256k1 -json -net="testnet" > ~/heminetwork/bin/popm-address.json && cd
 
 sudo tee /root/heminetwork/.env > /dev/null <<EOF
 POPM_BTC_PRIVKEY=$(jq -r '.private_key' ~/heminetwork/bin/popm-address.json)
-POPM_STATIC_FEE=20
+POPM_STATIC_FEE=200
 POPM_BFG_URL=wss://testnet.rpc.hemi.network/v1/ws/public
 EOF
 
@@ -44,7 +47,8 @@ After=network.target
 User=root
 Type=simple
 EnvironmentFile=/root/heminetwork/.env
-ExecStart=/usr/local/bin/popmd
+ExecStart=/root/heminetwork/hemi/popmd
+WorkingDirectory=/root/heminetwork/hemi/
 Restart=on-failure
 
 [Install]

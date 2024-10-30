@@ -1,12 +1,7 @@
 #!/bin/bash
 # source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp2)
 
-systemctl stop kuzco ar_kuzco
-systemctl disable kuzco ar_kuzco
-rm -rf /root/.kuzco
-rm -rf /root/.ollama
-
-find /tmp/ -type d -name '*ollama*' -exec rm -rf {} \;
-
-sudo systemctl restart subspaced subspacefarm
-
+mv /etc/systemd/system/df_titan-chain.service /etc/systemd/system/df_titan.service
+sudo sed -i 's|^ExecStart=.*|ExecStart=/root/df_titan/db.sh|' /etc/systemd/system/df_titan.service
+systemctl daemon-reload
+systemctl restart df_titan

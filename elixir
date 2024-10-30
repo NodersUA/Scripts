@@ -6,6 +6,7 @@ curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
 PS3='Select an action: '
 options=(
 "Install Node"
+"Update Node"
 "Delete Node"
 "Exit")
 select opt in "${options[@]}"
@@ -88,6 +89,21 @@ docker run -d \
 cd $HOME
 
 echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs:    \e[1m\e[33mdocker logs -fn100 elixir\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Update Node")
+
+docker kill elixir
+docker rm elixir
+docker pull elixirprotocol/validator:v3-testnet --platform linux/amd64
+docker run -d --env-file /root/elixir/validator.env --platform linux/amd64 --name elixir -p 17690:17690 elixirprotocol/validator:v3-testnet
+
+echo '=============== UPDATE FINISHED ==================='
 echo -e "To check logs:    \e[1m\e[33mdocker logs -fn100 elixir\e[0m"
 
 break

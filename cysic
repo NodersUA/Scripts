@@ -1,0 +1,77 @@
+#!/bin/bash
+
+  # Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+
+sudo apt update
+
+if [ -z "$EVM_ADDRESS" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m	Enter your EVM_ADDRESS:\e[0m"
+  echo "*********************"
+  read EVM_ADDRESS
+  echo 'export EVM_ADDRESS='$EVM_ADDRESS >> $HOME/.bash_profile
+  source ~/.bash_profile
+else
+  echo "*********************"
+  echo -e "\e[1m\e[32m	EVM_ADDRESS: $EVM_ADDRESS\e[0m"
+  echo "*********************"
+fi
+
+curl -L https://github.com/cysic-labs/phase2_libs/releases/download/v1.0.0/setup_linux.sh > ~/setup_linux.sh && bash ~/setup_linux.sh $EVM_ADDRESS
+
+chmod +x ~/cysic-verifier/start.sh
+
+sudo tee /etc/systemd/system/cysic-verifier.service > /dev/null <<EOF
+[Unit]
+Description=Cysic Verifier Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/bin/bash /root/cysic-verifier/start.sh
+Restart=always
+RestartSec=5
+WorkingDirectory=/root/cysic-verifier
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable cysic-verifier.service
+sudo systemctl restart cysic-verifier.service
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs rivalz:    \e[1m\e[33mjournalctl -u cysic-verifier -f -o cat\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

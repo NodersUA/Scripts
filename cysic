@@ -34,7 +34,7 @@ curl -L https://github.com/cysic-labs/phase2_libs/releases/download/v1.0.0/setup
 
 chmod +x ~/cysic-verifier/start.sh
 
-sudo tee /etc/systemd/system/cysic-verifier.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/cysic_verifier.service > /dev/null <<EOF
 [Unit]
 Description=Cysic Verifier Service
 After=network.target
@@ -53,8 +53,8 @@ WantedBy=multi-user.target
 EOF
 
 sudo systemctl daemon-reload
-sudo systemctl enable cysic-verifier.service
-sudo systemctl restart cysic-verifier.service
+sudo systemctl enable cysic_verifier.service
+sudo systemctl restart cysic_verifier.service
 
 echo '=============== INSLALL FINISHED ==================='
 echo -e "To check logs:    \e[1m\e[33mjournalctl -u cysic-verifier -f -o cat\e[0m"

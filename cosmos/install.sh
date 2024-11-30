@@ -122,7 +122,11 @@ $BINARY_NAME config node tcp://${external_address}:${NODE_PORT}657
 
 # Execute the saved command
 if [ "$NODE_NAME" != "ALLORA" ]; then
+if [ "$BINARY_NAME" == "0gchaind" ]; then
+eval "$command --eth"
+else
 eval "$command"
+fi
 fi
 
 echo "export ${NODE_NAME}_CHAIN_ID="${NODE_CHAIN_ID} >> $HOME/.bash_profile

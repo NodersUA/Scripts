@@ -57,7 +57,7 @@ sudo systemctl enable cysic_verifier.service
 sudo systemctl restart cysic_verifier.service
 
 echo '=============== INSLALL FINISHED ==================='
-echo -e "To check logs:    \e[1m\e[33mjournalctl -u cysic-verifier -f -o cat\e[0m"
+echo -e "To check logs:    \e[1m\e[33mjournalctl -u cysic_verifier -f -o cat\e[0m"
 
 break
 ;;

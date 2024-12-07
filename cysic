@@ -15,7 +15,8 @@ case $opt in
 
 "Install Node")
 
-sudo apt update
+#sudo apt update
+rm -rf ~/cysic-verifier/
 
 if [ -z "$EVM_ADDRESS" ]; then
   echo "*********************"

@@ -1,0 +1,78 @@
+
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Cordano DB"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Cordano DB")
+
+# Install Docker
+if ! [ -x "$(command -v docker)" ]; then
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo usermod -aG docker $USER
+docker --version
+else
+echo $(docker --version)
+fi
+
+# Install Docker Compose
+if ! [ -x "$(command -v docker-compose)" ]; then
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
+sudo chmod +x /usr/local/bin/docker-compose 
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+else
+echo $(docker-compose --version)
+fi
+
+git clone git@github.com:midnight-ntwrk/partner-chain-deps-docker.git
+cd partner-chain-deps-docker
+
+sed -i 's/3001:3001/3101:3101/' compose.yml
+
+docker-compose up -d
+
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Allow Ogmios
+sudo ufw allow 1337/tcp
+
+# Allow Kupo
+sudo ufw allow 1442/tcp
+
+# Allow Postgres-db-sync
+sudo ufw allow 5432/tcp
+
+sudo ufw allow ssh
+sudo ufw logging on
+
+echo '=============== INSLALL FINISHED ==================='
+#echo -e "To check logs:    \e[1m\e[33mjournalctl -u cysic_verifier -f -o cat\e[0m"
+
+break
+;;
+
+#================================================================
+
+#"Delete Node")
+
+#break
+#;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

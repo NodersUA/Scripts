@@ -12,7 +12,6 @@ fees=$(echo "$gas * 3 * $(echo $MINIMUM_GAS_PRICES | grep -o '[0-9.]*')" | bc)
 
 #===========================================================================
 
-# write nibiru_autorestart.sh to scripts/
 tee ~/scripts/ad_${DIRECTORY}.sh > /dev/null <<EOF
 #!/bin/bash
 
@@ -25,7 +24,7 @@ min_balance=$min_balance
 address=$address
 valoper=$valoper
 
-get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r '.balances[] | select(.denom == "${CHAIN_DENOM}") | .amount' | tr -d '"' ;}
+get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r ".balances[] | select(.denom == \"${CHAIN_DENOM}\") | .amount" ;}
 
 get_timeout() {
   echo "get_timeout"
@@ -48,8 +47,8 @@ get_timeout() {
 execute_with_sequence_check() {
   cmd=\$1
   sequence=\$(${BINARY_NAME} query account \${address} | grep -oP '(?<=sequence: ")[^"]+' | awk '{print \$1}')
-  if [ "$BINARY_NAME" = "sided" ]; then
-    new_cmd="\$cmd --keyring-backend test --sequence=\$sequence -y"
+  if [ "$BINARY_NAME" == "titand" ]; then
+    new_cmd="\$cmd --keyring-backend test -y"
   else
     new_cmd="\$cmd --sequence=\$sequence -y"
   fi
@@ -63,20 +62,24 @@ sleep \$sl
 
 while true; do
 
+if [ "${BINARY_NAME}" == "titand" ]; then
+status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.validator.status')
+else
 status=\$(${BINARY_NAME} q staking validator \${valoper} --output=json | jq -r '.status')
+fi
 
 echo -e "\${GREEN}>>> Date: [ \$(date) ]\${ENDCOLOR}"
 
 start_balance=\$(get_balance) && sleep 1
 
-if [ "\$status" == "BOND_STATUS_BONDED" ]; then
+if [ "\$status" == "BOND_STATUS_BONDED" ] || [ "\$status" == 3 ]; then
 echo -e "\${GREEN}>>> Withdraw rewards and commission \${ENDCOLOR}"
-# echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission -y)"
-execute_with_sequence_check "${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission -y"
+# echo "\$(${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission)"
+execute_with_sequence_check "${BINARY_NAME} tx distribution withdraw-rewards \${valoper} --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} --commission"
 sleep 10
 echo -e "\${GREEN}>>> Withdraw all rewards \${ENDCOLOR}"
-#echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} -y)"
-execute_with_sequence_check "${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES} -y"
+#echo -e "\$(${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES})"
+execute_with_sequence_check "${BINARY_NAME} tx distribution withdraw-all-rewards --from wallet --gas $gas --gas-adjustment=1.4 --gas-prices=${MINIMUM_GAS_PRICES}"
 fi
 
 sleep 10

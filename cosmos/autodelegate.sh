@@ -28,9 +28,8 @@ get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r
 
 get_timeout() {
   echo "get_timeout"
-  echo \$status
-  if [ "\$status" = "BOND_STATUS_BONDED" ]; then
-    voting_power=\$(sided q staking validator ${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
+  if [ "\$status" = "BOND_STATUS_BONDED" ] || [ "$status" == 3 ]; then
+    voting_power=\$(${BINARY_NAME} q staking validator ${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
     echo "per_sec: \$delegate / \$sleep_timeout = \$per_sec"
@@ -40,16 +39,16 @@ get_timeout() {
     echo "st: $fees / ( \$delegate * \$procent ) = \$sleep_timeout"
     [ "\$sleep_timeout" -lt 60 ] && sleep_timeout=60
   else
-    sleep_timeout=100000
+    sleep_timeout=\$sleep_timeout
   fi
 }
 
 execute_with_sequence_check() {
   cmd=\$1
-  sequence=\$(${BINARY_NAME} query account \${address} | grep -oP '(?<=sequence: ")[^"]+' | awk '{print \$1}')
   if [ "$BINARY_NAME" == "titand" ]; then
     new_cmd="\$cmd --keyring-backend test -y"
   else
+    sequence=\$(${BINARY_NAME} query account \${address} | grep -oP '(?<=sequence: ")[^"]+' | awk '{print \$1}')
     new_cmd="\$cmd --sequence=\$sequence -y"
   fi
   echo \$new_cmd

@@ -171,6 +171,7 @@ echo "export valoper="${VALOPER} >> $HOME/config.sh
 echo 'export gas=300000' >> $HOME/config.sh
 echo 'export sleep_timeout=7500' >> $HOME/config.sh
 echo 'export min_balance=1000000' >> $HOME/config.sh
+echo 'export DIRECTORY=titan' >> $HOME/config.sh
 source $HOME/config.sh
 
 source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/cosmos/autodelegate.sh)

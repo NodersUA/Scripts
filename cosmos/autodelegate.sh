@@ -28,8 +28,8 @@ get_balance() { ${BINARY_NAME} q bank balances \${address} --output=json | jq -r
 
 get_timeout() {
   echo "get_timeout"
-  if [ "\$status" = "BOND_STATUS_BONDED" ] || [ "$status" == 3 ]; then
-    voting_power=\$(${BINARY_NAME} q staking validator ${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
+  if [ "\$status" = "BOND_STATUS_BONDED" ] || [ "\$status" == 3 ]; then
+    voting_power=\$(${BINARY_NAME} q staking validator \${valoper} | grep -oP '(?<=tokens: ")[^"]+') && sleep 1
     per_sec=\$((delegate / sleep_timeout))
     procent=\$(echo "scale=10; \$per_sec / \$voting_power" | bc)
     echo "per_sec: \$delegate / \$sleep_timeout = \$per_sec"

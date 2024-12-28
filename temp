@@ -1,11 +1,21 @@
 #!/bin/bash
-# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp)
 
-curl -sSL https://raw.githubusercontent.com/allora-network/allora-chain/main/install.sh | bash -s -- v0.5.0
-cp /root/.local/bin/allorad /usr/local/bin/
+systemctl stop icn
+systemctl disable icn
+rm /etc/systemd/system/icn.service
 
-cd allora-huggingface-walkthrough
-docker compose down
-jq '.wallet.nodeRpc = "https://rpc.ankr.com/allora_testnet"' config.json > temp.json && mv temp.json config.json
-./init.config
-docker compose up --build -d
+pkill screen
+rm -rf .nexus/
+
+docker stop shardeum-dashboard
+docker rm shardeum-dashboard
+
+docker stop cardano-node
+docker rm cardano-node
+
+systemctl stop nubit
+systemctl disable nubit
+rm /etc/systemd/system/nubit.service
+
+docker stop midnight-proof-server
+docker rm midnight-proof-server

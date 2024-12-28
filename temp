@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/temp)
+
 systemctl stop icn
 systemctl disable icn
 rm /etc/systemd/system/icn.service

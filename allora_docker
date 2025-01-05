@@ -2,7 +2,7 @@
 
 docker stop docker-watchtower-1
 
-sed -i 's/^\s*-\s*"8000:\(8000\)"/      - "8044:\1"/g' allora-huggingface-walkthrough/docker-compose.yaml
+sed -i 's/8000/8044/g' allora-huggingface-walkthrough/docker-compose.yaml
 cd allora-huggingface-walkthrough
 docker compose down
 sudo sed -i 's/8000/8044/g' ~/allora-huggingface-walkthrough/config.json

@@ -12,7 +12,6 @@ sudo apt-get install -f -y
 
 sudo apt-get install -y desktop-file-utils
 sudo dpkg --configure -a
-screen -S openledger_node
 sudo apt-get install -y libgbm1 libasound2
 
 sudo sed -i 's/^#X11UseLocalhost yes/X11UseLocalhost yes/' /etc/ssh/sshd_config

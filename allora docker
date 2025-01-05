@@ -1,0 +1,10 @@
+#!/bin/bash
+
+docker stop docker-watchtower-1
+
+cd allora-huggingface-walkthrough
+docker compose down
+sudo sed -i 's/8000/8044/g' ~/allora-huggingface-walkthrough/config.json
+./init.config
+docker compose up --build -d
+docker logs -fn100 worker

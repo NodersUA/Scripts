@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+
+sudo apt update
+
+# Install docker
+source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/docker)
+
+docker pull privasea/acceleration-node-beta
+docker run -it -v "/privasea/config:/app/config"  \
+privasea/acceleration-node-beta:latest ./node-calc new_keystore
+cd /privasea/config
+mv * wallet_keystore
+
+break
+;;
+
+#================================================================
+
+"Update Node")
+
+
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

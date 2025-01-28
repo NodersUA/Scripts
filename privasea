@@ -26,6 +26,7 @@ docker run -it -v "/privasea/config:/app/config"  \
 privasea/acceleration-node-beta:latest ./node-calc new_keystore
 cd /privasea/config
 mv * wallet_keystore
+ls && cd
 
 break
 ;;

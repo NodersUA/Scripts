@@ -61,10 +61,10 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable pop.service
-sudo systemctl start pop.service
+sudo systemctl restart pop.service
 
 echo '=============== INSLALL FINISHED ==================='
-echo -e "To check logs:    \e[1m\e[33mjournalctl -f -u pop cat\e[0m"
+echo -e "To check logs:    \e[1m\e[33mjournalctl -f -u pop \e[0m"
 
 break
 ;;

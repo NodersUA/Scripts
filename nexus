@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+#
+#
+break
+;;
+
+#================================================================
+
+"Update Node")
+#
+#
+break
+;;
+
+#================================================================
+
+"Delete Node")
+#
+#
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

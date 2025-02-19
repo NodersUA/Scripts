@@ -31,8 +31,6 @@ sudo ln -sf /usr/local/bin/protoc /usr/bin/protoc
 
 cd
 
-screen -S nexus
-
 curl -sSf https://cli.nexus.xyz/ | sh
 
 break

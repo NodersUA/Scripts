@@ -15,7 +15,7 @@ case $opt in
 
 "Install Node")
 
-curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash  docker cp $(docker ps -qf "name=gaianet"):/root/gaianet/nodeid.json ~/gaianet/nodeid.json
+curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash
 
 sed -i "s/device-cf543e37e491609d4c3f82d6/device-9253f979f44d8dae0cc5dde5/g" ~/gaianet/gaia-frp/frpc.toml
 

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+  # Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+
+curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash  docker cp $(docker ps -qf "name=gaianet"):/root/gaianet/nodeid.json ~/gaianet/nodeid.json
+
+sed -i "s/device-cf543e37e491609d4c3f82d6/device-9253f979f44d8dae0cc5dde5/g" ~/gaianet/gaia-frp/frpc.toml
+
+read -p 'Введіть нову адресу: ' new_addr
+
+sed -i "s/0x[a-f0-9]\{40\}/${new_addr}/g" ~/gaianet/gaia-frp/frpc.toml  
+sed -i "s/localPort = 8080/localPort = 8282/g" ~/gaianet/gaia-frp/frpc.toml  
+sed -i 's/"llamaedge_port": "8080"/"llamaedge_port": "8282"/g' ~/gaianet/config.json
+
+gaianet init 
+
+gaianet start	
+
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

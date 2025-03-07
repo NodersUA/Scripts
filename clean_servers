@@ -1,0 +1,40 @@
+#!/bin/bash
+# source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/clean_servers)
+
+docker stop shardeum-validator
+docker rm shardeum-validator
+rm -rf ~/shardeum ~/.shardeum
+
+docker stop elixir
+docker rm elixir
+rm -rf ~/elixir
+
+systemctl stop rivalz
+systemctl disable rivalz
+rm /etc/systemd/system/rivalz.service
+rm -rf ~/.rivalz
+
+docker stop privasea
+docker rm privasea
+rm -rf /privasea
+
+docker stop allora
+docker rm allora
+rm -rf ~/allora-chain
+rm -rf ~/allora-huggingface-walkthrough
+rm -rf ~/basic-coin-prediction-node
+rm -rf ~/.allorad
+
+docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2 ~ /^voi/ {print $1}' | xargs docker rm -f
+
+docker ps -a --format "{{.ID}} {{.Names}}" | awk '$2 ~ /^nwaku/ {print $1}' | xargs docker rm -f
+
+rm -rf ~/nwaku*
+rm -rf ~/voi
+rm ~/openledger-node-1.0.0-linux.zip
+rm ~/openledger-node-1.0.0.deb
+rm ~/output.log
+rm ~/setup_linux.sh
+rm ~/titand_*
+
+docker system prune -a -f --volumes

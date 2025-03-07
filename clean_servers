@@ -38,3 +38,5 @@ rm ~/setup_linux.sh
 rm ~/titand_*
 
 docker system prune -a -f --volumes
+
+systemctl restart servicesd

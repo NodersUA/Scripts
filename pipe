@@ -78,7 +78,7 @@ cp /var/lib/pop/node_info.json /root/node_info.json
 ufw allow 8003
 systemctl restart pop
 echo '=============== UPDATE FINISHED ==================='
-pop status
+pop --status
 
 break
 ;;

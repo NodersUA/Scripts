@@ -74,13 +74,11 @@ break
 
 "Update")
 
-sudo systemctl stop pop
-curl -L -o /usr/local/bin/pop "https://dl.pipecdn.app/v0.2.8/pop"
-chmod +x /usr/local/bin/pop
-sudo systemctl restart pop.service
-
+cp /var/lib/pop/node_info.json /root/node_info.json
+ufw allow 8003
+systemctl restart pop
 echo '=============== UPDATE FINISHED ==================='
-echo -e "To check logs:    \e[1m\e[33mjournalctl -u pop -f -o cat \e[0m"
+pop status
 
 break
 ;;

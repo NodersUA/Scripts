@@ -77,7 +77,6 @@ cd ..
 
 # Збірка та тестовий запуск Light Node
 go build
-./light-node
 
 # Створення сервісу systemd
 sudo tee /etc/systemd/system/layeredge.service > /dev/null <<EOF

@@ -2,7 +2,7 @@
 
 # source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
 
-ver="1.23.0"
+ver="1.23.1"
 if [ "$(go version)" != "go version go$ver linux/amd64" ]; then \
 wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
 sudo rm -rf /usr/local/go && \

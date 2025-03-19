@@ -23,7 +23,7 @@ if [ -z "$PRIV_KEY" ]; then
   echo "*********************"
   echo -e "\e[1m\e[32m  Enter your PRIVATE_KEY:\e[0m"
   echo "*********************"
-  read -s PRIV_KEY
+  read PRIV_KEY
  # echo 'export PRIV_KEY='$PRIV_KEY >> $HOME/.bash_profile
  # source ~/.bash_profile
 else

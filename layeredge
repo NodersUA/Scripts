@@ -1,0 +1,133 @@
+#!/bin/bash
+
+# Logo
+curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/logo.sh | bash
+
+PS3='Select an action: '
+options=(
+"Install Node"
+"Update Node"
+"Delete Node"
+"Exit")
+select opt in "${options[@]}"
+do
+case $opt in
+#================================================================
+
+"Install Node")
+
+# Оновлення системи
+sudo apt update && sudo apt upgrade -y
+
+# Встановлення необхідних пакетів
+sudo apt install -y curl git build-essential
+
+# Встановлення Go (якщо ще не встановлено)
+if ! command -v go &> /dev/null; then
+  curl -OL https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
+  echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+  source ~/.bashrc
+fi
+
+# Встановлення Rust
+if ! command -v cargo &> /dev/null; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  source $HOME/.cargo/env
+fi
+
+# Встановлення Risc0 Toolchain
+curl -L https://risczero.com/install | bash && rzup install
+
+# Клонування репозиторію Light Node
+git clone https://github.com/Layer-Edge/light-node.git
+cd light-node
+
+# Запит на введення PRIVATE_KEY
+if [ -z "$PRIV_KEY" ]; then
+  echo "*********************"
+  echo -e "\e[1m\e[32m  Enter your PRIVATE_KEY:\e[0m"
+  echo "*********************"
+  read -s PRIV_KEY
+  echo 'export PRIV_KEY='$PRIV_KEY >> $HOME/.bash_profile
+  source ~/.bash_profile
+else
+  echo "*********************"
+  echo -e "\e[1m\e[32m  PRIV_KEY: $PRIV_KEY\e[0m"
+  echo "*********************"
+fi
+
+# Налаштування змінних середовища
+cat <<EOF > .env
+GRPC_URL=34.31.74.109:9090
+CONTRACT_ADDR=cosmos1ufs3tlq4umljk0qfe8k5ya0x6hpavn897u2cnf9k0en9jr7qarqqt56709
+ZK_PROVER_URL=http://127.0.0.1:3001
+API_REQUEST_TIMEOUT=100
+POINTS_API=http://127.0.0.1:8080
+PRIVATE_KEY=$PRIV_KEY
+EOF
+
+# Запуск Merkle Service
+cd risc0-merkle-service
+cargo build --release
+nohup ./target/release/risc0-merkle-service > ~/merkle.log 2>&1 &
+cd ..
+
+# Збірка та тестовий запуск Light Node
+go build
+./light-node
+
+# Створення сервісу systemd
+sudo tee /etc/systemd/system/layeredge.service > /dev/null <<EOF
+[Unit]
+Description=LayerEdge Light Node
+After=network.target
+
+[Service]
+User=$USER
+WorkingDirectory=$HOME/light-node
+EnvironmentFile=$HOME/light-node/.env
+ExecStart=$HOME/light-node/light-node
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Запуск сервісу
+sudo systemctl daemon-reload
+sudo systemctl enable layeredge
+sudo systemctl start layeredge
+
+# Перевірка статусу
+sudo systemctl status layeredge
+
+echo '=============== INSLALL FINISHED ==================='
+echo -e "To check logs:    \e[1m\e[33mjournalctl -u layerdge -f -o cat\e[0m"
+
+break
+;;
+
+#================================================================
+
+"Update Node")
+
+
+break
+;;
+
+#================================================================
+
+"Delete Node")
+
+break
+;;
+
+#================================================================
+
+"Exit")
+exit
+esac
+done

@@ -32,20 +32,23 @@ else
   echo "*********************"
 fi
 
+ufw allow 3001
+ufw allow 8080
+
 # Оновлення системи
-sudo apt update && sudo apt upgrade -y
+#sudo apt update && sudo apt upgrade -y
 
 # Встановлення необхідних пакетів
-sudo apt install -y curl git build-essential
+#sudo apt install -y curl git build-essential
 
 # Встановлення Go (якщо ще не встановлено)
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
+#source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
 
 # Встановлення Rust
-if ! command -v cargo &> /dev/null; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  source $HOME/.cargo/env
-fi
+#if ! command -v cargo &> /dev/null; then
+#  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+#  source $HOME/.cargo/env
+#fi
 
 # Встановлення Risc0 Toolchain
 echo 'export PATH=$HOME/.risc0/bin:$PATH' >> ~/.bashrc

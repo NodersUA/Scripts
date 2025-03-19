@@ -46,6 +46,8 @@ if ! command -v cargo &> /dev/null; then
 fi
 
 # Встановлення Risc0 Toolchain
+echo 'export PATH=$HOME/.risc0/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
 curl -L https://risczero.com/install | bash && rzup install
 
 # Клонування репозиторію Light Node

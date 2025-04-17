@@ -1,37 +1,43 @@
 #!/bin/bash
 
-# Колір рожевий (фіолетовий)
-pink='\033[1;35m'
-reset='\033[0m'
+# Кольори
+pink='\e[1;35m'
+reset='\e[0m'
 
-PS3=$'\n'"${pink}Select an action:${reset} "
+# Ввід основних даних один раз
+read -p $'\e[1;35mВведи GitHub Email:\e[0m ' GITHUB_EMAIL
+read -p $'\e[1;35mВведи GitHub Username:\e[0m ' GITHUB_USERNAME
+read -p $'\e[1;35mВведи адресу свого гаманця:\e[0m ' ADDRESS
+read -p $'\e[1;35mВведи приватний ключ:\e[0m ' PRIV_KEY
 
+export DROSERA_PRIVATE_KEY="$PRIV_KEY"
+
+# Меню
+PS3=$'\n\e[1;35mОберіть дію:\e[0m\n'
 options=(
-"Апдейт сервера і Деплой Трапа"
-"Запуск ноди (dryrun + private)"
-"Запуск сервісу ноди"
-"Подивитись логи"
-"Opt in"
-"Вихід"
+  "Апдейт сервера і Деплой Трапа"
+  "Запуск ноди (dryrun + private)"
+  "Запуск сервісу ноди"
+  "Подивитись логи"
+  "Opt in"
+  "Вихід"
 )
 
-select opt in "${options[@]}"; do
+select opt in "${options[@]}"
+do
   case $REPLY in
     1)
-      echo -e "${pink}==> Updating server and deploying trap...${reset}"
-      
+      echo -e "${pink}==> Блок 1: Підготовка сервера та деплой трапа${reset}"
+
       sudo apt-get update && sudo apt-get upgrade -y && \
       sudo apt install curl ufw iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
       curl -L https://app.drosera.io/install | bash && source ~/.bashrc && droseraup
-
       curl -L https://foundry.paradigm.xyz | bash && source ~/.bashrc && foundryup
 
-      mkdir -p ~/my-drosera-trap
-      cd ~/my-drosera-trap
+      mkdir my-drosera-trap
+      cd my-drosera-trap
 
-      read -p "Enter your GitHub email: " GITHUB_EMAIL
-      read -p "Enter your GitHub username: " GITHUB_USERNAME
       git config --global user.email "$GITHUB_EMAIL"
       git config --global user.name "$GITHUB_USERNAME"
 
@@ -40,49 +46,40 @@ select opt in "${options[@]}"; do
       curl -fsSL https://bun.sh/install | bash && source ~/.bashrc && bun install && \
       forge build
 
-      read -p "Enter your Holesky wallet PRIVATE KEY: " PRIV_KEY
-      export DROSERA_PRIVATE_KEY="$PRIV_KEY"
-
       drosera apply
-
-      echo -e "${pink}==> Done! Check explorer and return to run next step.${reset}"
+      echo -e "${pink}Введи 'ofc' у терміналі, коли буде потрібно, та натисни Enter${reset}"
       exit
       ;;
 
     2)
-      echo -e "${pink}==> Running dryrun and configuring private trap...${reset}"
+      echo -e "${pink}==> Блок 2: Dryrun та приватний trap${reset}"
 
       cd ~/my-drosera-trap && source ~/.bashrc
-      drosera dryrun
-
       sed -i '/^private_trap/d' ~/my-drosera-trap/drosera.toml
       sed -i '/^whitelist/d' ~/my-drosera-trap/drosera.toml
-
-      read -p "Enter your wallet address: " ADDRESS
-      read -p "Enter your Holesky PRIVATE KEY again: " PRIV_KEY
-      export DROSERA_PRIVATE_KEY="$PRIV_KEY"
 
       echo "private_trap = true" >> ~/my-drosera-trap/drosera.toml
       echo "whitelist = [\"$ADDRESS\"]" >> ~/my-drosera-trap/drosera.toml
 
+      export DROSERA_PRIVATE_KEY="$PRIV_KEY"
       drosera apply
 
-      echo -e "${pink}==> Done! Your trap should now be private.${reset}"
+      echo -e "${pink}Введи 'ofc' у терміналі, коли буде потрібно, та натисни Enter${reset}"
+      drosera dryrun && cd
       exit
       ;;
 
     3)
-      echo -e "${pink}==> Starting Drosera node service...${reset}"
+      echo -e "${pink}==> Блок 3: Запуск drosera-operator як systemd сервіс${reset}"
 
-      cd ~/my-drosera-trap
-      curl -LO https://github.com/drosera-network/releases/releases/download/v1.16.2/drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz
-      tar -xvf drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz
-      sudo cp drosera-operator /usr/bin
+      cd ~/my-drosera-trap && curl -LO https://github.com/drosera-network/releases/releases/download/v1.16.2/drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz && \
+      tar -xvf drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz && \
+      cp drosera-operator /usr/bin
 
       drosera-operator register --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com --eth-private-key $DROSERA_PRIVATE_KEY
 
-      sudo ufw allow 31313
-      sudo ufw allow 31314
+      ufw allow 31313
+      ufw allow 31314
 
       sudo tee /etc/systemd/system/drosera.service > /dev/null <<EOF
 [Unit]
@@ -108,37 +105,34 @@ EOF
       sudo systemctl enable drosera
       sudo systemctl restart drosera
 
-      echo -e "${pink}==> Node service started.${reset}"
+      echo -e "${pink}Сервіс запущено. Перевірте статус через лог (пункт 4)${reset}"
       exit
       ;;
 
     4)
-      echo -e "${pink}==> Showing logs...${reset}"
+      echo -e "${pink}==> Блок 4: Логи drosera.service${reset}"
       journalctl -u drosera -f -o cat
       exit
       ;;
 
     5)
-      echo -e "${pink}==> Opting in to trap config...${reset}"
+      echo -e "${pink}==> Блок 5: Opt-in до trap-config${reset}"
+      read -p $'\e[1;35mВведи trap-config-address:\e[0m ' TRAP_CONFIG
 
-      read -p "Enter trap-config-address: " TRAP_CONFIG
       drosera-operator optin \
         --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com \
         --eth-private-key $DROSERA_PRIVATE_KEY \
         --trap-config-address $TRAP_CONFIG
-
-      echo -e "${pink}==> Opt-in complete.${reset}"
       exit
       ;;
 
-
     6)
-      echo -e "${pink}==> Exiting. Goodbye!${reset}"
+      echo -e "${pink}==> Вихід...${reset}"
       exit
       ;;
 
     *)
-      echo -e "${pink}Invalid option. Please try again.${reset}"
+      echo -e "${pink}Невірний вибір. Спробуй ще раз.${reset}"
       ;;
   esac
 done

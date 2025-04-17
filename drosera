@@ -57,7 +57,7 @@ case $REPLY in
     curl -fsSL https://bun.sh/install | bash && source ~/.bashrc && bun install && forge build
     export DROSERA_PRIVATE_KEY="$PRIV_KEY"
     drosera apply
-    break
+    return
     ;;
 
   2)
@@ -71,7 +71,7 @@ case $REPLY in
     export DROSERA_PRIVATE_KEY="$PRIV_KEY"
     drosera apply
     
-    break
+    return
     ;;
 
   3)
@@ -109,12 +109,12 @@ EOF
     sudo systemctl daemon-reload
     sudo systemctl enable drosera
     sudo systemctl restart drosera
-    break
+    return
     ;;
 
   4)
     journalctl -u drosera -f -o cat
-    break
+    return
     ;;
 
   5)
@@ -123,12 +123,12 @@ EOF
       --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com \
       --eth-private-key $DROSERA_PRIVATE_KEY \
       --trap-config-address $TRAP_CONFIG_ADDRESS
-    break
+    return
     ;;
 
   6)
     echo -e "\e[1;35mСкрипт завершено.\e[0m"
-    break
+    return
     ;;
   *)
     echo -e "\e[1;31mНевірний вибір, спробуй знову.\e[0m"

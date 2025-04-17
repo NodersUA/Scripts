@@ -1,91 +1,90 @@
 #!/bin/bash
 
-PS3='🔧 Обери дію: '
+# Колір рожевий (фіолетовий)
+pink='\033[1;35m'
+reset='\033[0m'
+
+PS3=$'\n'"${pink}Select an action:${reset} "
+
 options=(
-    "1. Підготовка сервера та деплой трапа"
-    "2. Dryrun та перехід у Private Trap"
-    "3. Встановлення Drosera Operator та запуск ноди"
-    "4. Перегляд логів та Opt-in"
-    "5. Вихід"
+"Апдейт сервера і Деплой Трапа"
+"Запуск ноди (dryrun + private)"
+"Запуск сервісу ноди"
+"Подивитись логи"
+"Opt in"
+"Вихід"
 )
 
-select opt in "${options[@]}"
-do
-    case $REPLY in
+select opt in "${options[@]}"; do
+  case $REPLY in
+    1)
+      echo -e "${pink}==> Updating server and deploying trap...${reset}"
+      
+      sudo apt-get update && sudo apt-get upgrade -y && \
+      sudo apt install curl ufw iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
-        1)
-            echo "🚀 Починаємо підготовку сервера та деплой трапа..."
+      curl -L https://app.drosera.io/install | bash && source ~/.bashrc && droseraup
 
-            sudo apt-get update && sudo apt-get upgrade -y && \
-            sudo apt install curl ufw iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
+      curl -L https://foundry.paradigm.xyz | bash && source ~/.bashrc && foundryup
 
-            echo "✅ Drosera CLI встановлюється..."
-            curl -L https://app.drosera.io/install | bash && source ~/.bashrc && droseraup
+      mkdir -p ~/my-drosera-trap
+      cd ~/my-drosera-trap
 
-            echo "✅ Foundry встановлюється..."
-            curl -L https://foundry.paradigm.xyz | bash && source ~/.bashrc && foundryup
+      read -p "Enter your GitHub email: " GITHUB_EMAIL
+      read -p "Enter your GitHub username: " GITHUB_USERNAME
+      git config --global user.email "$GITHUB_EMAIL"
+      git config --global user.name "$GITHUB_USERNAME"
 
-            echo "📁 Ініціалізація Drosera проєкту..."
-            mkdir -p ~/my-drosera-trap
-            cd ~/my-drosera-trap
+      forge init -t drosera-network/trap-foundry-template
 
-            read -p "Введи свій GitHub email: " GITHUB_EMAIL
-            read -p "Введи свій GitHub username: " GITHUB_USERNAME
+      curl -fsSL https://bun.sh/install | bash && source ~/.bashrc && bun install && \
+      forge build
 
-            git config --global user.email "$GITHUB_EMAIL"
-            git config --global user.name "$GITHUB_USERNAME"
+      read -p "Enter your Holesky wallet PRIVATE KEY: " PRIV_KEY
+      export DROSERA_PRIVATE_KEY="$PRIV_KEY"
 
-            forge init -t drosera-network/trap-foundry-template
+      drosera apply
 
-            echo "📦 Встановлюємо Bun..."
-            curl -fsSL https://bun.sh/install | bash && source ~/.bashrc && bun install && forge build
+      echo -e "${pink}==> Done! Check explorer and return to run next step.${reset}"
+      exit
+      ;;
 
-            read -p "🔑 Введи приватний ключ гаманця з Holesky: " PRIV_KEY
-            export DROSERA_PRIVATE_KEY="$PRIV_KEY"
+    2)
+      echo -e "${pink}==> Running dryrun and configuring private trap...${reset}"
 
-            echo "🧠 Застосовуємо trap..."
-            drosera apply
+      cd ~/my-drosera-trap && source ~/.bashrc
+      drosera dryrun
 
-            echo "➡️ Введи 'ofc' у терміналі після підтвердження."
+      sed -i '/^private_trap/d' ~/my-drosera-trap/drosera.toml
+      sed -i '/^whitelist/d' ~/my-drosera-trap/drosera.toml
 
-            ;;
+      read -p "Enter your wallet address: " ADDRESS
+      read -p "Enter your Holesky PRIVATE KEY again: " PRIV_KEY
+      export DROSERA_PRIVATE_KEY="$PRIV_KEY"
 
-        2)
-            echo "🛠 Dryrun + перехід у Private Trap..."
-            drosera dryrun && cd
+      echo "private_trap = true" >> ~/my-drosera-trap/drosera.toml
+      echo "whitelist = [\"$ADDRESS\"]" >> ~/my-drosera-trap/drosera.toml
 
-            cd ~/my-drosera-trap && source ~/.bashrc
+      drosera apply
 
-            sed -i '/^private_trap/d' ~/my-drosera-trap/drosera.toml
-            sed -i '/^whitelist/d' ~/my-drosera-trap/drosera.toml
+      echo -e "${pink}==> Done! Your trap should now be private.${reset}"
+      exit
+      ;;
 
-            read -p "📬 Введи адресу свого гаманця: " ADDRESS
-            read -p "🔑 Введи ще раз приватний ключ гаманця: " PRIV_KEY
-            export DROSERA_PRIVATE_KEY="$PRIV_KEY"
+    3)
+      echo -e "${pink}==> Starting Drosera node service...${reset}"
 
-            echo "private_trap = true" >> ~/my-drosera-trap/drosera.toml
-            echo "whitelist = [\"$ADDRESS\"]" >> ~/my-drosera-trap/drosera.toml
+      cd ~/my-drosera-trap
+      curl -LO https://github.com/drosera-network/releases/releases/download/v1.16.2/drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz
+      tar -xvf drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz
+      sudo cp drosera-operator /usr/bin
 
-            echo "🔄 Повторна активація trap..."
-            drosera apply
+      drosera-operator register --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com --eth-private-key $DROSERA_PRIVATE_KEY
 
-            echo "➡️ Введи 'ofc' у терміналі після підтвердження."
+      sudo ufw allow 31313
+      sudo ufw allow 31314
 
-            ;;
-
-        3)
-            echo "📦 Встановлення Drosera Operator..."
-            cd ~/my-drosera-trap && curl -LO https://github.com/drosera-network/releases/releases/download/v1.16.2/drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz && \
-            tar -xvf drosera-operator-v1.16.2-x86_64-unknown-linux-gnu.tar.gz && \
-            sudo cp drosera-operator /usr/bin
-
-            drosera-operator register --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com --eth-private-key $DROSERA_PRIVATE_KEY
-
-            sudo ufw allow 31313
-            sudo ufw allow 31314
-
-            echo "🛠 Створення systemd сервісу..."
-            sudo tee /etc/systemd/system/drosera.service > /dev/null <<EOF
+      sudo tee /etc/systemd/system/drosera.service > /dev/null <<EOF
 [Unit]
 Description=Drosera Node Service
 After=network-online.target
@@ -105,33 +104,41 @@ ExecStart=$(which drosera-operator) node --db-file-path /root/.drosera.db --netw
     --disable-dnr-confirmation true
 EOF
 
-            sudo systemctl daemon-reload
-            sudo systemctl enable drosera
-            sudo systemctl restart drosera
+      sudo systemctl daemon-reload
+      sudo systemctl enable drosera
+      sudo systemctl restart drosera
 
-            echo "✅ Drosera сервіс запущено"
+      echo -e "${pink}==> Node service started.${reset}"
+      exit
+      ;;
 
-            ;;
+    4)
+      echo -e "${pink}==> Showing logs...${reset}"
+      journalctl -u drosera -f -o cat
+      exit
+      ;;
 
-        4)
-            echo "📋 Вивід логів Drosera ноди..."
-            journalctl -u drosera -f -o cat
+    5)
+      echo -e "${pink}==> Opting in to trap config...${reset}"
 
-            echo "📩 Опціональна участь (opt-in)..."
-            drosera-operator optin \
-                --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com \
-                --eth-private-key $DROSERA_PRIVATE_KEY \
-                --trap-config-address 0xd0fe1a638553b6461c5675332ed3816239cf1606
+      read -p "Enter trap-config-address: " TRAP_CONFIG
+      drosera-operator optin \
+        --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com \
+        --eth-private-key $DROSERA_PRIVATE_KEY \
+        --trap-config-address $TRAP_CONFIG
 
-            ;;
+      echo -e "${pink}==> Opt-in complete.${reset}"
+      exit
+      ;;
 
-        5)
-            echo "👋 Вихід з меню. Гарного дня!"
-            break
-            ;;
 
-        *)
-            echo "❗ Невірний вибір. Спробуй ще раз."
-            ;;
-    esac
+    6)
+      echo -e "${pink}==> Exiting. Goodbye!${reset}"
+      exit
+      ;;
+
+    *)
+      echo -e "${pink}Invalid option. Please try again.${reset}"
+      ;;
+  esac
 done

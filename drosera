@@ -97,10 +97,13 @@ ExecStart=$(which drosera-operator) node --db-file-path /root/.drosera.db --netw
     --eth-rpc-url https://ethereum-holesky-rpc.publicnode.com \\
     --eth-backup-rpc-url https://1rpc.io/holesky \\
     --drosera-address 0xea08f7d533C2b9A62F40D5326214f39a8E3A32F8 \\
-    --eth-private-key $DROSERA_PRIVATE_KEY \\
+    --eth-private-key $PRIV_KEY \\
     --listen-address 0.0.0.0 \\
-    --network-external-p2p-address \$(curl -s https://api.ipify.org) \\
+    --network-external-p2p-address $(curl -s https://api.ipify.org) \\
     --disable-dnr-confirmation true
+
+[Install]
+WantedBy=multi-user.target
 EOF
 
     sudo systemctl daemon-reload

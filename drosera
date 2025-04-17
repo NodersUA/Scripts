@@ -12,7 +12,6 @@ read -p $'\e[1;35mВведи приватний ключ:\e[0m ' PRIV_KEY
 
 export DROSERA_PRIVATE_KEY="$PRIV_KEY"
 
-
 # Меню
 PS3=$'\n\e[1;35mОберіть дію:\e[0m\n'
 options=(

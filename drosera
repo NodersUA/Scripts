@@ -61,6 +61,8 @@ case $REPLY in
     ;;
 
   2)
+    drosera dryrun && cd
+    
     cd ~/my-drosera-trap && source ~/.bashrc
     sed -i '/^private_trap/d' drosera.toml
     sed -i '/^whitelist/d' drosera.toml
@@ -68,7 +70,7 @@ case $REPLY in
     echo "whitelist = [\"$ADDRESS\"]" >> drosera.toml
     export DROSERA_PRIVATE_KEY="$PRIV_KEY"
     drosera apply
-    drosera dryrun
+    
     break
     ;;
 
@@ -81,9 +83,7 @@ case $REPLY in
     ufw allow 31313
     ufw allow 31314
 
-    read -p $'\e[1;35mВведи trap-config адресу:\e[0m ' TRAP_CONFIG_ADDRESS
-
-    sudo tee /etc/systemd/system/drosera.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/drosera.service > /dev/null <<EOF
 [Unit]
 Description=Drosera Node Service
 After=network-online.target

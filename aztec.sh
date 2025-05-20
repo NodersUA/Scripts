@@ -15,7 +15,7 @@ echo "Введіть BEACON Sepolia URL:"
 read -p "" BEACON_RPC
 
 # Отримання зовнішнього IP автоматично
-SERVER_IP=$(curl -s ifconfig.me)
+SERVER_IP=$(curl -4 ifconfig.me)
 
 # Створення файлу .env
 cat <<EOF > .env

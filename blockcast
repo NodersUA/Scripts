@@ -12,6 +12,7 @@ options=(
   "Рестарт ноди"
   "Оновлення ноди"
   "Видалення ноди"
+  "Визначити локацію сервера"
   "Вихід"
 )
 select opt in "${options[@]}"
@@ -114,6 +115,9 @@ case $REPLY in
     rm -rf ~/.blockcast
     ;;
   7)
+    curl -s https://ipinfo.io | jq '.city, .region, .country, .loc'
+    ;;
+  8)
     echo "Exiting script."
     exit
     ;;

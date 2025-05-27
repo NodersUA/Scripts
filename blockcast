@@ -13,6 +13,7 @@ options=(
   "Оновлення ноди"
   "Видалення ноди"
   "Визначити локацію сервера"
+  "Встановлення докера"
   "Вихід"
 )
 select opt in "${options[@]}"
@@ -23,17 +24,6 @@ case $REPLY in
     sudo apt-get update && sudo apt-get upgrade -y
     sudo apt install iptables-persistent -y
     sudo apt install curl iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip -y
-
-    echo "Перевірка Docker та Docker Compose..."
-    if ! command -v docker &> /dev/null || ! (command -v docker-compose &> /dev/null || docker compose version &> /dev/null); then
-      echo "Docker або Docker Compose не знайдено. Встановлюємо..."
-      if ! bash <(curl -fsSL https://raw.githubusercontent.com/cryptoportalua/scripts/refs/heads/main/utils/docker); then
-        echo "Не вдалося встановити Docker/Compose" >&2
-        exit 1
-      fi
-    else
-      echo "Docker і Docker Compose вже встановлені. Пропускаємо установку."
-    fi
 
     git clone https://github.com/Blockcast/beacon-docker-compose.git
     cd beacon-docker-compose
@@ -117,7 +107,19 @@ case $REPLY in
   7)
     curl -s https://ipinfo.io | jq '.city, .region, .country, .loc'
     ;;
-  8)
+  8) 
+echo "Перевірка Docker та Docker Compose..."
+    if ! command -v docker &> /dev/null || ! (command -v docker-compose &> /dev/null || docker compose version &> /dev/null); then
+      echo "Docker або Docker Compose не знайдено. Встановлюємо..."
+      if ! bash <(curl -fsSL https://raw.githubusercontent.com/cryptoportalua/scripts/refs/heads/main/utils/docker); then
+        echo "Не вдалося встановити Docker/Compose" >&2
+        exit 1
+      fi
+    else
+      echo "Docker і Docker Compose вже встановлені. Пропускаємо установку."
+    fi
+    ;;
+  9)
     echo "Exiting script."
     exit
     ;;

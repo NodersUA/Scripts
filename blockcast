@@ -1,0 +1,125 @@
+#!/bin/bash
+
+# Logo
+# link HERE
+
+# Меню дій
+PS3=$'\e[1;35m\nОберіть дію:\e[0m\n'
+options=(
+  "Встановлення ноди"
+  "Реєстрація ноди"
+  "Подивитись логи ноди"  
+  "Рестарт ноди"
+  "Оновлення ноди"
+  "Видалення ноди"
+  "Вихід"
+)
+select opt in "${options[@]}"
+do
+case $REPLY in
+  1)
+     echo "Встановлення залежностей..."
+    sudo apt-get update && sudo apt-get upgrade -y
+    sudo apt install iptables-persistent -y
+    sudo apt install curl iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli libgbm1 pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip -y
+
+    echo "Перевірка Docker та Docker Compose..."
+    if ! command -v docker &> /dev/null || ! (command -v docker-compose &> /dev/null || docker compose version &> /dev/null); then
+      echo "Docker або Docker Compose не знайдено. Встановлюємо..."
+      if ! bash <(curl -fsSL https://raw.githubusercontent.com/cryptoportalua/scripts/refs/heads/main/utils/docker); then
+        echo "Не вдалося встановити Docker/Compose" >&2
+        exit 1
+      fi
+    else
+      echo "Docker і Docker Compose вже встановлені. Пропускаємо установку."
+    fi
+
+    git clone https://github.com/Blockcast/beacon-docker-compose.git
+    cd beacon-docker-compose
+
+    if command -v docker-compose &> /dev/null; then
+      DC="docker-compose"
+    elif docker compose version &> /dev/null; then
+      DC="docker compose"
+    else
+      echo "Помилка: не знайдено 'docker-compose' або 'docker compose'" >&2
+      exit 1
+    fi
+
+    $DC up -d
+    cd ~
+
+    echo "-----------------------------------------------------------------------"
+    echo "Команда для перегляду логів:"
+    echo "docker logs -f blockcastd"
+    echo "-----------------------------------------------------------------------"
+    ;;
+  2)
+    echo "Отримання даних для реєстрації..."
+    cd beacon-docker-compose
+    sleep 3
+
+    if command -v docker-compose &> /dev/null; then
+      DC="docker-compose"
+    elif docker compose version &> /dev/null; then
+      DC="docker compose"
+    else
+      echo "Помилка: не знайдено 'docker-compose' або 'docker compose'" >&2
+      exit 1
+    fi
+
+    $DC exec blockcastd blockcastd init
+    cd ~
+    ;; 
+  3)
+    docker logs -f blockcastd
+    ;;
+  4)
+    echo "Перезапуск контейнерів ноди..."
+    cd beacon-docker-compose
+
+    if command -v docker-compose &> /dev/null; then
+      DC="docker-compose"
+    elif docker compose version &> /dev/null; then
+      DC="docker compose"
+    else
+      echo "Помилка: не знайдено 'docker-compose' або 'docker compose'" >&2
+      exit 1
+    fi
+
+    $DC restart
+    cd ~
+    sleep 2
+    docker logs -f blockcastd
+    ;;
+  5)
+    echo "Актуальна версія, як тільки буде апдейт ми сповістимо вас в телеграмі"
+    ;;
+  6)
+    echo "Видалення ноди Blockcast..."
+    cd ~/beacon-docker-compose
+
+    if command -v docker-compose &> /dev/null; then
+      DC="docker-compose"
+    elif docker compose version &> /dev/null; then
+      DC="docker compose"
+    else
+      echo "Помилка: не знайдено 'docker-compose' або 'docker compose'" >&2
+      exit 1
+    fi
+
+    $DC down --rmi all --volumes --remove-orphans
+    cd ~
+    rm -rf beacon-docker-compose
+    rm -rf ~/.blockcast
+    ;;
+  7)
+    echo "Exiting script."
+    exit
+    ;;
+  *)
+    echo -e "\e[1;31mНевірний вибір, спробуй знову.\e[0m"
+    ;;
+
+esac
+done
